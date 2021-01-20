@@ -1,0 +1,19 @@
+{
+  "name": "team-rudra",
+  "version": "1.0.0",
+  "description": "TY Mini Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhishek-g-joshi/Team-Rudras-.git"
+  },
+  "author": "Abhishek_Joshi Rohit_Pal Sawan_Pandita",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abhishek-g-joshi/Team-Rudras-/issues"
+  },
+  "homepage": "https://github.com/abhishek-g-joshi/Team-Rudras-#readme"
+}
