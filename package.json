@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/abhishek-g-joshi/Team-Rudras-/issues"
   },
-  "homepage": "https://github.com/abhishek-g-joshi/Team-Rudras-#readme"
+  "homepage": "https://github.com/abhishek-g-joshi/Team-Rudras-#readme",
+  "dependencies": {
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.11.13"
+  }
 }
