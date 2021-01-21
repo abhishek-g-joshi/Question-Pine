@@ -1,0 +1,36 @@
+<%- include("partials/header.ejs") -%>
+
+<!-- <h1 style = "text-align : center">Create a New Account!</h1> -->
+<div class="signup-form">
+    <form action="/users" method="POST">
+		<h2>Sign Up</h2>
+		<p class="hint-text">Create your account. It's free and only takes a minute.</p>
+        <div class="form-group">
+		    <input type="text" class="form-control" name="firstName" placeholder="First Name" required="required">  	
+        </div>
+        <div class="form-group">
+		    <input type="text" class="form-control" name="lastName" placeholder="Last Name" required="required">  	
+        </div>
+        <div class="form-group">
+		    <input type="text" class="form-control" name="userName" placeholder="User Name" required="required">  	
+        </div>
+        <div class="form-group">
+        	<input type="email" class="form-control" name="email" placeholder="Email" required="required">
+        </div>
+		<div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password" required="required">
+        </div>
+		<div class="form-group">
+            <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" required="required">
+        </div>        
+        <div class="form-group">
+			<label class="form-check-label small"><input type="checkbox" required="required" > I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>
+		</div>
+		<div class="form-group">
+            <button type="submit" class="btn btn-info btn-lg btn-block">Register Now</button>
+        </div>
+    </form>
+	<div class="text-center">Already have an account? <a href="/signin">Sign in</a></div>
+</div>
+
+<%- include("partials/footer.ejs") -%>
