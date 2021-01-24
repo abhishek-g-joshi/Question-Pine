@@ -66,7 +66,7 @@ module.exports = function validateRegisterInput(data)
 
     if(!Validator.equals(data.password, data.confirmPassword))
     {
-        errors.confirmPassword = 'Password must be match';
+        errors.confirmPassword = 'Password must match';
     }
 
     return{

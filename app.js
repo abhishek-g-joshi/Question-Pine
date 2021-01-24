@@ -6,20 +6,33 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const User = require("./models/Users");
 const mongoose = require("mongoose");
+const cookieParser = require('cookie-parser');
+
+const users = require("./routes/api/users");
+
+const app = express();
+
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+app.use(cookieParser());
 
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
 
 mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/<rudrasUsers>?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
-const app = express();
-
-app.set('view engine', 'ejs');
-
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static("public"));
 
 
+const createToken = (id) =>{
+  return jwt.sign({id},'shhhaaSecretKey',
+  {expiresIn: 3600});
+}
+
+
+//test
+app.get("/hello",(req,res)=>res.send(<p>hello</p>));
+app.use("/api/users",users);
 
 
 // Sends the list of Questions
@@ -78,6 +91,8 @@ app.post("/signup",(req,res)=>{
             .catch(err =>console.log(err));
         });
       });
+      const token = createToken(userObject._id);
+      res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
     }
   });
 });
@@ -113,10 +128,10 @@ app.post("/signin",(req,res)=>{
     .then(isMatch => {
       if(isMatch){
       //User matched, create payload
-      const payload = {id:user.id, firstName:user.firstName, lastName:user.lastName, userName:user.userName, email:user.email}
+      const payload = {id:user._id, firstName:user.firstName, lastName:user.lastName, userName:user.userName, email:user.email}
 
       //Sign token
-      jwt.sign(payload,
+      const token = jwt.sign(payload,
         'shhhaaSecretKey',
         {expiresIn: 3600},
         (err,token)=>{
@@ -126,7 +141,8 @@ app.post("/signin",(req,res)=>{
           })
         }
       )
-      return res.redirect('/questions');
+      // res.cookie('jwt',token,{httpOnly:true,maxAge:3600*1000})
+      // return res.redirect('/questions');
     }else{
       errors.password= 'password incorrect';
       return res.status(400).json(errors);
