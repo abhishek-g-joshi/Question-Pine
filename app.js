@@ -7,6 +7,7 @@ const passport = require("passport");
 const User = require("./models/Users");
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
+const { requireAuth, checkUser } = require("./middleware/authMiddleware");
 
 const users = require("./routes/api/users");
 
@@ -31,13 +32,15 @@ const createToken = (id) =>{
 
 
 //test
-app.get("/hello",(req,res)=>res.send(<p>hello</p>));
+// app.get("/hello",(req,res)=>res.send(<p>hello</p>));
 app.use("/api/users",users);
 
+//check current user
+app.get("*",checkUser);
 
-// Sends the list of Questions
-app.get("/questions", function(req, res){
-  res.render("questions.ejs");
+//Homepage route
+app.get("/", function(req, res){
+  res.render("homepage.ejs");
 })
 
 //Homepage route
@@ -128,21 +131,31 @@ app.post("/signin",(req,res)=>{
     .then(isMatch => {
       if(isMatch){
       //User matched, create payload
-      const payload = {id:user._id, firstName:user.firstName, lastName:user.lastName, userName:user.userName, email:user.email}
+      // const payload = {id:user._id, firstName:user.firstName, lastName:user.lastName, userName:user.userName, email:user.email}
 
       //Sign token
-      const token = jwt.sign(payload,
-        'shhhaaSecretKey',
-        {expiresIn: 3600},
-        (err,token)=>{
-          res.json({
-            success:true,
-            token: 'bearer ' + token
-          })
-        }
-      )
+      // const token = jwt.sign(payload,
+      //   'shhhaaSecretKey',
+      //   {expiresIn: 3600},
+      //   (err,token)=>{
+      //     // console.log(json({
+      //     //   success:true,
+      //     //   token
+      //     // }))
+      //     // res.redirect("/questions");
+      //     res.status(200).json({
+      //         success:true,
+      //         token
+      //     })
+      //     // console.log(json({token}));
+      //   }
+      // )
       // res.cookie('jwt',token,{httpOnly:true,maxAge:3600*1000})
       // return res.redirect('/questions');
+      const token = createToken(user._id);
+      res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
+      console.log({ user: user._id });
+      res.redirect("/homepage");
     }else{
       errors.password= 'password incorrect';
       return res.status(400).json(errors);
@@ -150,6 +163,30 @@ app.post("/signin",(req,res)=>{
   });
   });
 })
+
+//Signout routes
+app.get("/signout",(req,res)=>{
+  res.cookie('jwt','', {maxAge:1});
+  res.redirect("/homepage");
+})
+
+
+// Sends the list of Questions
+app.get("/questions", requireAuth, (req, res)=>{
+  res.render("questions.ejs");
+});
+
+app.get("/chatroom", requireAuth, (req, res)=>{
+  res.render("chatroom.ejs");
+});
+
+app.get("/leaderboard", requireAuth, (req, res)=>{
+  res.render("leaderboard.ejs");
+});
+
+app.get("/aboutus", (req, res)=>{
+  res.render("aboutus.ejs");
+});
 
 app.listen(3000, function(){
   console.log("server listening on 3000");
