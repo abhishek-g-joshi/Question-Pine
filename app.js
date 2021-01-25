@@ -32,7 +32,9 @@ const createToken = (id) =>{
 
 
 //test
-// app.get("/hello",(req,res)=>res.send(<p>hello</p>));
+app.get("/hello",(req,res)=>res.send(<p>hello</p>));
+
+
 app.use("/api/users",users);
 
 //check current user
@@ -46,6 +48,16 @@ app.get("/", function(req, res){
 //Homepage route
 app.get("/homepage", function(req, res){
   res.render("homepage.ejs");
+})
+
+//landing route
+app.get("/", function(req, res){
+  res.render("homepage.ejs");
+})
+
+//profile route
+app.get("/profile", function(req, res){
+  res.render("profile.ejs");
 })
 
 //signup route
