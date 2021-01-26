@@ -31,8 +31,6 @@ const createToken = (id) =>{
 }
 
 
-
-
 app.use("/api/users",users);
 
 //check current user
