@@ -31,9 +31,6 @@ const createToken = (id) =>{
 }
 
 
-//test
-app.get("/hello",(req,res)=>res.send(<p>hello</p>));
-
 
 app.use("/api/users",users);
 
