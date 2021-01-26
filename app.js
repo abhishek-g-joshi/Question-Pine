@@ -44,7 +44,7 @@ app.get("/homepage", function(req, res){
 })
 
 //landing route
-app.get("/", function(req, res){
+app.get("/landing", function(req, res){
   res.render("homepage.ejs");
 })
 
