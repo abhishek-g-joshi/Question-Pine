@@ -39,11 +39,6 @@ app.use("/api/users",users);
 app.get("*",checkUser);
 
 //Homepage route
-app.get("/", function(req, res){
-  res.render("homepage.ejs");
-})
-
-//Homepage route
 app.get("/homepage", function(req, res){
   res.render("homepage.ejs");
 })
