@@ -6,27 +6,11 @@ var ProfileSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    firstName:{
-        type: String,
-        required: true
-    },
-    lastName:{
-        type: String,
-        required: true
-    },
-    email:{
-        type: String,
-        required: true
-    },
     College:{
         type: String,
         required: false
     },
     dob:{
-        type: String,
-        required: false
-    },
-    gender:{
         type: String,
         required: false
     },

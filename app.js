@@ -46,11 +46,6 @@ app.get("/landing", function(req, res){
   res.render("homepage.ejs");
 })
 
-//profile route
-app.get("/profile", function(req, res){
-  res.render("profile.ejs");
-})
-
 //signup route
 app.get("/signup",function(req,res){
   res.render("signUp.ejs");
@@ -186,6 +181,15 @@ app.get("/chatroom", requireAuth, (req, res)=>{
 app.get("/leaderboard", requireAuth, (req, res)=>{
   res.render("leaderboard.ejs");
 });
+
+//profile route
+app.get("/profile", requireAuth, function(req, res){
+  res.render("profile.ejs");
+})
+
+app.get("/profile/profileinfo", requireAuth, function(req, res){
+  res.render("profileinfo.ejs");
+})
 
 app.get("/aboutus", (req, res)=>{
   res.render("aboutus.ejs");
