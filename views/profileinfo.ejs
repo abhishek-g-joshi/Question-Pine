@@ -1,0 +1,28 @@
+<%- include("partials/header.ejs") -%>
+
+<div class="signup-form">
+    <form action="/profile/profileinfo" method="POST">
+		<!-- <div class="avatar">
+			<img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar">
+		</div> -->
+        <h3 class="text-center">Hi, <%= user.userName%> </h3>   
+        <div class="form-group">
+        	<input type="text" class="form-control" name="college" placeholder="college" >
+        </div>
+		<div class="form-group">
+            <input type="date" class="form-control" name="dob" placeholder="DOB" >
+        </div>  
+        <div class="form-group">
+        	<input type="text" class="form-control" name="country" placeholder="country" >
+        </div>
+        <div class="form-group">
+        	<input type="text" class="form-control" name="city" placeholder="city" >
+        </div>      
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Save</button>
+        </div>
+    </form>
+    <p class="text-center">Not Now <a href="/profile"><%= user.userName%></a></p>
+</div>
+
+<%- include("partials/footer.ejs") -%>
