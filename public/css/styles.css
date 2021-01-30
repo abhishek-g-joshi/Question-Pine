@@ -51,7 +51,7 @@
 }
 
 .footer-text {
-  padding: 20px;
+  padding: 20px;  
 }
 
 .form-control {
@@ -231,4 +231,22 @@
 
 .login-form p {
   font-size: 20px;
+}
+
+.avatar-prof {
+  position:relative;
+  /* margin: 0 auto; */
+  left: 0;
+  right: 0;
+  /* top: -50px; */
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #1abc9c;
+  float:left;
+  margin-left: 35%;
+}
+.avatar-prof img {
+  width: 100%;
+  
 }
