@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const User = require("./models/Users");
+const Profile = require("./models/Profiles");
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require("./middleware/authMiddleware");
@@ -35,6 +36,7 @@ app.use("/api/users",users);
 
 //check current user
 app.get("*",checkUser);
+app.post("*",checkUser);
 
 //Homepage route
 app.get("/homepage", function(req, res){
@@ -42,7 +44,7 @@ app.get("/homepage", function(req, res){
 })
 
 //landing route
-app.get("/landing", function(req, res){
+app.get("/", function(req, res){
   res.render("homepage.ejs");
 })
 
@@ -74,6 +76,10 @@ app.post("/signup",(req,res)=>{
        email : req.body.email,
        password : req.body.password,
       });
+      const profileObject = new Profile({
+        //special_id: user._id,
+        userName : user.userName,
+       });
       //Create new user and add to database
       // User.create(usersObject,function(err,newUser){
       //   if(err){
@@ -86,6 +92,7 @@ app.post("/signup",(req,res)=>{
         bcrypt.hash(userObject.password, salt, (err, hash)=>{
           if(err) throw err;
           userObject.password = hash;
+          profileObject.save();
           userObject
             .save()
             .then(res.redirect("/homepage"))
@@ -191,9 +198,48 @@ app.get("/profile/profileinfo", requireAuth, function(req, res){
   res.render("profileinfo.ejs");
 })
 
+//user profileinfo route
+app.post("/profile/profileinfo",(req,res)=>{
+
+  User.findOne({})
+  Profile.findOne({special_id:user._id}).then(profile =>{
+    if(profile){
+      res.locals.profile=profile;
+      console.log("profile route running");
+    }else{
+      //object containing users info
+      const profileObject = new Profile({
+       special_id: user._id,
+       firstName : user.firstName,
+       lastName : user.lastName,
+       userName : user.userName,
+       email : user.email,
+       college : req.body.college,
+       dob : req.body.dob,
+       country : req.body.country, 
+       city: req.body.city,
+      });
+      //Create new user and add to database
+      // User.create(usersObject,function(err,newUser){
+      //   if(err){
+      //     console.log(err);
+      //   }else{
+      //     res.redirect("/questions");
+      //   }
+      // })
+          profileObject
+            .save()
+            .then(res.redirect("/profile"))
+            .catch(err =>console.log(err));
+      
+    }
+  });
+});
+
 app.get("/aboutus", (req, res)=>{
   res.render("aboutus.ejs");
 });
+
 
 app.listen(3000, function(){
   console.log("server listening on 3000");

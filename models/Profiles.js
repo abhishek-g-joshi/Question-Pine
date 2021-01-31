@@ -2,6 +2,10 @@ var mongoose = require("mongoose");
 
 //Create Profile Schema
 var ProfileSchema = new mongoose.Schema({
+    special_id:{
+        type: String,
+        required: true
+    },
     userName:{
         type: String,
         required: true
