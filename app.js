@@ -5,9 +5,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const User = require("./models/Users");
+const Profile = require("./models/Profiles")
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require("./middleware/authMiddleware");
+
+var LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('./scratch');
 
 const users = require("./routes/api/users");
 
@@ -107,7 +111,7 @@ app.get("/signin",(req,res)=>{
 app.post("/signin",(req,res)=>{
   const {errors, isValid} = validateSignInputs(req.body);
 
-  if(!isValid)
+  if(!isValid)  
   {
     return res.status(400).json(errors);
   }
@@ -128,8 +132,6 @@ app.post("/signin",(req,res)=>{
    bcrypt.compare(password,user.password)
     .then(isMatch => {
       if(isMatch){
-      //User matched, create payload
-      // const payload = {id:user._id, firstName:user.firstName, lastName:user.lastName, userName:user.userName, email:user.email}
 
       //Sign token
       // const token = jwt.sign(payload,
@@ -152,7 +154,11 @@ app.post("/signin",(req,res)=>{
       // return res.redirect('/questions');
       const token = createToken(user._id);
       res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
-      console.log({ user: user._id });
+      console.log({ user : user._id });
+      // const u =  user._id;
+      localStorage.setItem('id', user._id);
+      localStorage.setItem('userName', user.userName)
+      // console.log(localStorage.getItem('userName'))
       res.redirect("/homepage");
     }else{
       errors.password= 'password incorrect';
@@ -168,9 +174,54 @@ app.get("/signout",(req,res)=>{
   res.redirect("/homepage");
 })
 
+app.post("/profile/profileinfo",checkUser,(req,res)=>{
+
+  // const token = req.cookies.jwt;
+  // console.log(token);
+
+  const user_id = localStorage.getItem('id');
+  const userName = localStorage.getItem('userName');
+  // console.log(localStorage.getItem('userName'));
+  // console.log({user_id: user_id});
+  // console.log({userName: userName});
+
+  const special_id = user_id;
+  
+  // User.findOne({})
+  Profile.findOne({special_id}).then(profile =>{
+    if(profile){
+      res.status(400).json(profile);
+      console.log("profile route running");
+    }else{
+      //object containing users info
+        const profileObject = new Profile({
+         special_id : user_id,
+        //  firstName : user.firstName,
+        //  lastName : user.lastName,
+        userName : userName,
+        //  email : user.email,
+         college : req.body.college,
+         dob : req.body.dob,
+         country : req.body.country, 
+         city: req.body.city,
+        });
+      //Create new user and add to database
+      Profile.create(profileObject,function(err,newProfile){
+        if(err){
+          console.log(err);
+        }else{
+          res.status(400).json(newProfile);
+          res.redirect("/profile");
+        }
+      })
+    }
+  });
+});
+
 
 // Sends the list of Questions
 app.get("/questions", requireAuth, (req, res)=>{
+ 
   res.render("questions.ejs");
 });
 

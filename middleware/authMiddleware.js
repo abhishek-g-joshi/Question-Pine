@@ -12,7 +12,7 @@ const requireAuth = (req,res,next) => {
                 console.log(err.message);
                 res.redirect("/signin");
             } else{
-                console.log(decodedToken);
+                console.log(decodedToken.id);
                 next();
             }
         })
