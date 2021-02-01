@@ -2,89 +2,66 @@
 <div class="container">
   <div class="panel panel-default">
     <!-- Default panel contents -->
-    <div class="panel-heading">Array</div>
-    <!-- Table -->
-    <table class="table">
-      <thead>
-        <th>#</th>
-        <th>Question</th>
-        <th>Done</th>
-      </thead>
 
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Find Max</td>
-          <td>
-            <button type="button" name="button">Done</button>
-          </td>
-        </tr>
 
-        <tr>
-          <td>2</td>
-          <td>Find duplicate</td>
-          <td>
-            <button type="button" name="button">Done</button>
-          </td>
-        </tr>
 
-        <tr>
-          <td>3</td>
-          <td>Merge intervals</td>
-          <td>
-            <button type="button" name="button">Done</button>
-          </td>
-        </tr>
 
-        <tr>
-          <td>4</td>
-          <td>Inversion Count</td>
-          <td>
-            <button type="button" name="button">Done</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <% for(let i=0; i<questionTypes.length; i++){ %>
 
-  <div class="panel panel-default">
-    <!-- Default panel contents -->
-    <div class="panel-heading">Matrix</div>
-    <!-- Table -->
-    <table class="table">
-      <thead>
-        <th>#</th>
-        <th>Question</th>
-        <th>Done</th>
-      </thead>
+      <div class="panel-heading"><%=questionTypes[i]%></div>
+      <table class="table">
+        <thead>
+          <th>#</th>
+          <th>Question</th>
+          <th>Done</th>
+        </thead>
+        <tbody>
+      <%for(let j=0, k=1; j<questionList.length; j++){%>
 
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Spiral Traversal</td>
-          <td>
-            <button type="button" name="button">Done</button>
-          </td>
-        </tr>
+        <%if(questionList[j].quesType === questionTypes[i]){%>
 
-        <tr>
-          <td>2</td>
-          <td>Dividing</td>
-          <td>
-            <button type="button" name="button">Done</button>
-          </td>
-        </tr>
+          <%const exist = false;%>
+          <%for(let k=0; k<solvedQuestions.length; k++){%>
 
-        <tr>
-          <td>3</td>
-          <td>Matrix multiplicaiton</td>
-          <td>
-            <button type="button" name="button">Done</button>
-          </td>
-        </tr>
+            <%if(questionList[j]._id === solvedQuestions[k]){%>
+              <%exist = true;%>
+              <%break;%>
+            <%}%>
+          <%}%>
+
+          <%if(exist){%>
+
+            <tr>
+              <td><%=k++%></td>
+              <td>
+                  <a href="<%= questionList[j].quesLink%>" target="_blank"><%=questionList[j].quesName%></a>
+              </td>
+              <td>
+                <button type="button" name="button">Solved</button>
+              </td>
+            </tr>
+
+          <%}else{%>
+            <tr>
+              <td><%=k++%></td>
+              <td>
+                  <a href="<%= questionList[j].quesLink%>" target="_blank"><%=questionList[j].quesName%></a>
+              </td>
+              <td>
+                <button type="button" name="button">Mark Done</button>
+              </td>
+            </tr>
+          <%}%>
+
+        <%}%>
+      <%}%>
 
       </tbody>
-    </table>
-  </div>
+      </table>
+
+    <%}%>
+
+
+    </div>
 </div>
 <%- include("partials/footer.ejs") -%>

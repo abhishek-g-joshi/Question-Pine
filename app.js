@@ -5,7 +5,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const User = require("./models/Users");
-const Profile = require("./models/Profiles")
+const Profile = require("./models/Profiles");
+const Question = require("./models/Questions");
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require("./middleware/authMiddleware");
@@ -17,6 +18,8 @@ const users = require("./routes/api/users");
 
 const app = express();
 
+const questionTypes = ["array", "matrix", "string", "searching-and-sorting"];
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
@@ -25,7 +28,16 @@ app.use(cookieParser());
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
 
-mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/<rudrasUsers>?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+
+//added a question to the database manually
+// const ques = new Question({
+//   quesName: "find max",
+//   quesLink: "https://practice.geeksforgeeks.org/problems/help-a-thief5938/1",
+//   quesType: "Array"
+// });
+//
+// ques.save();
 
 
 
@@ -35,25 +47,6 @@ const createToken = (id) =>{
 }
 
 
-app.use("/api/users",users);
-
-//check current user
-app.get("*",checkUser);
-
-//Homepage route
-app.get("/homepage", function(req, res){
-  res.render("homepage.ejs");
-})
-
-//landing route
-app.get("/landing", function(req, res){
-  res.render("homepage.ejs");
-})
-
-//signup route
-app.get("/signup",function(req,res){
-  res.render("signUp.ejs");
-})
 
 //Create new User
 app.post("/signup",(req,res)=>{
@@ -64,7 +57,7 @@ app.post("/signup",(req,res)=>{
   {
     return res.status(400).json(errors);
   }
-  
+
   User.findOne({email:req.body.email}).then(user =>{
     if(user){
       errors.email = "Email already exits";
@@ -102,16 +95,11 @@ app.post("/signup",(req,res)=>{
   });
 });
 
-//singin route
-app.get("/signin",(req,res)=>{
-  res.render("signIn.ejs");
-})
 
-//
 app.post("/signin",(req,res)=>{
   const {errors, isValid} = validateSignInputs(req.body);
 
-  if(!isValid)  
+  if(!isValid)
   {
     return res.status(400).json(errors);
   }
@@ -168,11 +156,7 @@ app.post("/signin",(req,res)=>{
   });
 })
 
-//Signout routes
-app.get("/signout",(req,res)=>{
-  res.cookie('jwt','', {maxAge:1});
-  res.redirect("/homepage");
-})
+
 
 app.post("/profile/profileinfo",checkUser,(req,res)=>{
 
@@ -186,7 +170,7 @@ app.post("/profile/profileinfo",checkUser,(req,res)=>{
   // console.log({userName: userName});
 
   const special_id = user_id;
-  
+
   // User.findOne({})
   Profile.findOne({special_id}).then(profile =>{
     if(profile){
@@ -202,7 +186,7 @@ app.post("/profile/profileinfo",checkUser,(req,res)=>{
         //  email : user.email,
          college : req.body.college,
          dob : req.body.dob,
-         country : req.body.country, 
+         country : req.body.country,
          city: req.body.city,
         });
       //Create new user and add to database
@@ -218,11 +202,84 @@ app.post("/profile/profileinfo",checkUser,(req,res)=>{
   });
 });
 
+app.post("/addQuestion", (req, res)=> {
+  const newQuestion = new Question({
+    quesName: req.body.quesName,
+    quesLink: req.body.quesLink,
+    quesType: req.body.quesType
+  })
+
+  newQuestion.save(function(err){
+    if(err){
+      console.log(err);
+    }else{
+      res.redirect("/addQuestion");
+    }
+  })
+
+})
+
+//singin route
+app.get("/signin",(req,res)=>{
+  res.render("signIn.ejs");
+})
+
+//Signout routes
+app.get("/signout",(req,res)=>{
+  res.cookie('jwt','', {maxAge:1});
+  res.redirect("/homepage");
+})
+
+app.use("/api/users",users);
+
+//check current user
+app.get("*",checkUser);
+
+//Homepage route
+app.get("/homepage", function(req, res){
+  res.render("homepage.ejs");
+})
+
+//landing route
+app.get("/landing", function(req, res){
+  res.render("homepage.ejs");
+})
+
+//signup route
+app.get("/signup",function(req,res){
+  res.render("signUp.ejs");
+})
 
 // Sends the list of Questions
 app.get("/questions", requireAuth, (req, res)=>{
- 
-  res.render("questions.ejs");
+  let questionList = [];
+  let solvedQuestions = [];
+
+  Question.find({}, function(err, questions){
+    if(err){
+      console.log(err);
+    }else{
+      const id = localStorage.getItem('id');
+      questionList = questions;
+
+      User.findOne({_id: id}, function(err, foundOne){
+        if(err){
+          console.log(err);
+        }else{
+          solvedQuestions = foundOne.solvedQuestions;
+          res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
+        }
+      })
+
+
+
+    }
+  })
+
+  // console.log(questionList);
+  // console.log(solvedQuestions);
+
+
 });
 
 app.get("/chatroom", requireAuth, (req, res)=>{
@@ -246,6 +303,39 @@ app.get("/aboutus", (req, res)=>{
   res.render("aboutus.ejs");
 });
 
+app.get("/addQuestion", (req, res)=> {
+  res.render("addQuestion.ejs");
+})
+
 app.listen(3000, function(){
   console.log("server listening on 3000");
 })
+
+
+
+
+//
+// for(int i=0; i<questionTypes.length; i++){
+//   //print the type and heading
+//
+//   for(int j=0; j<questionList.length; j++){
+//     if(questionList[j].quesType === questionTypes[i]){
+//
+//       //check if it exist in the solved array of student
+//       const exist = false;
+//       for(int k=0; k<solvedQuestions.length; k++){
+//         if(questionList[j]._id === solvedQuestions[k]){
+//           exist = true;
+//           break;
+//         }
+//       }
+//
+//       if(exist){
+//         //print solved
+//       }else{
+//         //print not solved
+//       }
+//
+//     }
+//   }
+// }

@@ -21,7 +21,9 @@ var UserSchema = new mongoose.Schema({
     password: {
         type :String,
         required:true
-    }
+    },
+    //doubtful: how to make a array inside the schema
+    solvedQuestions: [String]
 });
 
 module.exports = mongoose.model("User",UserSchema);
