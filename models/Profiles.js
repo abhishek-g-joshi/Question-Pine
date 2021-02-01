@@ -3,12 +3,12 @@ var mongoose = require("mongoose");
 //Create Profile Schema
 var ProfileSchema = new mongoose.Schema({
     special_id:{
-        type: String,
-        required: true
+        type : String,
+        required : true
     },
     userName:{
         type: String,
-        required: true
+         required: true
     },
     College:{
         type: String,
@@ -28,7 +28,7 @@ var ProfileSchema = new mongoose.Schema({
     },
     noofsub:{
         type: Number,
-        required: true
+        // required: true
     }
 });
 
