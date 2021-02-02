@@ -22,8 +22,10 @@ var UserSchema = new mongoose.Schema({
         type :String,
         required:true
     },
-    //doubtful: how to make a array inside the schema
-    solvedQuestions: [String]
+
+    solvedQuestions: [String] ,
+
+    
 });
 
 module.exports = mongoose.model("User",UserSchema);

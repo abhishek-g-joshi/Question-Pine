@@ -47,6 +47,7 @@ const createToken = (id) =>{
 }
 
 
+// *****************************************************ALL THE POST REQUEST BELOW ************************************************
 
 //Create new User
 app.post("/signup",(req,res)=>{
@@ -64,12 +65,14 @@ app.post("/signup",(req,res)=>{
       return res.status(400).json(errors);
     }else{
       //object containing users info
+      const val=0;
       const userObject = new User({
        firstName : req.body.firstName,
        lastName : req.body.lastName,
        userName : req.body.userName,
        email : req.body.email,
        password : req.body.password,
+       solvedCount: val
       });
       //Create new user and add to database
       // User.create(usersObject,function(err,newUser){
@@ -219,6 +222,46 @@ app.post("/addQuestion", (req, res)=> {
 
 })
 
+function arrayRemove(arr, value) {
+
+    return arr.filter(function(ele){
+        return ele != value;
+    });
+}
+
+app.post("/questions", (req, res)=> {
+  const questionName = req.body.questionName;
+  const solvedStatus = req.body.solvedStatus;
+
+  console.log(questionName);
+  console.log(solvedStatus);
+
+
+  const id = localStorage.getItem('id');
+
+  User.findOne({_id: id}, function(err, foundOne){
+    if(err){
+      console.log(err);
+    }else {
+      if(solvedStatus === "done"){
+        foundOne.solvedQuestions = arrayRemove(foundOne.solvedQuestions, questionName);
+        //foundOne.solvedCount--;
+      }else{
+        foundOne.solvedQuestions.push(questionName);
+        //foundOne.solvedCount++;
+      }
+
+      foundOne.save();
+      res.redirect("/questions");
+    }
+  })
+})
+
+
+
+
+// ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
+
 //singin route
 app.get("/signin",(req,res)=>{
   res.render("signIn.ejs");
@@ -252,32 +295,31 @@ app.get("/signup",function(req,res){
 
 // Sends the list of Questions
 app.get("/questions", requireAuth, (req, res)=>{
-  let questionList = [];
-  let solvedQuestions = [];
 
   Question.find({}, function(err, questions){
     if(err){
       console.log(err);
     }else{
       const id = localStorage.getItem('id');
-      questionList = questions;
+      const questionList = questions;
 
       User.findOne({_id: id}, function(err, foundOne){
         if(err){
           console.log(err);
         }else{
-          solvedQuestions = foundOne.solvedQuestions;
+          const solvedQuestions = foundOne.solvedQuestions;
+
+          console.log(questionList);
+          console.log(solvedQuestions);
+
           res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
         }
       })
 
-
-
     }
   })
 
-  // console.log(questionList);
-  // console.log(solvedQuestions);
+
 
 
 });
@@ -307,23 +349,25 @@ app.get("/addQuestion", (req, res)=> {
   res.render("addQuestion.ejs");
 })
 
+
+// *************************************************listening ****************************************************************
 app.listen(3000, function(){
   console.log("server listening on 3000");
 })
 
 
-
+//****************************************************Rough Work ***************************************************************
 
 //
-// for(int i=0; i<questionTypes.length; i++){
+// for(let i=0; i<questionTypes.length; i++){
 //   //print the type and heading
 //
-//   for(int j=0; j<questionList.length; j++){
+//   for(let j=0; j<questionList.length; j++){
 //     if(questionList[j].quesType === questionTypes[i]){
 //
 //       //check if it exist in the solved array of student
-//       const exist = false;
-//       for(int k=0; k<solvedQuestions.length; k++){
+//       let exist = false;
+//       for(let k=0; k<solvedQuestions.length; k++){
 //         if(questionList[j]._id === solvedQuestions[k]){
 //           exist = true;
 //           break;
