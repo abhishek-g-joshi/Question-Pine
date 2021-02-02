@@ -28,7 +28,9 @@ app.use(cookieParser());
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
 
-mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+
+mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/<rudrasUsers>?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
 //added a question to the database manually
 // const ques = new Question({
@@ -46,7 +48,8 @@ const createToken = (id) =>{
   {expiresIn: 3600});
 }
 
-
+//check current user
+app.get("*",checkUser);
 
 //Create new User
 app.post("/signup",(req,res)=>{
@@ -146,6 +149,7 @@ app.post("/signin",(req,res)=>{
       // const u =  user._id;
       localStorage.setItem('id', user._id);
       localStorage.setItem('userName', user.userName)
+      localStorage.setItem('userName', user.userName)
       // console.log(localStorage.getItem('userName'))
       res.redirect("/homepage");
     }else{
@@ -232,8 +236,7 @@ app.get("/signout",(req,res)=>{
 
 app.use("/api/users",users);
 
-//check current user
-app.get("*",checkUser);
+
 
 //Homepage route
 app.get("/homepage", function(req, res){
