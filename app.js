@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const User = require("./models/Users");
 const Profile = require("./models/Profiles");
-const Profile = require("./models/Profiles")
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require("./middleware/authMiddleware");
