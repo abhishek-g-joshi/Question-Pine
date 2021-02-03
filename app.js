@@ -303,12 +303,12 @@ app.get("/questions", requireAuth, (req, res)=>{
     if(err){
       console.log(err);
     }else{
-      const userName = localStorage.getItem('userName');
+      const userID = localStorage.getItem('id');
       const questionList = questions
 
-      console.log(userName);
+      console.log(userID);
 
-      User.findOne({userName: userName}, function(err, foundOne){
+      User.findOne({_id: userID}, function(err, foundOne){
         if(err){
           console.log(err);
         }else{
