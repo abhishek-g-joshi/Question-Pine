@@ -149,7 +149,6 @@ app.post("/signin",(req,res)=>{
       // const u =  user._id;
       localStorage.setItem('id', user._id);
       localStorage.setItem('userName', user.userName)
-      localStorage.setItem('userName', user.userName)
       // console.log(localStorage.getItem('userName'))
       res.redirect("/homepage");
     }else{
@@ -178,6 +177,7 @@ app.post("/profile/profileinfo",checkUser,(req,res)=>{
   // User.findOne({})
   Profile.findOne({special_id}).then(profile =>{
     if(profile){
+      
       res.status(400).json(profile);
       console.log("profile route running");
     }else{
