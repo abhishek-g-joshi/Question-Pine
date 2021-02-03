@@ -48,15 +48,10 @@ const createToken = (id) =>{
   {expiresIn: 3600});
 }
 
-<<<<<<< HEAD
-//check current user
-app.get("*",checkUser);
-=======
 
 // *****************************************************ALL THE POST REQUEST BELOW ************************************************
->>>>>>> 97da9adc4eece3e3479941a0294964ec800c2f70
 
-//Create new User
+//POST : User signup route
 app.post("/signup",(req,res)=>{
 
   const {errors, isValid} = validateSignUpInputs(req.body);
@@ -84,23 +79,23 @@ app.post("/signup",(req,res)=>{
        solvedQuestions: arr
        //solvedCount: val
       });
-      //Create new user and add to database
-      // User.create(usersObject,function(err,newUser){
-      //   if(err){
-      //     console.log(err);
-      //   }else{
-      //     res.redirect("/questions");
-      //   }
-      // })
 
-
+      const profileInfo = new Profile({})
       bcrypt.genSalt(10,(err,salt)=>{
         bcrypt.hash(userObject.password, salt, (err, hash)=>{
           if(err) throw err;
           userObject.password = hash;
           userObject
             .save()
-            .then(res.redirect("/signin"))
+            .then(
+              
+             
+              // Profile.create
+              
+              
+              
+              
+              res.redirect("/signin"))
             .catch(err =>console.log(err));
         });
       });
@@ -110,7 +105,7 @@ app.post("/signup",(req,res)=>{
   });
 });
 
-
+//POST : User signin route 
 app.post("/signin",(req,res)=>{
   const {errors, isValid} = validateSignInputs(req.body);
 
@@ -135,34 +130,30 @@ app.post("/signin",(req,res)=>{
    bcrypt.compare(password,user.password)
     .then(isMatch => {
       if(isMatch){
-
-      //Sign token
-      // const token = jwt.sign(payload,
-      //   'shhhaaSecretKey',
-      //   {expiresIn: 3600},
-      //   (err,token)=>{
-      //     // console.log(json({
-      //     //   success:true,
-      //     //   token
-      //     // }))
-      //     // res.redirect("/questions");
-      //     res.status(200).json({
-      //         success:true,
-      //         token
-      //     })
-      //     // console.log(json({token}));
-      //   }
-      // )
-      // res.cookie('jwt',token,{httpOnly:true,maxAge:3600*1000})
-      // return res.redirect('/questions');
       const token = createToken(user._id);
       res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
       console.log({ user : user._id });
       // const u =  user._id;
       localStorage.setItem('id', user._id);
       localStorage.setItem('userName', user.userName)
+      const user_id = localStorage.getItem('id');
+      const userName = localStorage.getItem('userName');
+      const profileObject = new Profile({
+        special_id : user_id,
+       //  firstName : user.firstName,
+       //  lastName : user.lastName,
+       userName : userName,
+       });
+       Profile.create(profileObject,function(err,newProfile){
+        if(err){
+          console.log(err);
+        }else{
+          // res.status(400).json(newProfile);
+          res.redirect("/homepage");
+        }
+       });
       // console.log(localStorage.getItem('userName'))
-      res.redirect("/homepage");
+      // res.redirect("/homepage");
     }else{
       errors.password= 'password incorrect';
       return res.status(400).json(errors);
@@ -172,11 +163,8 @@ app.post("/signin",(req,res)=>{
 })
 
 
-
+//POST : Edit profile info route
 app.post("/profile/profileinfo",checkUser,(req,res)=>{
-
-  // const token = req.cookies.jwt;
-  // console.log(token);
 
   const user_id = localStorage.getItem('id');
   const userName = localStorage.getItem('userName');
@@ -218,6 +206,7 @@ app.post("/profile/profileinfo",checkUser,(req,res)=>{
   });
 });
 
+//POST : Add question route
 app.post("/addQuestion", (req, res)=> {
   const newQuestion = new Question({
     quesName: req.body.quesName,
@@ -233,15 +222,15 @@ app.post("/addQuestion", (req, res)=> {
     }
   })
 
-})
+});
 
 function arrayRemove(arr, value) {
-
     return arr.filter(function(ele){
         return ele != value;
     });
 }
 
+//POST : display question route
 app.post("/questions", (req, res)=> {
   const questionName = req.body.questionName;
   const solvedStatus = req.body.solvedStatus;
@@ -263,7 +252,6 @@ app.post("/questions", (req, res)=> {
         foundOne.solvedQuestions.push(questionName);
         //foundOne.solvedCount++;
       }
-
       foundOne.save();
       res.redirect("/questions");
     }
@@ -274,6 +262,9 @@ app.post("/questions", (req, res)=> {
 
 
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
+
+//check current user
+app.get("*",checkUser);
 
 //singin route
 app.get("/signin",(req,res)=>{
@@ -349,7 +340,7 @@ app.get("/leaderboard", requireAuth, (req, res)=>{
     if(err){
       console.log(err);
     }else {
-      console.log(users);
+      // console.log(users);
 
       users.sort((a,b) => (a.solvedQuestions.length < b.solvedQuestions.length) ? 1 : ((b.solvedQuestions.length < a.solvedQuestions.length) ? -1 : 0))
 
