@@ -65,14 +65,17 @@ app.post("/signup",(req,res)=>{
       return res.status(400).json(errors);
     }else{
       //object containing users info
-      const val=0;
+      //const val=0;
+
+      const arr = ["test", "test2"];
       const userObject = new User({
        firstName : req.body.firstName,
        lastName : req.body.lastName,
        userName : req.body.userName,
        email : req.body.email,
        password : req.body.password,
-       solvedCount: val
+       solvedQuestions: arr
+       //solvedCount: val
       });
       //Create new user and add to database
       // User.create(usersObject,function(err,newUser){
@@ -82,13 +85,15 @@ app.post("/signup",(req,res)=>{
       //     res.redirect("/questions");
       //   }
       // })
+
+
       bcrypt.genSalt(10,(err,salt)=>{
         bcrypt.hash(userObject.password, salt, (err, hash)=>{
           if(err) throw err;
           userObject.password = hash;
           userObject
             .save()
-            .then(res.redirect("/homepage"))
+            .then(res.redirect("/signin"))
             .catch(err =>console.log(err));
         });
       });
@@ -300,17 +305,20 @@ app.get("/questions", requireAuth, (req, res)=>{
     if(err){
       console.log(err);
     }else{
-      const id = localStorage.getItem('id');
-      const questionList = questions;
+      const userName = localStorage.getItem('userName');
+      const questionList = questions
 
-      User.findOne({_id: id}, function(err, foundOne){
+      console.log(userName);
+
+      User.findOne({userName: userName}, function(err, foundOne){
         if(err){
           console.log(err);
         }else{
+          console.log(foundOne);
           const solvedQuestions = foundOne.solvedQuestions;
 
-          console.log(questionList);
-          console.log(solvedQuestions);
+          //console.log(questionList);
+          //console.log(solvedQuestions);
 
           res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
         }
@@ -329,7 +337,20 @@ app.get("/chatroom", requireAuth, (req, res)=>{
 });
 
 app.get("/leaderboard", requireAuth, (req, res)=>{
-  res.render("leaderboard.ejs");
+
+  User.find({}, (err, users)=> {
+    if(err){
+      console.log(err);
+    }else {
+      console.log(users);
+
+      users.sort((a,b) => (a.solvedQuestions.length < b.solvedQuestions.length) ? 1 : ((b.solvedQuestions.length < a.solvedQuestions.length) ? -1 : 0))
+
+      console.log(users);
+      res.render("leaderboard", {users: users});
+    }
+  })
+
 });
 
 //profile route

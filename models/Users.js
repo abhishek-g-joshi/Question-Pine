@@ -23,9 +23,9 @@ var UserSchema = new mongoose.Schema({
         required:true
     },
 
-    solvedQuestions: [String] ,
+    solvedQuestions: [String]
 
-    
+
 });
 
 module.exports = mongoose.model("User",UserSchema);
