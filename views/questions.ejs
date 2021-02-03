@@ -1,4 +1,7 @@
 <%- include("partials/header.ejs") -%>
+
+
+
 <div class="container">
   <div class="panel panel-default">
     <!-- Default panel contents -->
@@ -16,40 +19,50 @@
           <th>Done</th>
         </thead>
         <tbody>
-      <%for(let j=0, k=1; j<questionList.length; j++){%>
+      <%for(let j=0; j<questionList.length; j++){%>
 
         <%if(questionList[j].quesType === questionTypes[i]){%>
 
-          <%const exist = false;%>
+          <%let exist = 0;%>
+
           <%for(let k=0; k<solvedQuestions.length; k++){%>
 
-            <%if(questionList[j]._id === solvedQuestions[k]){%>
-              <%exist = true;%>
+            <%if(questionList[j].quesName === solvedQuestions[k]){%>
+              <%exist = 1;%>
               <%break;%>
             <%}%>
           <%}%>
 
-          <%if(exist){%>
+          <%if(exist === 1){%>
 
             <tr>
-              <td><%=k++%></td>
+              <td>1</td>
               <td>
                   <a href="<%= questionList[j].quesLink%>" target="_blank"><%=questionList[j].quesName%></a>
               </td>
-              <td>
-                <button type="button" name="button">Solved</button>
-              </td>
+              <form  action="/questions" method="post">
+                <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
+                <input type="hidden" name="solvedStatus" value="done">
+                <td>
+                  <button type="submit" name="button">Solved</button>
+                </td>
+              </form>
             </tr>
 
           <%}else{%>
             <tr>
-              <td><%=k++%></td>
+              <td>1</td>
               <td>
                   <a href="<%= questionList[j].quesLink%>" target="_blank"><%=questionList[j].quesName%></a>
               </td>
-              <td>
-                <button type="button" name="button">Mark Done</button>
-              </td>
+              <form  action="/questions" method="post">
+                <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
+                <input type="hidden" name="solvedStatus" value="notDone">
+                <td>
+                  <button type="submit" name="button">Mark Done</button>
+                </td>
+              </form>
+
             </tr>
           <%}%>
 

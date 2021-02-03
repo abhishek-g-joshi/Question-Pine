@@ -48,8 +48,13 @@ const createToken = (id) =>{
   {expiresIn: 3600});
 }
 
+<<<<<<< HEAD
 //check current user
 app.get("*",checkUser);
+=======
+
+// *****************************************************ALL THE POST REQUEST BELOW ************************************************
+>>>>>>> 97da9adc4eece3e3479941a0294964ec800c2f70
 
 //Create new User
 app.post("/signup",(req,res)=>{
@@ -67,12 +72,17 @@ app.post("/signup",(req,res)=>{
       return res.status(400).json(errors);
     }else{
       //object containing users info
+      //const val=0;
+
+      const arr = ["test", "test2"];
       const userObject = new User({
        firstName : req.body.firstName,
        lastName : req.body.lastName,
        userName : req.body.userName,
        email : req.body.email,
        password : req.body.password,
+       solvedQuestions: arr
+       //solvedCount: val
       });
       //Create new user and add to database
       // User.create(usersObject,function(err,newUser){
@@ -82,13 +92,15 @@ app.post("/signup",(req,res)=>{
       //     res.redirect("/questions");
       //   }
       // })
+
+
       bcrypt.genSalt(10,(err,salt)=>{
         bcrypt.hash(userObject.password, salt, (err, hash)=>{
           if(err) throw err;
           userObject.password = hash;
           userObject
             .save()
-            .then(res.redirect("/homepage"))
+            .then(res.redirect("/signin"))
             .catch(err =>console.log(err));
         });
       });
@@ -223,6 +235,46 @@ app.post("/addQuestion", (req, res)=> {
 
 })
 
+function arrayRemove(arr, value) {
+
+    return arr.filter(function(ele){
+        return ele != value;
+    });
+}
+
+app.post("/questions", (req, res)=> {
+  const questionName = req.body.questionName;
+  const solvedStatus = req.body.solvedStatus;
+
+  console.log(questionName);
+  console.log(solvedStatus);
+
+
+  const id = localStorage.getItem('id');
+
+  User.findOne({_id: id}, function(err, foundOne){
+    if(err){
+      console.log(err);
+    }else {
+      if(solvedStatus === "done"){
+        foundOne.solvedQuestions = arrayRemove(foundOne.solvedQuestions, questionName);
+        //foundOne.solvedCount--;
+      }else{
+        foundOne.solvedQuestions.push(questionName);
+        //foundOne.solvedCount++;
+      }
+
+      foundOne.save();
+      res.redirect("/questions");
+    }
+  })
+})
+
+
+
+
+// ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
+
 //singin route
 app.get("/signin",(req,res)=>{
   res.render("signIn.ejs");
@@ -255,32 +307,34 @@ app.get("/signup",function(req,res){
 
 // Sends the list of Questions
 app.get("/questions", requireAuth, (req, res)=>{
-  let questionList = [];
-  let solvedQuestions = [];
 
   Question.find({}, function(err, questions){
     if(err){
       console.log(err);
     }else{
-      const id = localStorage.getItem('id');
-      questionList = questions;
+      const userName = localStorage.getItem('userName');
+      const questionList = questions
 
-      User.findOne({_id: id}, function(err, foundOne){
+      console.log(userName);
+
+      User.findOne({userName: userName}, function(err, foundOne){
         if(err){
           console.log(err);
         }else{
-          solvedQuestions = foundOne.solvedQuestions;
+          console.log(foundOne);
+          const solvedQuestions = foundOne.solvedQuestions;
+
+          //console.log(questionList);
+          //console.log(solvedQuestions);
+
           res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
         }
       })
 
-
-
     }
   })
 
-  // console.log(questionList);
-  // console.log(solvedQuestions);
+
 
 
 });
@@ -290,7 +344,20 @@ app.get("/chatroom", requireAuth, (req, res)=>{
 });
 
 app.get("/leaderboard", requireAuth, (req, res)=>{
-  res.render("leaderboard.ejs");
+
+  User.find({}, (err, users)=> {
+    if(err){
+      console.log(err);
+    }else {
+      console.log(users);
+
+      users.sort((a,b) => (a.solvedQuestions.length < b.solvedQuestions.length) ? 1 : ((b.solvedQuestions.length < a.solvedQuestions.length) ? -1 : 0))
+
+      console.log(users);
+      res.render("leaderboard", {users: users});
+    }
+  })
+
 });
 
 //profile route
@@ -310,23 +377,25 @@ app.get("/addQuestion", (req, res)=> {
   res.render("addQuestion.ejs");
 })
 
+
+// *************************************************listening ****************************************************************
 app.listen(3000, function(){
   console.log("server listening on 3000");
 })
 
 
-
+//****************************************************Rough Work ***************************************************************
 
 //
-// for(int i=0; i<questionTypes.length; i++){
+// for(let i=0; i<questionTypes.length; i++){
 //   //print the type and heading
 //
-//   for(int j=0; j<questionList.length; j++){
+//   for(let j=0; j<questionList.length; j++){
 //     if(questionList[j].quesType === questionTypes[i]){
 //
 //       //check if it exist in the solved array of student
-//       const exist = false;
-//       for(int k=0; k<solvedQuestions.length; k++){
+//       let exist = false;
+//       for(let k=0; k<solvedQuestions.length; k++){
 //         if(questionList[j]._id === solvedQuestions[k]){
 //           exist = true;
 //           break;
