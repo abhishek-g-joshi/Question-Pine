@@ -26,10 +26,10 @@ var ProfileSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    noofsub:{
+    solvedCount:{
         type: Number,
         // required: true
     }
 });
 
-module.exports = mongoose.model("Profile",ProfileSchema);
+module.exports = mongoose.model("Profile", ProfileSchema);
