@@ -18,7 +18,7 @@ const users = require("./routes/api/users");
 
 const app = express();
 
-const questionTypes = ["array", "matrix", "string", "searching-and-sorting"];
+// const questionTypes = ["array", "matrix", "string", "searching-and-sorting"];
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -30,7 +30,7 @@ const validateSignInputs = require("./validation/signin");
 
 // mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
-mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/<rudrasUsers>?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/<rudrasUsers>?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify: false});
 
 //added a question to the database manually
 // const ques = new Question({
@@ -88,19 +88,11 @@ app.post("/signup",(req,res)=>{
           userObject
             .save()
             .then(
-              
-             
-              // Profile.create
-              
-              
-              
-              
               res.redirect("/signin"))
             .catch(err =>console.log(err));
         });
       });
-      const token = createToken(userObject._id);
-      res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
+
     }
   });
 });
@@ -175,34 +167,29 @@ app.post("/profile/profileinfo",checkUser,(req,res)=>{
   const special_id = user_id;
 
   // User.findOne({})
-  Profile.findOne({special_id}).then(profile =>{
-    if(profile){
-      
-      res.status(400).json(profile);
-      console.log("profile route running");
-    }else{
-      //object containing users info
-        const profileObject = new Profile({
-         special_id : user_id,
-        //  firstName : user.firstName,
-        //  lastName : user.lastName,
+  Profile.findOneAndUpdate(
+    {special_id},
+    {
+      $set: {
+        special_id : user_id,
         userName : userName,
-        //  email : user.email,
          college : req.body.college,
          dob : req.body.dob,
          country : req.body.country,
          city: req.body.city,
-        });
+      }
+    },
+    { new: true},
+    (err, profile)=>{
+      if(err)
+      {
+        console.log(err)
+      }else{
+        console.log(profile)
+        res.redirect('/profile')
+      }
       //Create new user and add to database
-      Profile.create(profileObject,function(err,newProfile){
-        if(err){
-          console.log(err);
-        }else{
-          res.status(400).json(newProfile);
-          res.redirect("/profile");
-        }
-      })
-    }
+
   });
 });
 
@@ -211,7 +198,7 @@ app.post("/addQuestion", (req, res)=> {
   const newQuestion = new Question({
     quesName: req.body.quesName,
     quesLink: req.body.quesLink,
-    quesType: req.body.quesType
+    quesType: req.body.quesType.toLocaleLowerCase(),
   })
 
   newQuestion.save(function(err){
@@ -305,7 +292,7 @@ app.get("/questions", requireAuth, (req, res)=>{
     }else{
       const userID = localStorage.getItem('id');
       const questionList = questions
-
+      // const questionTypes = questions.quesType;    
       console.log(userID);
 
       User.findOne({_id: userID}, function(err, foundOne){
@@ -315,7 +302,7 @@ app.get("/questions", requireAuth, (req, res)=>{
           console.log(foundOne);
           const solvedQuestions = foundOne.solvedQuestions;
 
-          //console.log(questionList);
+          // console.log(quesTypes);
           //console.log(solvedQuestions);
 
           res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});

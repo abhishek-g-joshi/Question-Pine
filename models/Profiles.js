@@ -10,7 +10,7 @@ var ProfileSchema = new mongoose.Schema({
         type: String,
          required: true
     },
-    College:{
+    college:{
         type: String,
         required: false
     },
