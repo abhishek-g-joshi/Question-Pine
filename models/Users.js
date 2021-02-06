@@ -22,6 +22,22 @@ var UserSchema = new mongoose.Schema({
         type :String,
         required:true
     },
+    college:{
+        type: String,
+        required: false
+    },
+    dob:{
+        type: String,
+        required: false
+    },
+    country:{
+        type: String,
+        required: false
+    },
+    city:{
+        type: String,
+        required: false
+    },
 
     solvedQuestions: [String]
 

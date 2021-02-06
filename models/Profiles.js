@@ -25,10 +25,6 @@ var ProfileSchema = new mongoose.Schema({
     city:{
         type: String,
         required: false
-    },
-    solvedCount:{
-        type: Number,
-        // required: true
     }
 });
 

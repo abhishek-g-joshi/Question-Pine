@@ -41,7 +41,7 @@ mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb
 //
 // ques.save();
 
-
+mongoose.set('useFindAndModify', false);
 
 const createToken = (id) =>{
   return jwt.sign({id},'shhhaaSecretKey',
@@ -76,7 +76,11 @@ app.post("/signup",(req,res)=>{
        userName : req.body.userName,
        email : req.body.email,
        password : req.body.password,
-       solvedQuestions: arr
+       solvedQuestions: arr,
+       college: "",
+       dob: "",
+       country: "",
+       city: ""
        //solvedCount: val
       });
 
@@ -340,11 +344,11 @@ app.get("/leaderboard", requireAuth, (req, res)=>{
 
 //profile route
 app.get("/profile", requireAuth, function(req, res){
-  res.render("profile.ejs");
+  res.render("profile.ejs");  
 })
 
-app.get("/profile/profileinfo", requireAuth, function(req, res){
-  res.render("profileinfo.ejs");
+app.get("/profile/editprofile", requireAuth, function(req, res){
+  res.render("editprofile.ejs");
 })
 
 app.get("/aboutus", (req, res)=>{
