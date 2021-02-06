@@ -28,7 +28,7 @@ app.use(cookieParser());
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
 
-mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/<rudrasUsers>?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
 //added a question to the database manually
 // const ques = new Question({
@@ -39,7 +39,7 @@ mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MON
 //
 // ques.save();
 
-
+mongoose.set('useFindAndModify', false);
 
 const createToken = (id) =>{
   return jwt.sign({id},'shhhaaSecretKey',
@@ -74,13 +74,13 @@ app.post("/signup",(req,res)=>{
        userName : req.body.userName,
        email : req.body.email,
        password : req.body.password,
-       solvedQuestions: arr
+       solvedQuestions: arr,
+       college: "",
+       dob: "",
+       country: "",
+       city: ""
        //solvedCount: val
       });
-      const profileObject = new Profile({
-        //special_id: user._id,
-        userName : user.userName,
-       });
       //Create new user and add to database
       // User.create(usersObject,function(err,newUser){
       //   if(err){
@@ -95,15 +95,36 @@ app.post("/signup",(req,res)=>{
         bcrypt.hash(userObject.password, salt, (err, hash)=>{
           if(err) throw err;
           userObject.password = hash;
-          profileObject.save();
           userObject
             .save()
+            // .then(User.findOne({email:req.body.email}).then(user=>{
+            //   if(err)
+            //   {
+            //     console.log(err);
+            //   }
+            //   else{
+            //     const profileObject = new Profile({
+            //         //special_id : user._id,
+            //         //userName :  user.userName,
+            //         college: "abc",
+            //         dob: "",
+            //         country:"xyz",
+            //         city: "",
+            //         solvedCount: 0
+            //     })
+            //     profileObject
+            //     .save()
+            //     .then(res.redirect("/signin"))
+            //     .catch(err =>console.log(err));
+            //   }
+            // })
+            // )
+
             .then(res.redirect("/signin"))
             .catch(err =>console.log(err));
         });
       });
-      const token = createToken(userObject._id);
-      res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
+     
     }
   });
 });
@@ -171,48 +192,79 @@ app.post("/signin",(req,res)=>{
 
 
 
-app.post("/profile/profileinfo",checkUser,(req,res)=>{
+//app.put("/profile/editprofile",checkUser,(req,res)=>{
 
   // const token = req.cookies.jwt;
   // console.log(token);
 
-  const user_id = localStorage.getItem('id');
-  const userName = localStorage.getItem('userName');
-  // console.log(localStorage.getItem('userName'));
-  // console.log({user_id: user_id});
-  // console.log({userName: userName});
+  // const user_id = localStorage.getItem('id');
+  // const userName = localStorage.getItem('userName');
+  // // console.log(localStorage.getItem('userName'));
+  // // console.log({user_id: user_id});
+  // // console.log({userName: userName});
 
-  const special_id = user_id;
+  // const special_id = user_id;
 
-  // User.findOne({})
-  Profile.findOne({special_id}).then(profile =>{
-    if(profile){
-      res.status(400).json(profile);
-      console.log("profile route running");
-    }else{
-      //object containing users info
-        const profileObject = new Profile({
-         special_id : user_id,
-        //  firstName : user.firstName,
-        //  lastName : user.lastName,
-        userName : userName,
-        //  email : user.email,
-         college : req.body.college,
-         dob : req.body.dob,
-         country : req.body.country,
-         city: req.body.city,
-        });
+  // // User.findOne({})
+  // User.findOne({email:req.body.email}).then(user =>{
+  //     if(!user){
+  //       errors.email = "Email doesnot exits";
+  //       return res.status(400).json(errors);
+  //     }else{
+  //       //object containing users info
+  //       //const val=0;
+  
+  //       const arr = ["test", "test2"];
+  //       const userObject = new User({
+  //        firstName : req.body.firstName,
+  //        lastName : req.body.lastName,
+  //        userName : req.body.userName,
+  //        email : req.body.email,
+  //        password : req.body.password,
+  //        solvedQuestions: arr,
+  //        college: "",
+  //        dob: "",
+  //        country: "",
+  //        city: ""
+  //        //solvedCount: val
+  //       });
+  //   if(profile){
+  //     res.status(400).json(profile);
+  //     console.log("profile route running");
+  //   }else{
+  //     //object containing users info
+  //       const profileObject = new Profile({
+  //        special_id : user_id,
+  //       //  firstName : user.firstName,
+  //       //  lastName : user.lastName,
+  //       userName : userName,
+  //       //  email : user.email,
+  //        college : req.body.college,
+  //        dob : req.body.dob,
+  //        country : req.body.country,
+  //        city: req.body.city,
+  //       });
       //Create new user and add to database
-      Profile.create(profileObject,function(err,newProfile){
+app.put("/profile/editprofile",checkUser,(req,res)=>{
+      const userID=localStorage.getItem('id');
+      User.findOneAndUpdate({_id:userID},{
+      $set:   
+        {
+          college: req.body.college,
+          dob : req.body.dob,
+          country : req.body.country,
+          city: req.body.city,
+        }
+      }, {new: true},
+        (err,updateduser)=>{
         if(err){
           console.log(err);
         }else{
-          res.status(400).json(newProfile);
+          res.status(400).json(updateduser);
+          //console.log(User);
           res.redirect("/profile");
         }
       })
-    }
-  });
 });
 
 app.post("/addQuestion", (req, res)=> {
@@ -364,14 +416,12 @@ app.get("/leaderboard", requireAuth, (req, res)=>{
 
 //profile route
 app.get("/profile", requireAuth, function(req, res){
-  res.render("profile.ejs");
+  res.render("profile.ejs");  
 })
 
-app.get("/profile/profileinfo", requireAuth, function(req, res){
-  res.render("profileinfo.ejs");
+app.get("/profile/editprofile", requireAuth, function(req, res){
+  res.render("editprofile.ejs");
 })
-
-//user profileinfo route
 
 app.get("/aboutus", (req, res)=>{
   res.render("aboutus.ejs");
@@ -413,3 +463,5 @@ app.listen(3000, function(){
 //       }
 //
 //     }
+//   }
+// }

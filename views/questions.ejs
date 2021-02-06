@@ -14,7 +14,7 @@
       <table class="table">
         <thead>
           <th>#</th>
-          <th>Question</th>
+          <th>Questions</th>
           <th>Done</th>
         </thead>
         <tbody>
@@ -43,7 +43,7 @@
                 <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
                 <input type="hidden" name="solvedStatus" value="done">
                 <td>
-                  <button type="submit" name="button">Solved</button>
+                  <button type="submit" name="button" class="btn btn-primary">Solved</button>
                 </td>
               </form>
             </tr>
@@ -58,7 +58,7 @@
                 <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
                 <input type="hidden" name="solvedStatus" value="notDone">
                 <td>
-                  <button type="submit" name="button">Mark Done</button>
+                  <button type="submit" name="button" class="btn btn-success">Mark as Done</button>
                 </td>
               </form>
 
