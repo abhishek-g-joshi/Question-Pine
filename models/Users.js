@@ -22,6 +22,10 @@ var UserSchema = new mongoose.Schema({
         type :String,
         required:true
     },
+    contactno:{
+        type: Number,
+        required : false
+    },
     college:{
         type: String,
         required: false
@@ -37,6 +41,10 @@ var UserSchema = new mongoose.Schema({
     city:{
         type: String,
         required: false
+    },
+    bio:{
+        type:String,
+        required:false
     },
 
     solvedQuestions: [String]
