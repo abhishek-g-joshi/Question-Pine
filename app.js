@@ -18,7 +18,7 @@ const users = require("./routes/api/users");
 
 const app = express();
 
-// const questionTypes = ["array", "matrix", "string", "searching-and-sorting"];
+const questionTypes = ["array", "matrix", "string", "searching-and-sorting"];
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -80,7 +80,9 @@ app.post("/signup",(req,res)=>{
        college: "",
        dob: "",
        country: "",
-       city: ""
+       city: "",
+       contactno:"",
+       bio:"",
        //solvedCount: val
       });
 
@@ -160,7 +162,7 @@ app.post("/signin",(req,res)=>{
 
 
 //POST : Edit profile info route
-app.post("/profile/profileinfo",checkUser,(req,res)=>{
+app.post("/profile/editprofile",checkUser,(req,res)=>{
 
   const user_id = localStorage.getItem('id');
   const userName = localStorage.getItem('userName');
@@ -171,16 +173,18 @@ app.post("/profile/profileinfo",checkUser,(req,res)=>{
   const special_id = user_id;
 
   // User.findOne({})
-  Profile.findOneAndUpdate(
-    {special_id},
+  User.findOneAndUpdate(
+    {_id : user_id},
     {
       $set: {
         special_id : user_id,
         userName : userName,
+        contactno : req.body.contactno,
          college : req.body.college,
          dob : req.body.dob,
          country : req.body.country,
          city: req.body.city,
+         bio : req.body.bio
       }
     },
     { new: true},
