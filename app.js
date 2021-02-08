@@ -18,7 +18,7 @@ const users = require("./routes/api/users");
 
 const app = express();
 
-const questionTypes = ["array", "matrix", "string", "searching-and-sorting"];
+const questionTypes = ["Array","String","Matrix","Linked List","Stack","Queue","Tree","Graph","Greedy","Backtracking","Recursion","Dynamic Programing","Bit Manipulation","Hash Table","Sort","Searching","Map","Segment Tree"];
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -27,19 +27,13 @@ app.use(cookieParser());
 
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
+const Users = require("./models/Users");
 
 // mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
 mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/<rudrasUsers>?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify: false});
 
-//added a question to the database manually
-// const ques = new Question({
-//   quesName: "find max",
-//   quesLink: "https://practice.geeksforgeeks.org/problems/help-a-thief5938/1",
-//   quesType: "Array"
-// });
-//
-// ques.save();
+
 
 mongoose.set('useFindAndModify', false);
 
@@ -61,15 +55,16 @@ app.post("/signup",(req,res)=>{
     return res.status(400).json(errors);
   }
 
-  User.findOne({email:req.body.email}).then(user =>{
+  User.findOne({$or : [{ email: req.body.email }, { userName: req.body.userName }]}).then(user =>{
     if(user){
-      errors.email = "Email already exits";
+      console.log(user);
+      errors.email = "User already exits";
       return res.status(400).json(errors);
     }else{
       //object containing users info
       //const val=0;
 
-      const arr = ["test", "test2"];
+      const arr = [];
       const userObject = new User({
        firstName : req.body.firstName,
        lastName : req.body.lastName,
@@ -77,12 +72,12 @@ app.post("/signup",(req,res)=>{
        email : req.body.email,
        password : req.body.password,
        solvedQuestions: arr,
-       college: "",
-       dob: "",
-       country: "",
-       city: "",
+       college: "--",
+       dob: "--",
+       country: "--",
+       city: "--",
        contactno:"",
-       bio:"",
+       bio:"Welcome to Q'Pine",
        //solvedCount: val
       });
 
@@ -136,22 +131,8 @@ app.post("/signin",(req,res)=>{
       localStorage.setItem('userName', user.userName)
       const user_id = localStorage.getItem('id');
       const userName = localStorage.getItem('userName');
-      const profileObject = new Profile({
-        special_id : user_id,
-       //  firstName : user.firstName,
-       //  lastName : user.lastName,
-       userName : userName,
-       });
-       Profile.create(profileObject,function(err,newProfile){
-        if(err){
-          console.log(err);
-        }else{
-          // res.status(400).json(newProfile);
-          res.redirect("/homepage");
-        }
-       });
-      // console.log(localStorage.getItem('userName'))
-      // res.redirect("/homepage");
+      console.log(localStorage.getItem('userName'))
+      res.redirect("/homepage");
     }else{
       errors.password= 'password incorrect';
       return res.status(400).json(errors);
@@ -159,6 +140,20 @@ app.post("/signin",(req,res)=>{
   });
   });
 })
+
+function phonenumber(contactno)
+{
+  var phoneno = /^\d{10}$/;
+  if((contactno.match(phoneno)))
+    {
+      return true;
+    }
+      else
+        {
+        // alert("message");
+        return false;
+        }
+}
 
 
 //POST : Edit profile info route
@@ -171,15 +166,21 @@ app.post("/profile/editprofile",checkUser,(req,res)=>{
   // console.log({userName: userName});
 
   const special_id = user_id;
-
+  const contactno = req.body.contactno.toString();
+  //  if(!phonenumber(contactno))
+  //  {
+  //    res.redirect("/profile/editprofile");
+  //  }
   // User.findOne({})
   User.findOneAndUpdate(
     {_id : user_id},
     {
       $set: {
-        special_id : user_id,
-        userName : userName,
-        contactno : req.body.contactno,
+         special_id : user_id,
+         userName : userName,
+         firstName : req.body.firstName,
+         lastName : req.body.lastName,
+         contactno : req.body.contactno,
          college : req.body.college,
          dob : req.body.dob,
          country : req.body.country,
@@ -194,7 +195,7 @@ app.post("/profile/editprofile",checkUser,(req,res)=>{
         console.log(err)
       }else{
         console.log(profile)
-        res.redirect('/profile')
+        res.redirect("/"+ profile.userName)
       }
       //Create new user and add to database
 
@@ -206,7 +207,7 @@ app.post("/addQuestion", (req, res)=> {
   const newQuestion = new Question({
     quesName: req.body.quesName,
     quesLink: req.body.quesLink,
-    quesType: req.body.quesType.toLocaleLowerCase(),
+    quesType: req.body.quesType,
   })
 
   newQuestion.save(function(err){
@@ -346,15 +347,6 @@ app.get("/leaderboard", requireAuth, (req, res)=>{
 
 });
 
-//profile route
-app.get("/profile", requireAuth, function(req, res){
-  res.render("profile.ejs");  
-})
-
-app.get("/profile/editprofile", requireAuth, function(req, res){
-  res.render("editprofile.ejs");
-})
-
 app.get("/aboutus", (req, res)=>{
   res.render("aboutus.ejs");
 });
@@ -362,6 +354,27 @@ app.get("/aboutus", (req, res)=>{
 app.get("/addQuestion", (req, res)=> {
   res.render("addQuestion.ejs");
 })
+
+//profile route
+app.get("/:id/", requireAuth, function(req, res){
+  const userName = req.params.id;
+  User.findOne({userName},(err,foundOne)=>{
+    if(foundOne)
+    {
+      res.render("profile.ejs");
+    }else{
+      res.status(404).json(err)
+      // console.log()
+    }
+  })
+    
+})
+
+app.get("/profile/editprofile", requireAuth, function(req, res){
+  res.render("editprofile.ejs");
+})
+
+
 
 
 // *************************************************listening ****************************************************************
