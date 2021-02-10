@@ -1,11 +1,20 @@
 <%- include("partials/header.ejs") -%>
 
 <div class="signup-form">
-    <form action="/profile/editprofile" method="PUT">
+    <form action="/profile/editprofile" method="POST">
 		<!-- <div class="avatar">
 			<img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar">
 		</div> -->
-        <h3 class="text-center">Hi, <%= user.userName%> </h3>   
+        <h3 class="text-center">Hi, <%= user.userName%> </h3>  
+        <div class="form-group">
+        	<input type="text" class="form-control" name="firstName" placeholder="First Name" >
+        </div>
+        <div class="form-group">
+        	<input type="text" class="form-control" name="lastName" placeholder="Last Name" >
+        </div>
+        <div class="form-group">
+        	<input type="number" class="form-control" name="contactno" placeholder="Contact No." >
+        </div> 
         <div class="form-group">
         	<input type="text" class="form-control" name="college" placeholder="college" >
         </div>
@@ -13,11 +22,14 @@
             <input type="date" class="form-control" name="dob" placeholder="DOB" >
         </div>  
         <div class="form-group">
+        	<input type="text" class="form-control" name="city" placeholder="city" >
+        </div>
+        <div class="form-group">
         	<input type="text" class="form-control" name="country" placeholder="country" >
         </div>
         <div class="form-group">
-        	<input type="text" class="form-control" name="city" placeholder="city" >
-        </div>      
+        	<textarea type="text" class="form-control" name="bio" placeholder="Write your Bio..!!" ></textarea>
+        </div>       
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg btn-block">Save</button>
         </div>

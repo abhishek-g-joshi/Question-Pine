@@ -2,20 +2,47 @@
 
 <div class="login-form">
     <form action="/addQuestion" method="POST">
-		<div class="avatar">
-			<img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar">
-    		</div>
-            <h2 class="text-center">Add question</h2>
+            <h2 class="text-center">Add Question</h2>
             <div class="form-group">
-            	<input type="text" class="form-control" name="quesName" placeholder="question Name" >
+            	<input type="text" class="form-control" name="quesName" placeholder="question Name" required>
             </div>
     		<div class="form-group">
-            <input type="url" class="form-control" name="quesLink" placeholder="Link" >
+            <input type="url" class="form-control" name="quesLink" placeholder="Link" required>
         </div>
 
         <div class="form-group">
-            <input type="text" class="form-control" name="quesType" placeholder="Type" >
+            <select type="text" class="form-control" name="quesType" placeholder="Type" required >
+                <option value="" disabled selected hidden>Question Type</option>
+                <option value="Array">Array</option>
+                <option value="String">String</option>
+                <option value="Matrix">Matrix</option>
+                <option value="Linked List">Linked List</option>
+                <option value="Stack">Stack</option>
+                <option value="Queue">Queue</option>
+                <option value="Tree">Tree</option>
+                <option value="Graph">Graph</option>
+                <option value="Greedy">Greedy</option>
+                <option value="Backtracking">Backtracking</option>
+                <option value="Recursion">Recursion</option>
+                <option value="Dynamic Programing">Dynamic Programing</option>
+                <option value="Bit Manipulation">Bit Manipulation</option>
+                <option value="Hash Table">Hash Table</option>
+                <option value="Sort">Sort</option>
+                <option value="Searching">Searching</option>
+                <option value="Map">Map</option>
+                <option value="Segment Tree">Segment Tree</option>
+            </select>
         </div>
+        <!-- <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown button
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </div> -->
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg btn-block">Add</button>
         </div>
