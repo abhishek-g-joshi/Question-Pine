@@ -156,7 +156,7 @@ app.post("/signin",(req,res)=>{
 
 
 //POST : Edit profile info route
-app.post("/profile/profileinfo",checkUser,(req,res)=>{
+app.post("/profile/editprofile",checkUser,(req,res)=>{
 
   const user_id = localStorage.getItem('id');
   const userName = localStorage.getItem('userName');
@@ -343,8 +343,8 @@ app.get("/profile", requireAuth, function(req, res){
   res.render("profile.ejs");
 })
 
-app.get("/profile/profileinfo", requireAuth, function(req, res){
-  res.render("profileinfo.ejs");
+app.get("/profile/editprofile", requireAuth, function(req, res){
+  res.render("editprofile.ejs");
 })
 
 app.get("/aboutus", (req, res)=>{
