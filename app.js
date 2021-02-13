@@ -294,14 +294,14 @@ app.get("/signup",function(req,res){
 })
 
 // Sends the list of Questions
-app.get("/questions", requireAuth, (req, res)=>{
+app.get("/questions/:userName", requireAuth, (req, res)=>{
 
   Question.find({}, function(err, questions){
     if(err){
       console.log(err);
     }else{
-      const userID = localStorage.getItem('id');
-      // const userID = req.params.id;
+      // const userID = localStorage.getItem('id');
+      const userID = req.params.id;
       const questionList = questions;
       const userName = req.params.userName
       // const questionTypes = questions.quesType;    
