@@ -129,7 +129,7 @@ app.post("/signin",(req,res)=>{
     .then(isMatch => {
       if(isMatch){
       const token = createToken(user._id);
-      res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
+      res.cookie('jwt', token, { maxAge: 3600 * 1000 });
       console.log({ user : user._id });
       res.redirect("/homepage");
     }else{
