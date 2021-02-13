@@ -1,7 +1,10 @@
 <%- include("partials/header.ejs") -%>
-
+<script type="text/javascript">
+  console.log(localStorage.getItem('name'));
+  const userName = localStorage.getItem('name');
+</script>
 <div class="signup-form">
-    <form action="/profile/editprofile" method="POST">
+    <form action="/<%= user.userName%>/editprofile/<%= user._id %>" userName method="POST">
 		<!-- <div class="avatar">
 			<img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar">
 		</div> -->

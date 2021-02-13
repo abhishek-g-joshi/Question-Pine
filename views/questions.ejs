@@ -39,7 +39,7 @@
               <td>
                   <a href="<%= questionList[j].quesLink%>" target="_blank"><%=questionList[j].quesName%></a>
               </td>
-              <form  action="/questions" method="post">
+              <form  action="/questions/<%= user.userName %>" method="post">
                 <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
                 <input type="hidden" name="solvedStatus" value="done">
                 <td>
@@ -54,7 +54,7 @@
               <td>
                   <a href="<%= questionList[j].quesLink%>" target="_blank"><%=questionList[j].quesName%></a>
               </td>
-              <form  action="/questions" method="post">
+              <form  action="/questions/<%= user.userName %>" method="post">
                 <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
                 <input type="hidden" name="solvedStatus" value="notDone">
                 <td>

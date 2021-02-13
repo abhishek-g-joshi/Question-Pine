@@ -10,9 +10,8 @@ const Question = require("./models/Questions");
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require("./middleware/authMiddleware");
+const dotenv = require('dotenv').config();
 
-var LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('./scratch');
 
 const users = require("./routes/api/users");
 
@@ -31,7 +30,16 @@ const Users = require("./models/Users");
 
 // mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
-mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/rudrasUsers?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify: false});
+mongoose.connect(process.env.MONGO_URI, 
+{ 
+  dbName : process.env.DB_NAME,
+  user: process.env.MONGO_USER,
+  pass: process.env.MONGO_PASSWORD,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+}
+);
 
 
 
@@ -60,9 +68,6 @@ app.post("/signup",(req,res)=>{
       errors.email = "User already exits";
       return res.status(400).json(errors);
     }else{
-      //object containing users info
-      //const val=0;
-
       const arr = [];
       const userObject = new User({
        firstName : req.body.firstName,
@@ -125,12 +130,6 @@ app.post("/signin",(req,res)=>{
       const token = createToken(user._id);
       res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
       console.log({ user : user._id });
-      // const u =  user._id;
-      localStorage.setItem('id', user._id);
-      localStorage.setItem('userName', user.userName)
-      const user_id = localStorage.getItem('id');
-      const userName = localStorage.getItem('userName');
-      console.log(localStorage.getItem('userName'))
       res.redirect("/homepage");
     }else{
       errors.password= 'password incorrect';
@@ -156,21 +155,14 @@ function phonenumber(contactno)
 
 
 //POST : Edit profile info route
-app.post("/profile/editprofile",checkUser,(req,res)=>{
+app.post("/:userName/editprofile/:user_id",checkUser,(req,res)=>{
 
-  const user_id = localStorage.getItem('id');
-  const userName = localStorage.getItem('userName');
-  // console.log(localStorage.getItem('userName'));
-  // console.log({user_id: user_id});
-  // console.log({userName: userName});
+  const userName = req.params.userName;
+  const user_id = req.params.user_id
 
   const special_id = user_id;
   const contactno = req.body.contactno.toString();
-  //  if(!phonenumber(contactno))
-  //  {
-  //    res.redirect("/profile/editprofile");
-  //  }
-  // User.findOne({})
+ 
   User.findOneAndUpdate(
     {_id : user_id},
     {
@@ -226,7 +218,7 @@ function arrayRemove(arr, value) {
 }
 
 //POST : display question route
-app.post("/questions", (req, res)=> {
+app.post("/questions/:userName", (req, res)=> {
   const questionName = req.body.questionName;
   const solvedStatus = req.body.solvedStatus;
 
@@ -234,9 +226,11 @@ app.post("/questions", (req, res)=> {
   console.log(solvedStatus);
 
 
-  const id = localStorage.getItem('id');
+  // const id = localStorage.getItem('id');
+  const id = req.params.id;
+  const userName = req.params.userName;
 
-  User.findOne({_id: id}, function(err, foundOne){
+  User.findOne({userName}, function(err, foundOne){
     if(err){
       console.log(err);
     }else {
@@ -248,7 +242,7 @@ app.post("/questions", (req, res)=> {
         //foundOne.solvedCount++;
       }
       foundOne.save();
-      res.redirect("/questions");
+      res.redirect("/questions/"+ userName);
     }
   })
 })
@@ -286,34 +280,39 @@ app.get("/landing", function(req, res){
   res.render("homepage.ejs");
 })
 
+//landing route
+app.get("/", function(req, res){
+  res.render("homepage.ejs");
+})
 //signup route
 app.get("/signup",function(req,res){
   res.render("signUp.ejs");
 })
 
 // Sends the list of Questions
-app.get("/questions", requireAuth, (req, res)=>{
+app.get("/questions/:userName", requireAuth, (req, res)=>{
 
   Question.find({}, function(err, questions){
     if(err){
       console.log(err);
     }else{
-      const userID = localStorage.getItem('id');
-      const questionList = questions
+      // const userID = localStorage.getItem('id');
+      const userID = req.params.id;
+      const questionList = questions;
+      const userName = req.params.userName
       // const questionTypes = questions.quesType;    
       console.log(userID);
 
-      User.findOne({_id: userID}, function(err, foundOne){
+      User.findOne({userName}, function(err, foundOne){
         if(err){
           console.log(err);
         }else{
           console.log(foundOne);
           const solvedQuestions = foundOne.solvedQuestions;
 
-          // console.log(quesTypes);
-          //console.log(solvedQuestions);
 
           res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
+          // res.redirect("/questions/"+userID);
         }
       })
 
@@ -369,7 +368,7 @@ app.get("/:id/", requireAuth, function(req, res){
     
 })
 
-app.get("/profile/editprofile", requireAuth, function(req, res){
+app.get("/:userName/editprofile", requireAuth, function(req, res){
   res.render("editprofile.ejs");
 })
 
@@ -377,35 +376,8 @@ app.get("/profile/editprofile", requireAuth, function(req, res){
 
 
 // *************************************************listening ****************************************************************
-app.listen(3000, function(){
-  console.log("server listening on 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, function(){
+  console.log("server listening on " + PORT);
 })
-
-
-//****************************************************Rough Work ***************************************************************
-
-//
-// for(let i=0; i<questionTypes.length; i++){
-//   //print the type and heading
-//
-//   for(let j=0; j<questionList.length; j++){
-//     if(questionList[j].quesType === questionTypes[i]){
-//
-//       //check if it exist in the solved array of student
-//       let exist = false;
-//       for(let k=0; k<solvedQuestions.length; k++){
-//         if(questionList[j]._id === solvedQuestions[k]){
-//           exist = true;
-//           break;
-//         }
-//       }
-//
-//       if(exist){
-//         //print solved
-//       }else{
-//         //print not solved
-//       }
-//
-//     }
-//   }
-// }

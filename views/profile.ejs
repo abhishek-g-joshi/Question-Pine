@@ -1,5 +1,8 @@
 <%- include("partials/header.ejs") -%>
-  
+<script type="text/javascript">
+  const userName = document.getElementById('username');
+  localStorage.setItem('id','60211bc7e500dd1ff41a5ee9')
+</script>
   <div class="container">
     <div class="page-content page-container" id="page-content">
       <div class="padding">
@@ -10,7 +13,7 @@
                           <div class="col-mg-4 bg-c-lite-green user-profile">
                               <div class="card-block text-center text-white">
                                   <div class="m-b-25"> <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image"> </div>
-                                  <h3 class="f-w-600"><%= user.userName%></h3>
+                                  <h3 class="f-w-600" id='username'><%= user.userName%></h3>
                                   <p><%= user.bio%></p> <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
                               </div>
                           </div>
@@ -57,7 +60,7 @@
                                   <br/>
                                   <div class="row">
                                       <div class="col-sm-6">
-                                        <a href="/profile/editprofile" class="btn btn-info">Edit profile</a>
+                                        <a href="/<%= user.userName%>/editprofile" class="btn btn-info">Edit profile</a>
                                       </div>
                                   </div>
                                   

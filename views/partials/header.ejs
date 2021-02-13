@@ -17,7 +17,11 @@
       </div>
         <ul class="nav navbar-nav navbar-default bold-nav">
           <!-- 6 -->
-          <li id="questions"><a href="/questions">QUESTIONS</a></li>
+          <% if(user) { %>
+              <li id="questions"><a href="/questions/<%= user.userName %>" >QUESTIONS</a></li>
+          <% }else { %>
+             <li id="questions"><a href="/signin" >QUESTIONS</a></li>
+          <% } %>
           <li id="contact"><a href="/leaderboard">LEADERBOARD</a></li>
           <li id="home"><a href="/chatroom">CHATROOM</a></li>
           <li id="about"><a href="/aboutus">ABOUT US</a></li>
