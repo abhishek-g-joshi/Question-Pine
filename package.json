@@ -4,7 +4,7 @@
   "description": "TY Mini Project",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js "
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
