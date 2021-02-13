@@ -301,7 +301,7 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
       console.log(err);
     }else{
       const userID = localStorage.getItem('id');
-      const userID = req.params.id;
+      // const userID = req.params.id;
       const questionList = questions;
       const userName = req.params.userName
       // const questionTypes = questions.quesType;    
