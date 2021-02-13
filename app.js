@@ -30,7 +30,7 @@ const Users = require("./models/Users");
 
 // mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
-mongoose.connect(process.env.MONGO_URI, 
+mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/", 
 { 
   dbName : process.env.DB_NAME,
   user: process.env.MONGO_USER,
