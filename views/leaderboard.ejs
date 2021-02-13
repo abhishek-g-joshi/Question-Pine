@@ -1,6 +1,34 @@
 <%- include("partials/header.ejs") -%>
-  <div class="container">
-   <h1>You can see Q-Pine's leaderboard here!!</h1>
-  </div>
+<div class="container">
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+
+      <div class="panel-heading">Leaderboard</div>
+      <table class="table">
+        <thead>
+          <th>Rank</th>
+          <th>Username</th>
+          <th>Score</th>
+        </thead>
+        <tbody>
+
+          <%for(let i=0; i<users.length; i++){%>
+
+            <tr>
+              <td> <%= i+1 %> </td>
+              <td><%=users[i].userName%></td>
+
+              <td><%=users[i].solvedQuestions.length%></td>
+            </tr>
+          <%}%>
+
+
+      </tbody>
+      </table>
+
+
+
+    </div>
+</div>
 
 <%- include("partials/footer.ejs") -%>

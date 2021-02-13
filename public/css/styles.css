@@ -10,6 +10,7 @@
   margin-bottom: 0;
   font-size: 12px;
   letter-spacing: 5px;
+  box-shadow: 0px 0.8px 20px rgba(0, 0, 0, 0.3);
 }
 .navbar-nav li a:hover {
   color: #1abc9c !important;
@@ -23,6 +24,7 @@
   text-align: center;
   height: 60px;
   background-color: #1abc9c;
+  box-shadow: 0px -2px 20px rgba(0, 0, 0, 0.3) ;
 }
 
 .footer p {
@@ -105,7 +107,7 @@
   border-radius: 3px;
   margin-bottom: 15px;
   background: #f2f3f7;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 25px rgba(0, 0, 0, 0.3);
   padding: 30px;
 }
 .signup-form .form-group {
@@ -162,6 +164,7 @@
   width: 550px;
   margin: 0 auto;
   padding: 100px 0 30px;
+  background-color: whitesmoke;
 }
 .login-form form {
   color: #7a7a7a;
@@ -169,7 +172,7 @@
   margin-bottom: 15px;
   font-size: 23px;
   background: #ececec;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 25px 0 rgba(0, 0, 0, 0.3);
   padding: 30px;
   position: relative;
 }
@@ -239,8 +242,8 @@
   left: 0;
   right: 0;
   /* top: -50px; */
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: #1abc9c;
   float:left;
@@ -250,3 +253,145 @@
   width: 100%;
   
 }
+
+
+
+
+
+
+body {
+    background-color: #f9f9fa
+}
+
+.padding {
+    padding: 3rem !important
+}
+
+.user-card-full {
+    overflow: hidden
+}
+
+.card {
+  margin-top: 25px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0 2px 30px 0rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 30px 0 rgba(0, 0, 0, 0.3);
+    border: none;
+    margin-bottom: 30px
+}
+
+.m-r-0 {
+    margin-right: 0px
+}
+
+.m-l-0 {
+    margin-left: 0px
+}
+
+.user-card-full .user-profile {
+    border-radius: 5px 0 0 5px
+}
+
+.bg-c-lite-green {
+    background: -webkit-gradient(linear, left top, right top, from(#1abc9c), to(#1abc9c));
+    background: linear-gradient(to right,#10c9a4 , #62a3db )
+}
+
+.user-profile {
+    padding: 20px 0
+}
+
+.card-block {
+    padding: 1.25rem
+}
+
+.m-b-25 {
+    margin-bottom: 25px
+}
+
+.img-radius {
+    border-radius: 5px
+}
+
+h6 {
+    font-size: 16px
+}
+
+.card .card-block p {
+    line-height: 25px
+}
+
+@media only screen and (min-width: 1400px) {
+    p {
+        font-size: 16px
+    }
+}
+
+.card-block {
+    padding: 1.25rem
+}
+
+.b-b-default {
+    border-bottom: 1px solid #e0e0e0
+}
+
+.m-b-20 {
+    margin-bottom: 20px
+}
+
+.p-b-5 {
+    padding-bottom: 5px !important
+}
+
+.card .card-block p {
+    line-height: 25px
+}
+
+.m-b-10 {
+    margin-bottom: 10px
+}
+
+.text-muted {
+    color: #919aa3 !important
+}
+
+.b-b-default {
+    border-bottom: 1px solid #e0e0e0
+}
+
+.f-w-600 {
+    font-weight: 600
+}
+
+.m-b-20 {
+    margin-bottom: 20px
+}
+
+.m-t-40 {
+    margin-top: 20px
+}
+
+.p-b-5 {
+    padding-bottom: 5px !important
+}
+
+.m-b-10 {
+    margin-bottom: 10px
+}
+
+.m-t-40 {
+    margin-top: 20px
+}
+
+.user-card-full .social-link li {
+    display: inline-block
+}
+
+.user-card-full .social-link li a {
+    font-size: 40px;
+    margin: 0 10px 0 0;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out
+}
+
+

@@ -21,7 +21,35 @@ var UserSchema = new mongoose.Schema({
     password: {
         type :String,
         required:true
-    }
+    },
+    contactno:{
+        type: Number,
+        required : false
+    },
+    college:{
+        type: String,
+        required: false
+    },
+    dob:{
+        type: String,
+        required: false
+    },
+    country:{
+        type: String,
+        required: false
+    },
+    city:{
+        type: String,
+        required: false
+    },
+    bio:{
+        type:String,
+        required:false
+    },
+
+    solvedQuestions: [String]
+
+
 });
 
 module.exports = mongoose.model("User",UserSchema);

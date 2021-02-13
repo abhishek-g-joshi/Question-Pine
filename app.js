@@ -5,17 +5,19 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const User = require("./models/Users");
-const Profile = require("./models/Profiles")
+const Profile = require("./models/Profiles");
+const Question = require("./models/Questions");
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require("./middleware/authMiddleware");
+const dotenv = require('dotenv').config();
 
-var LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('./scratch');
 
 const users = require("./routes/api/users");
 
 const app = express();
+
+const questionTypes = ["Array","String","Matrix","Linked List","Stack","Queue","Tree","Graph","Greedy","Backtracking","Recursion","Dynamic Programing","Bit Manipulation","Hash Table","Sort","Searching","Map","Segment Tree"];
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -24,10 +26,24 @@ app.use(cookieParser());
 
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
+const Users = require("./models/Users");
 
-mongoose.connect("mongodb+srv://rudrasUsers:TeaMRuDrAs123@cluster0.xhct6.mongodb.net/<rudrasUsers>?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
+
+mongoose.connect(process.env.MONGO_URI, 
+{ 
+  dbName : process.env.DB_NAME,
+  user: process.env.MONGO_USER,
+  pass: process.env.MONGO_PASSWORD,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+}
+);
 
 
+
+mongoose.set('useFindAndModify', false);
 
 const createToken = (id) =>{
   return jwt.sign({id},'shhhaaSecretKey',
@@ -35,27 +51,9 @@ const createToken = (id) =>{
 }
 
 
-app.use("/api/users",users);
+// *****************************************************ALL THE POST REQUEST BELOW ************************************************
 
-//check current user
-app.get("*",checkUser);
-
-//Homepage route
-app.get("/homepage", function(req, res){
-  res.render("homepage.ejs");
-})
-
-//landing route
-app.get("/landing", function(req, res){
-  res.render("homepage.ejs");
-})
-
-//signup route
-app.get("/signup",function(req,res){
-  res.render("signUp.ejs");
-})
-
-//Create new User
+//POST : User signup route
 app.post("/signup",(req,res)=>{
 
   const {errors, isValid} = validateSignUpInputs(req.body);
@@ -64,54 +62,52 @@ app.post("/signup",(req,res)=>{
   {
     return res.status(400).json(errors);
   }
-  
-  User.findOne({email:req.body.email}).then(user =>{
+
+  User.findOne({$or : [{ email: req.body.email }, { userName: req.body.userName }]}).then(user =>{
     if(user){
-      errors.email = "Email already exits";
+      console.log(user);
+      errors.email = "User already exits";
       return res.status(400).json(errors);
     }else{
-      //object containing users info
+      const arr = [];
       const userObject = new User({
        firstName : req.body.firstName,
        lastName : req.body.lastName,
        userName : req.body.userName,
        email : req.body.email,
        password : req.body.password,
+       solvedQuestions: arr,
+       college: "--",
+       dob: "--",
+       country: "--",
+       city: "--",
+       contactno:"",
+       bio:"Welcome to Q'Pine",
+       //solvedCount: val
       });
-      //Create new user and add to database
-      // User.create(usersObject,function(err,newUser){
-      //   if(err){
-      //     console.log(err);
-      //   }else{
-      //     res.redirect("/questions");
-      //   }
-      // })
+
+      const profileInfo = new Profile({})
       bcrypt.genSalt(10,(err,salt)=>{
         bcrypt.hash(userObject.password, salt, (err, hash)=>{
           if(err) throw err;
           userObject.password = hash;
           userObject
             .save()
-            .then(res.redirect("/homepage"))
+            .then(
+              res.redirect("/signin"))
             .catch(err =>console.log(err));
         });
       });
-      const token = createToken(userObject._id);
-      res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
+
     }
   });
 });
 
-//singin route
-app.get("/signin",(req,res)=>{
-  res.render("signIn.ejs");
-})
-
-//
+//POST : User signin route 
 app.post("/signin",(req,res)=>{
   const {errors, isValid} = validateSignInputs(req.body);
 
-  if(!isValid)  
+  if(!isValid)
   {
     return res.status(400).json(errors);
   }
@@ -132,33 +128,9 @@ app.post("/signin",(req,res)=>{
    bcrypt.compare(password,user.password)
     .then(isMatch => {
       if(isMatch){
-
-      //Sign token
-      // const token = jwt.sign(payload,
-      //   'shhhaaSecretKey',
-      //   {expiresIn: 3600},
-      //   (err,token)=>{
-      //     // console.log(json({
-      //     //   success:true,
-      //     //   token
-      //     // }))
-      //     // res.redirect("/questions");
-      //     res.status(200).json({
-      //         success:true,
-      //         token
-      //     })
-      //     // console.log(json({token}));
-      //   }
-      // )
-      // res.cookie('jwt',token,{httpOnly:true,maxAge:3600*1000})
-      // return res.redirect('/questions');
       const token = createToken(user._id);
       res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
       console.log({ user : user._id });
-      // const u =  user._id;
-      localStorage.setItem('id', user._id);
-      localStorage.setItem('userName', user.userName)
-      // console.log(localStorage.getItem('userName'))
       res.redirect("/homepage");
     }else{
       errors.password= 'password incorrect';
@@ -168,61 +140,189 @@ app.post("/signin",(req,res)=>{
   });
 })
 
+function phonenumber(contactno)
+{
+  var phoneno = /^\d{10}$/;
+  if((contactno.match(phoneno)))
+    {
+      return true;
+    }
+      else
+        {
+        // alert("message");
+        return false;
+        }
+}
+
+
+//POST : Edit profile info route
+app.post("/:userName/editprofile/:user_id",checkUser,(req,res)=>{
+
+  const userName = req.params.userName;
+  const user_id = req.params.user_id
+
+  const special_id = user_id;
+  const contactno = req.body.contactno.toString();
+ 
+  User.findOneAndUpdate(
+    {_id : user_id},
+    {
+      $set: {
+         special_id : user_id,
+         userName : userName,
+         firstName : req.body.firstName,
+         lastName : req.body.lastName,
+         contactno : req.body.contactno,
+         college : req.body.college,
+         dob : req.body.dob,
+         country : req.body.country,
+         city: req.body.city,
+         bio : req.body.bio
+      }
+    },
+    { new: true},
+    (err, profile)=>{
+      if(err)
+      {
+        console.log(err)
+      }else{
+        console.log(profile)
+        res.redirect("/"+ profile.userName)
+      }
+      //Create new user and add to database
+
+  });
+});
+
+//POST : Add question route
+app.post("/addQuestion", (req, res)=> {
+  const newQuestion = new Question({
+    quesName: req.body.quesName,
+    quesLink: req.body.quesLink,
+    quesType: req.body.quesType,
+  })
+
+  newQuestion.save(function(err){
+    if(err){
+      console.log(err);
+    }else{
+      res.redirect("/addQuestion");
+    }
+  })
+
+});
+
+function arrayRemove(arr, value) {
+    return arr.filter(function(ele){
+        return ele != value;
+    });
+}
+
+//POST : display question route
+app.post("/questions/:userName", (req, res)=> {
+  const questionName = req.body.questionName;
+  const solvedStatus = req.body.solvedStatus;
+
+  console.log(questionName);
+  console.log(solvedStatus);
+
+
+  // const id = localStorage.getItem('id');
+  const id = req.params.id;
+  const userName = req.params.userName;
+
+  User.findOne({userName}, function(err, foundOne){
+    if(err){
+      console.log(err);
+    }else {
+      if(solvedStatus === "done"){
+        foundOne.solvedQuestions = arrayRemove(foundOne.solvedQuestions, questionName);
+        //foundOne.solvedCount--;
+      }else{
+        foundOne.solvedQuestions.push(questionName);
+        //foundOne.solvedCount++;
+      }
+      foundOne.save();
+      res.redirect("/questions/"+ userName);
+    }
+  })
+})
+
+
+
+
+// ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
+
+//check current user
+app.get("*",checkUser);
+
+//singin route
+app.get("/signin",(req,res)=>{
+  res.render("signIn.ejs");
+})
+
 //Signout routes
 app.get("/signout",(req,res)=>{
   res.cookie('jwt','', {maxAge:1});
   res.redirect("/homepage");
 })
 
-app.post("/profile/profileinfo",checkUser,(req,res)=>{
+app.use("/api/users",users);
 
-  // const token = req.cookies.jwt;
-  // console.log(token);
 
-  const user_id = localStorage.getItem('id');
-  const userName = localStorage.getItem('userName');
-  // console.log(localStorage.getItem('userName'));
-  // console.log({user_id: user_id});
-  // console.log({userName: userName});
 
-  const special_id = user_id;
-  
-  // User.findOne({})
-  Profile.findOne({special_id}).then(profile =>{
-    if(profile){
-      res.status(400).json(profile);
-      console.log("profile route running");
+//Homepage route
+app.get("/homepage", function(req, res){
+  res.render("homepage.ejs");
+})
+
+//landing route
+app.get("/landing", function(req, res){
+  res.render("homepage.ejs");
+})
+
+//landing route
+app.get("/", function(req, res){
+  res.render("homepage.ejs");
+})
+//signup route
+app.get("/signup",function(req,res){
+  res.render("signUp.ejs");
+})
+
+// Sends the list of Questions
+app.get("/questions/:userName", requireAuth, (req, res)=>{
+
+  Question.find({}, function(err, questions){
+    if(err){
+      console.log(err);
     }else{
-      //object containing users info
-        const profileObject = new Profile({
-         special_id : user_id,
-        //  firstName : user.firstName,
-        //  lastName : user.lastName,
-        userName : userName,
-        //  email : user.email,
-         college : req.body.college,
-         dob : req.body.dob,
-         country : req.body.country, 
-         city: req.body.city,
-        });
-      //Create new user and add to database
-      Profile.create(profileObject,function(err,newProfile){
+      // const userID = localStorage.getItem('id');
+      const userID = req.params.id;
+      const questionList = questions;
+      const userName = req.params.userName
+      // const questionTypes = questions.quesType;    
+      console.log(userID);
+
+      User.findOne({userName}, function(err, foundOne){
         if(err){
           console.log(err);
         }else{
-          res.status(400).json(newProfile);
-          res.redirect("/profile");
+          console.log(foundOne);
+          const solvedQuestions = foundOne.solvedQuestions;
+
+
+          res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
+          // res.redirect("/questions/"+userID);
         }
       })
+
     }
-  });
-});
+  })
 
 
-// Sends the list of Questions
-app.get("/questions", requireAuth, (req, res)=>{
- 
-  res.render("questions.ejs");
+
+
 });
 
 app.get("/chatroom", requireAuth, (req, res)=>{
@@ -230,22 +330,55 @@ app.get("/chatroom", requireAuth, (req, res)=>{
 });
 
 app.get("/leaderboard", requireAuth, (req, res)=>{
-  res.render("leaderboard.ejs");
+
+  User.find({}, (err, users)=> {
+    if(err){
+      console.log(err);
+    }else {
+      // console.log(users);
+
+      users.sort((a,b) => (a.solvedQuestions.length < b.solvedQuestions.length) ? 1 : ((b.solvedQuestions.length < a.solvedQuestions.length) ? -1 : 0))
+
+      console.log(users);
+      res.render("leaderboard", {users: users});
+    }
+  })
+
 });
-
-//profile route
-app.get("/profile", requireAuth, function(req, res){
-  res.render("profile.ejs");
-})
-
-app.get("/profile/profileinfo", requireAuth, function(req, res){
-  res.render("profileinfo.ejs");
-})
 
 app.get("/aboutus", (req, res)=>{
   res.render("aboutus.ejs");
 });
 
-app.listen(3000, function(){
-  console.log("server listening on 3000");
+app.get("/addQuestion", (req, res)=> {
+  res.render("addQuestion.ejs");
+})
+
+//profile route
+app.get("/:id/", requireAuth, function(req, res){
+  const userName = req.params.id;
+  User.findOne({userName},(err,foundOne)=>{
+    if(foundOne)
+    {
+      res.render("profile.ejs");
+    }else{
+      res.status(404).json(err)
+      // console.log()
+    }
+  })
+    
+})
+
+app.get("/:userName/editprofile", requireAuth, function(req, res){
+  res.render("editprofile.ejs");
+})
+
+
+
+
+// *************************************************listening ****************************************************************
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, function(){
+  console.log("server listening on " + PORT);
 })

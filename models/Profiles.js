@@ -10,7 +10,7 @@ var ProfileSchema = new mongoose.Schema({
         type: String,
          required: true
     },
-    College:{
+    college:{
         type: String,
         required: false
     },
@@ -25,11 +25,7 @@ var ProfileSchema = new mongoose.Schema({
     city:{
         type: String,
         required: false
-    },
-    noofsub:{
-        type: Number,
-        // required: true
     }
 });
 
-module.exports = mongoose.model("Profile",ProfileSchema);
+module.exports = mongoose.model("Profile", ProfileSchema);
