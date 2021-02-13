@@ -9,7 +9,7 @@ const requireAuth = (req,res,next) => {
 
     //Check JSON web token exist and verified
     if(token){
-        jwt.verify(token,secreteKey,(err,decodedToken)=> {
+        jwt.verify(token,'ARWSshhhaaSecretKeyTeaMRuDRaS123@098',(err,decodedToken)=> {
             if(err)
             {
                 console.log(err.message);
