@@ -41,12 +41,12 @@ mongoose.connect(process.env.MONGO_URI,
 }
 );
 
-
-
 mongoose.set('useFindAndModify', false);
 
+const secreteKey = process.env.SECRETE_KEY;
+
 const createToken = (id) =>{
-  return jwt.sign({id},'shhhaaSecretKey',
+  return jwt.sign({id},secreteKey,
   {expiresIn: 3600});
 }
 

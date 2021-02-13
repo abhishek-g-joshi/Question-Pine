@@ -1,12 +1,15 @@
 const jwt = require('jsonwebtoken');
 const User = require("../models/Users");
+const dotenv = require('dotenv').config();
+
+const secreteKey = process.env.SECRETE_KEY;
 
 const requireAuth = (req,res,next) => {
     const token = req.cookies.jwt;
 
     //Check JSON web token exist and verified
     if(token){
-        jwt.verify(token,'shhhaaSecretKey',(err,decodedToken)=> {
+        jwt.verify(token,secreteKey,(err,decodedToken)=> {
             if(err)
             {
                 console.log(err.message);
@@ -27,7 +30,7 @@ const checkUser = (req,res,next) => {
 
     //Check JSON web token exist and verified
     if(token){
-        jwt.verify(token,'shhhaaSecretKey',async (err,decodedToken)=> {
+        jwt.verify(token,secreteKey,async (err,decodedToken)=> {
             if(err)
             {
                 console.log(err.message);
