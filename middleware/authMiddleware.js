@@ -30,7 +30,7 @@ const checkUser = (req,res,next) => {
 
     //Check JSON web token exist and verified
     if(token){
-        jwt.verify(token,secreteKey,async (err,decodedToken)=> {
+        jwt.verify(token,'ARWSshhhaaSecretKeyTeaMRuDRaS123@098',async (err,decodedToken)=> {
             if(err)
             {
                 console.log(err.message);
