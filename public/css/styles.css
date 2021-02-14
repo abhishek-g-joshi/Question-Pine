@@ -1,10 +1,11 @@
+
 .container-fluid {
   padding-top: 70px;
   padding-bottom: 70px;
 }
 .navbar {
   padding-top: 15px;
-  padding-bottom: 15px;
+  padding-bottom: 5px;
   border: 0;
   border-radius: 0;
   margin-bottom: 0;
@@ -247,7 +248,7 @@
   border-radius: 50%;
   background: #1abc9c;
   float:left;
-  margin-left: 35%;
+  margin-left: 23%;
 }
 .avatar-prof img {
   width: 100%;

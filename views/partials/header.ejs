@@ -28,7 +28,6 @@
         </ul>
         <form class="form-inline">
           <% if(user) { %>
-            <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
             <a href="/<%= user.userName %>">
               <div class="avatar-prof">
                 <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="Avatar">
@@ -39,19 +38,11 @@
             <a href="/signout"><button  class="btn btn-info btn-lg" type="button">Sign Out</button></a>
           <% } else { %>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="/signup"><button class="btn btn-info btn-lg" type="button">Sign Up</button></a>
           <a href="/signin"><button class="btn btn-info btn-lg" type="button">Sign In</button></a>
           <% } %>
         </form>
-        <!-- <ul class="nav navbar-nav navbar-right bold-nav">
-          <li id="signup">
-            <button type="button" class="btn btn-success btn-lg"><a href="/signup">SignUp</a></button>
-          </li>
-          <li id="signin">
-            <button type="button" class="btn btn-primary btn-lg">SignIn</button>
-          </li>
-        </ul> -->
     </div>
   </nav>
 

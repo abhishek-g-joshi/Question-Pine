@@ -30,7 +30,7 @@ const Users = require("./models/Users");
 
 // mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
-mongoose.connect(process.env.MONGO_URI, 
+mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/", 
 { 
   dbName : process.env.DB_NAME,
   user: process.env.MONGO_USER,
@@ -44,8 +44,10 @@ mongoose.connect(process.env.MONGO_URI,
 
 
 
+const secreteKey = process.env.SECRETE_KEY;
+
 const createToken = (id) =>{
-  return jwt.sign({id},'shhhaaSecretKey',
+  return jwt.sign({id},secreteKey,
   {expiresIn: 3600});
 }
 
@@ -128,7 +130,7 @@ app.post("/signin",(req,res)=>{
     .then(isMatch => {
       if(isMatch){
       const token = createToken(user._id);
-      res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
+      res.cookie('jwt', token, { maxAge: 3600 * 1000 });
       console.log({ user : user._id });
       res.redirect("/homepage");
     }else{
