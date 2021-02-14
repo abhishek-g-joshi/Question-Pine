@@ -1,17 +1,111 @@
 <%- include("partials/header.ejs") -%>
-<script type="text/javascript">
-  
-</script>
-  <div class="container">
-    <form class="form-inline">
-     
-      <a href="/signin">
-        <button class="btn btn-info btn-lg" type="button">Sign In</button>
-      </a>
-      <a href="/signup">
-        <button class="btn btn-info btn-lg" type="button">Sign Up</button>
-      </a>
-    </form>
-  </div>
 
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+
+body, html {
+  height: 100%;
+  line-height: 1.8;
+}
+
+/* Full height image header */
+.bgimg-1 {
+  background-position: center;
+  background-size: cover;
+  background-image: url("http://www.w3schools.com/w3images/mac.jpg");
+  min-height: 100%;
+}
+
+.w3-bar .w3-button {
+  padding: 16px;
+}
+</style>
+<body>
+
+  <!-- Navbar (sit on top) -->
+  <div class="w3-top">
+    <div class="w3-bar w3-white w3-card" id="myNavbar">
+     
+      <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Sidebar on small screens when clicking the menu icon -->
+  
+  
+  <!-- Header with full-height image -->
+  <header class="bgimg-1 w3-display-container w3-grayscale-min" id="home">
+    <div class="w3-display-left w3-text-white" style="padding:48px">
+      <span class="w3-jumbo w3-hide-small">Welcome to Question Pine</span><br>
+      <span class="w3-xxlarge w3-hide-large w3-hide-medium">Start something that matters</span><br>
+      <span class="w3-large">Stop wasting valuable time and start investing in you.</span><br>
+      <p><a href="/signin"><button class="btn btn-info btn-lg" type="button">Start Today</button></a></p>
+    </div> 
+  </header>
+  <!-- About Section -->
+<div class="w3-container" style="padding:50px 16px" id="about">
+  <h3 class="w3-center">ABOUT</h3>
+  <div class="w3-row-padding w3-center" style="margin-top:64px">
+    <div class="w3-quarter">
+      <i class="fa fa-desktop w3-margin-bottom w3-jumbo w3-center"></i>
+      <p class="w3-large">Questions</p>
+      <p>450</p>
+    </div>
+    <div class="w3-quarter">
+      <i class="fa fa-user-circle w3-margin-bottom w3-jumbo"></i>
+      <p class="w3-large">Active Users</p>
+      <p>5</p>
+    </div>
+    <div class="w3-quarter">
+      <i class="fa fa-book w3-margin-bottom w3-jumbo"></i>
+      <p class="w3-large">Total submissions</p>
+      <p class="w3-large">10</p>
+      </div>
+    <div class="w3-quarter">
+      <i class="fa fa-cog w3-margin-bottom w3-jumbo"></i>
+      <p class="w3-large">Support</p>
+      <p> </p>
+    </div>
+  </div>
+</div>
+<!-- Team Section -->
+<div class="w3-container" style="padding:25px 16px" id="team">
+  <h3 class="w3-center">OUR TEAM</h3>
+  <div class="w3-row-padding w3-grayscale" style="margin-top:64px">
+    
+    <div class="w3-col l4 m4 w3-margin-bottom">
+      <div class="w3-card">
+        <img src="https://www.w3schools.com/w3images/team4.jpg" alt="Sawan" style="width:100%">
+        <div class="w3-container">
+          <h3>Sawan Pandita</h3>
+        </div>
+      </div>
+    </div>
+    <div class="w3-col l4 m4 w3-margin-bottom">
+      <div class="w3-card">
+        <img src="https://w3schoolsrus.github.io/w3images/team1.jpg" alt="Abhishek" style="width:100%">
+        <div class="w3-container">
+          <h3>Abhishek Joshi</h3>
+        </div>
+      </div>
+    </div>
+    <div class="w3-col l4 m4 w3-margin-bottom">
+      <div class="w3-card">
+        <img src="https://www.w3schools.com/w3images/team2.jpg" alt="Rohit" style="width:100%">
+        <div class="w3-container">
+          <h3>Rohit Pal</h3>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
 <%- include("partials/footer.ejs") -%>
