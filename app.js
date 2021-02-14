@@ -49,7 +49,7 @@ mongoose.set('useFindAndModify', false);
 const secreteKey = process.env.SECRETE_KEY;
 
 const createToken = (id) =>{
-  return jwt.sign({id},'ARWSshhhaaSecretKeyTeaMRuDRaS123@098',
+  return jwt.sign({id},secreteKey,
   {expiresIn: 3600});
 }
 
