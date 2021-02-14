@@ -9,7 +9,7 @@ const requireAuth = (req,res,next) => {
 
     //Check JSON web token exist and verified
     if(token){
-        jwt.verify(token,'ARWSshhhaaSecretKeyTeaMRuDRaS123@098',(err,decodedToken)=> {
+        jwt.verify(token,secreteKey,(err,decodedToken)=> {
             if(err)
             {
                 console.log(err.message);
@@ -30,7 +30,7 @@ const checkUser = (req,res,next) => {
 
     //Check JSON web token exist and verified
     if(token){
-        jwt.verify(token,'ARWSshhhaaSecretKeyTeaMRuDRaS123@098',async (err,decodedToken)=> {
+        jwt.verify(token,secreteKey,async (err,decodedToken)=> {
             if(err)
             {
                 console.log(err.message);
