@@ -42,7 +42,6 @@ mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/",
 );
 
 
-// mongoose.connect("mongodb+srv://rudrasUsers:ArSPjAjStar123PTeamRuDraS@431@cluster0.xhct6.mongodb.net/rudrasUsers?retryWrites=true&w=majority", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify: false});
 
 mongoose.set('useFindAndModify', false);
 
