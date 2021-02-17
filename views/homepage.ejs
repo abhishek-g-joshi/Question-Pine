@@ -47,7 +47,11 @@ body, html {
       <span class="w3-jumbo w3-hide-small">Welcome to Question Pine</span><br>
       <span class="w3-xxlarge w3-hide-large w3-hide-medium">Start something that matters</span><br>
       <span class="w3-large">Stop wasting valuable time and start investing in you.</span><br>
-      <p><a href="/signin"><button class="btn btn-info btn-lg" type="button">Start Today</button></a></p>
+      <% if(user) { %>
+        <p><a href="/questions/<%= user.userName %>"><button class="btn btn-info btn-lg" type="button">Start Today</button></a></p>
+        <% }else { %>
+          <p><a href="/signin"><button class="btn btn-info btn-lg" type="button">Start Today</button></a></p> 
+        <% } %>
     </div> 
   </header>
   <!-- About Section -->
@@ -57,55 +61,23 @@ body, html {
     <div class="w3-quarter">
       <i class="fa fa-desktop w3-margin-bottom w3-jumbo w3-center"></i>
       <p class="w3-large">Questions</p>
-      <p>450</p>
+      <h2>450+</h2>
     </div>
     <div class="w3-quarter">
       <i class="fa fa-user-circle w3-margin-bottom w3-jumbo"></i>
       <p class="w3-large">Active Users</p>
-      <p>5</p>
+      <h2>100+</h2>
     </div>
     <div class="w3-quarter">
       <i class="fa fa-book w3-margin-bottom w3-jumbo"></i>
       <p class="w3-large">Total submissions</p>
-      <p class="w3-large">10</p>
+      <h2>50+</h2>
       </div>
     <div class="w3-quarter">
       <i class="fa fa-cog w3-margin-bottom w3-jumbo"></i>
       <p class="w3-large">Support</p>
       <p> </p>
     </div>
-  </div>
-</div>
-<!-- Team Section -->
-<div class="w3-container" style="padding:25px 16px" id="team">
-  <h3 class="w3-center">OUR TEAM</h3>
-  <div class="w3-row-padding w3-grayscale" style="margin-top:64px">
-    
-    <div class="w3-col l4 m4 w3-margin-bottom">
-      <div class="w3-card">
-        <img src="https://www.w3schools.com/w3images/team4.jpg" alt="Sawan" style="width:100%">
-        <div class="w3-container">
-          <h3>Sawan Pandita</h3>
-        </div>
-      </div>
-    </div>
-    <div class="w3-col l4 m4 w3-margin-bottom">
-      <div class="w3-card">
-        <img src="https://w3schoolsrus.github.io/w3images/team1.jpg" alt="Abhishek" style="width:100%">
-        <div class="w3-container">
-          <h3>Abhishek Joshi</h3>
-        </div>
-      </div>
-    </div>
-    <div class="w3-col l4 m4 w3-margin-bottom">
-      <div class="w3-card">
-        <img src="https://www.w3schools.com/w3images/team2.jpg" alt="Rohit" style="width:100%">
-        <div class="w3-container">
-          <h3>Rohit Pal</h3>
-        </div>
-      </div>
-    </div>
-    
   </div>
 </div>
 <%- include("partials/footer.ejs") -%>

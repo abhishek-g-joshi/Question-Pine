@@ -8,36 +8,47 @@
 		<!-- <div class="avatar">
 			<img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar">
 		</div> -->
+        <!-- <div class="avatar-prof">
+            <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="Avatar">
+        </div> -->
+        <div class="m-b-25">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image" > 
+        </div>
+        
+        <div>
         <h3 class="text-center">Hi, <%= user.userName%> </h3>  
-        <div class="form-group">
-        	<input type="text" class="form-control" name="firstName" placeholder="First Name" >
         </div>
         <div class="form-group">
-        	<input type="text" class="form-control" name="lastName" placeholder="Last Name" >
+        	<input type="text" class="form-control" name="firstName" placeholder="<%= user.firstName %>" value="<%= user.firstName %>">
         </div>
         <div class="form-group">
-        	<input type="number" class="form-control" name="contactno" placeholder="Contact No." >
+        	<input type="text" class="form-control" name="lastName" placeholder="<%= user.lastName %>" value="<%= user.lastName %>">
+        </div>
+        <div class="form-group">
+        	<input type="number" class="form-control" name="contactno" placeholder="contactno" value="<%= user.contactno %>" >
         </div> 
         <div class="form-group">
-        	<input type="text" class="form-control" name="college" placeholder="college" >
+        	<input type="text" class="form-control" name="college" placeholder="college" value="<%= user.college %>">
         </div>
 		<div class="form-group">
-            <input type="date" class="form-control" name="dob" placeholder="DOB" >
+            <input type="date" class="form-control" name="dob" placeholder="DOB" value="<%= user.dob %>">
         </div>  
         <div class="form-group">
-        	<input type="text" class="form-control" name="city" placeholder="city" >
+        	<input type="text" class="form-control" name="city" placeholder="city" value="<%= user.city %>">
         </div>
         <div class="form-group">
-        	<input type="text" class="form-control" name="country" placeholder="country" >
+        	<input type="text" class="form-control" name="country" placeholder="country" value="<%= user.country %>">
         </div>
         <div class="form-group">
-        	<textarea type="text" class="form-control" name="bio" placeholder="Write your Bio..!!" ></textarea>
+        	<textarea type="text" class="form-control" name="bio" placeholder="Write your Bio..!!" ><%= user.bio %></textarea>
         </div>       
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg btn-block">Save</button>
         </div>
     </form>
-    <p class="text-center">Not Now <a href="/profile"><%= user.userName%></a></p>
+    <p class="text-center">Not Now <a href="/<%= user.userName %>"><%= user.userName%></a></p>
 </div>
 
 <%- include("partials/footer.ejs") -%>
