@@ -50,4 +50,4 @@ const checkUser = (req,res,next) => {
 
 }
 
-module.exports = { requireAuth, checkUser };g
+module.exports = { requireAuth, checkUser };
