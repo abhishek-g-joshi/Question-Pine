@@ -1,10 +1,11 @@
+
 .container-fluid {
   padding-top: 70px;
   padding-bottom: 70px;
 }
 .navbar {
   padding-top: 15px;
-  padding-bottom: 15px;
+  padding-bottom: 5px;
   border: 0;
   border-radius: 0;
   margin-bottom: 0;
@@ -18,6 +19,37 @@
 
 .footer-margin {
   margin-top: 30px;
+}
+
+
+.about-section {
+  padding: 20px;
+  text-align: center;
+  background-color: #1abc9c;
+  color: white;
+}
+
+.qtypes-section {
+  padding: 15px;
+  text-align: center;
+  background-color: #1abc9c;
+  color: white;
+}
+
+.column {
+  float: left;
+  width: 33.3%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.jumbotron{
+  background-color: #1abc9c;
 }
 
 .footer {
@@ -59,7 +91,7 @@
 .form-control {
   height: 45px;
   box-shadow: none;
-  color: #969fa4;
+  color: #248571;
 }
 .form-control:focus {
   border-color: #1abc9c;
@@ -103,10 +135,10 @@
   text-align: center;
 }
 .signup-form form {
-  color: #999;
+  color: rgb(255, 255, 255);
   border-radius: 3px;
   margin-bottom: 15px;
-  background: #f2f3f7;
+  background: #1abc9c;
   box-shadow: 0 1px 25px rgba(0, 0, 0, 0.3);
   padding: 30px;
 }
@@ -247,16 +279,12 @@
   border-radius: 50%;
   background: #1abc9c;
   float:left;
-  margin-left: 35%;
+  margin-left: 23%;
 }
 .avatar-prof img {
   width: 100%;
   
 }
-
-
-
-
 
 
 body {
@@ -352,7 +380,7 @@ h6 {
 }
 
 .text-muted {
-    color: #919aa3 !important
+    color: #50565c !important
 }
 
 .b-b-default {

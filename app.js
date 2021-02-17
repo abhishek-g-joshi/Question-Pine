@@ -15,13 +15,14 @@ const dotenv = require('dotenv').config();
 
 const users = require("./routes/api/users");
 
-const app = express();
+const app = express();  
 
 const questionTypes = ["Array","String","Matrix","Linked List","Stack","Queue","Tree","Graph","Greedy","Backtracking","Recursion","Dynamic Programing","Bit Manipulation","Hash Table","Sort","Searching","Map","Segment Tree"];
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+app.use(express.static("views"));
 app.use(cookieParser());
 
 const validateSignUpInputs = require("./validation/signup");
@@ -30,7 +31,7 @@ const Users = require("./models/Users");
 
 // mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
-mongoose.connect(process.env.MONGO_URI, 
+mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/", 
 { 
   dbName : process.env.DB_NAME,
   user: process.env.MONGO_USER,
@@ -41,7 +42,8 @@ mongoose.connect(process.env.MONGO_URI,
 }
 );
 
-mongoose.set('useFindAndModify', false);
+
+
 
 const secreteKey = process.env.SECRETE_KEY;
 
@@ -129,7 +131,7 @@ app.post("/signin",(req,res)=>{
     .then(isMatch => {
       if(isMatch){
       const token = createToken(user._id);
-      res.cookie('jwt', token, { httpOnly: true, maxAge: 3600 * 1000 });
+      res.cookie('jwt', token, { maxAge: 3600 * 1000 });
       console.log({ user : user._id });
       res.redirect("/homepage");
     }else{
@@ -300,7 +302,7 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
       // const userID = localStorage.getItem('id');
       const userID = req.params.id;
       const questionList = questions;
-      const userName = req.params.userName
+      const userName = req.params.userName;
       // const questionTypes = questions.quesType;    
       console.log(userID);
 
@@ -320,10 +322,36 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
     }
   })
 
-
-
-
 });
+
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
+//searching questions
+// app.get("/questions/:userName",function(req,res){
+//   const questionList = questions;
+// 	if(req.query.search){
+// 		const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+// 		Question.find({quesname: regex},function(err,allQuestions){
+// 			if(err)
+// 				console.log(err);
+// 			else
+// 				res.render("questions.ejs", {questionList: allQuestions});
+// 		});	
+// 	}
+// 	else{
+// 		Question.find({},function(err,allQuestions){
+// 			if(err)
+// 				console.log(err);
+// 			else
+// 				res.render("questions.ejs", {questionList: allQuestions});
+// 		});
+// 	} 
+	
+// }); 
+
+
 
 app.get("/chatroom", requireAuth, (req, res)=>{
   res.render("chatroom.ejs");
@@ -372,7 +400,6 @@ app.get("/:id/", requireAuth, function(req, res){
 app.get("/:userName/editprofile", requireAuth, function(req, res){
   res.render("editprofile.ejs");
 })
-
 
 
 

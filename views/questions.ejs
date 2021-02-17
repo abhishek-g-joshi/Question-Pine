@@ -1,13 +1,23 @@
 <%- include("partials/header.ejs") -%>
 
-
+<!-- <div class="container">
+<header class="jumbotron">
+    <h2>Questions</h2>
+      <form action="/questions/<%= user.userName %>" method="GET" class="form-inline">
+        <div class="form-group">
+          <input type="text" name="search" placeholder="Search a Question..." class="form-control">
+          <input type="submit" value="search" class="btn btn-default btn-primary">
+        </div>
+      </form>
+  </header>
+</div> -->
 <div class="container">
   <div class="panel panel-default">
     <!-- Default panel contents -->
-
+   
     <% for(let i=0; i<questionTypes.length; i++){ %>
 
-      <div class="panel-heading"><%=questionTypes[i]%></div>
+      <div class="qtypes-section"><%=questionTypes[i]%></div>
       <table class="table">
         <thead>
           <th>#</th>
@@ -15,6 +25,8 @@
           <th>Done</th>
         </thead>
         <tbody>
+          
+      <%  let cnt=1; %>
       <%for(let j=0; j<questionList.length; j++){%>
 
         <%if(questionList[j].quesType === questionTypes[i]){%>
@@ -30,9 +42,8 @@
           <%}%>
 
           <%if(exist === 1){%>
-
             <tr>
-              <td>1</td>
+              <td><%= cnt++ %></td>
               <td>
                   <a href="<%= questionList[j].quesLink%>" target="_blank"><%=questionList[j].quesName%></a>
               </td>
@@ -40,14 +51,14 @@
                 <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
                 <input type="hidden" name="solvedStatus" value="done">
                 <td>
-                  <button type="submit" name="button" class="btn btn-primary">Solved</button>
+                  <button type="submit" name="button" class="btn btn-success">Solved</button>
                 </td>
               </form>
             </tr>
 
           <%}else{%>
             <tr>
-              <td>1</td>
+              <td><%= cnt++ %></td>
               <td>
                   <a href="<%= questionList[j].quesLink%>" target="_blank"><%=questionList[j].quesName%></a>
               </td>
@@ -55,7 +66,7 @@
                 <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
                 <input type="hidden" name="solvedStatus" value="notDone">
                 <td>
-                  <button type="submit" name="button" class="btn btn-success">Mark as Done</button>
+                  <button type="submit" name="button" class="btn btn-primary">Mark as Done</button>
                 </td>
               </form>
 
@@ -69,8 +80,7 @@
       </table>
 
     <%}%>
-
-
-    </div>
+   
 </div>
+
 <%- include("partials/footer.ejs") -%>
