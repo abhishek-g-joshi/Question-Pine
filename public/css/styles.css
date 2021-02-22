@@ -78,7 +78,7 @@
 }
 
 .btn-info {
-  background-color: #1abc9c;
+  background-color: #d8dad9;
 }
 .btn-success li a:hover {
   background-color: azure;
@@ -86,6 +86,9 @@
 
 .footer-text {
   padding: 20px;  
+}
+.search-form-control{
+  height: 34px;
 }
 
 .form-control {
@@ -130,7 +133,7 @@
   right: 0;
 }
 .signup-form .hint-text {
-  color: #999;
+  color: rgb(255, 254, 254);
   margin-bottom: 20px;
   text-align: center;
 }
@@ -168,7 +171,7 @@
   text-decoration: none;
 }
 .signup-form form a {
-  color: #1abc9c;
+  color: #654bc2;
   text-decoration: none;
 }
 .signup-form form a:hover {

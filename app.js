@@ -4,14 +4,15 @@ const ejs = require("ejs");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
+const session = require('express-session')
 const User = require("./models/Users");
 const Profile = require("./models/Profiles");
 const Question = require("./models/Questions");
 const mongoose = require("mongoose");
+const flash = require("connect-flash");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser, checkErrors } = require("./middleware/authMiddleware");
 const dotenv = require('dotenv').config();
-
 
 const users = require("./routes/api/users");
 
@@ -24,6 +25,30 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.use(express.static("views"));
 app.use(cookieParser());
+
+//flash msgs
+
+// app.use(flash());
+// app.use(session({cookie: {maxAge: null}}))
+// app.use(cookieParser('abc'));
+// app.use(session({
+//   secret: 'abc',
+//   saveUninitialized: true,
+//   resave: true}));
+// app.use(flash());
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// app.use((req, res, next)=>{
+//   res.locals.message = req.session.message
+//   delete req.session.message
+//   next()
+// })
+
+// app.use(function(req, res, next) {
+//   res.locals.messages = req.flash();
+//   next();
+// });
 
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
@@ -87,6 +112,7 @@ app.post("/signup",(req,res)=>{
        contactno:"",
        bio:"Welcome to Q'Pine",
        //solvedCount: val
+       
       });
 
       const profileInfo = new Profile({})
@@ -301,64 +327,71 @@ app.get("/signup",function(req,res){
   res.render("signUp.ejs");
 })
 
-// Sends the list of Questions
-app.get("/questions/:userName", requireAuth, (req, res)=>{
-
-  Question.find({}, function(err, questions){
-    if(err){
-      console.log(err);
-    }else{
-      // const userID = localStorage.getItem('id');
-      const userID = req.params.id;
-      const questionList = questions;
-      const userName = req.params.userName;
-      // const questionTypes = questions.quesType;    
-      console.log(userID);
-
-      User.findOne({userName}, function(err, foundOne){
-        if(err){
-          console.log(err);
-        }else{
-          console.log(foundOne);
-          const solvedQuestions = foundOne.solvedQuestions;
-
-
-          res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
-          // res.redirect("/questions/"+userID);
-        }
-      })
-
-    }
-  })
-
-});
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
-//searching questions
-// app.get("/questions/:userName",function(req,res){
-//   const questionList = questions;
-// 	if(req.query.search){
-// 		const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-// 		Question.find({quesname: regex},function(err,allQuestions){
-// 			if(err)
-// 				console.log(err);
-// 			else
-// 				res.render("questions.ejs", {questionList: allQuestions});
-// 		});	
-// 	}
-// 	else{
-// 		Question.find({},function(err,allQuestions){
-// 			if(err)
-// 				console.log(err);
-// 			else
-// 				res.render("questions.ejs", {questionList: allQuestions});
-// 		});
-// 	} 
-	
-// }); 
+// Sends the list of Questions and also searches a question
+app.get("/questions/:userName", requireAuth, (req, res)=>{
+
+  if(req.query.search)
+  {
+    const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+    Question.find({quesName: regex}, function(err, questions){
+      if(err){
+        console.log(err);
+      }else{
+        // const userID = localStorage.getItem('id');
+        const userID = req.params.id;
+        const questionList = questions;
+        const userName = req.params.userName;    
+        console.log(userID);
+  
+        User.findOne({userName}, function(err, foundOne){
+          if(err){
+            console.log(err);
+          }else{
+            console.log(foundOne);
+            const solvedQuestions = foundOne.solvedQuestions;
+  
+  
+            res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
+        
+          }
+        })
+  
+      }
+    })
+  }
+  else
+  {
+    Question.find({}, function(err, questions){
+      if(err){
+        console.log(err);
+      }else{
+        // const userID = localStorage.getItem('id');
+        const userID = req.params.id;
+        const questionList = questions;
+        const userName = req.params.userName;   
+        console.log(userID);
+
+        User.findOne({userName}, function(err, foundOne){
+          if(err){
+            console.log(err);
+          }else{
+            console.log(foundOne);
+            const solvedQuestions = foundOne.solvedQuestions;
+
+            res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
+           
+          }
+        })
+
+      }
+    })
+  }
+});
 
 
 
@@ -397,7 +430,7 @@ app.get("/:id/", requireAuth, function(req, res){
   User.findOne({userName},(err,foundOne)=>{
     if(foundOne)
     {
-      res.render("profile.ejs");
+      res.render("profile.ejs",{userData: foundOne});
     }else{
       res.status(404).json(err)
       // console.log()

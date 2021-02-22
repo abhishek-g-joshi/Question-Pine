@@ -1,6 +1,14 @@
 <%- include("partials/header.ejs") -%>
 
 <!-- <h1 style = "text-align : center">Create a New Account!</h1> -->
+
+    <!-- if(message.length>0)
+    <div style="text-align: center" class="alert alert-{{message.type}}">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>{{message.intro}}</strong> {{message.message}}
+    </div> -->
+
+   
 <div class="signup-form">
     <form action="/signup" method="POST">
 		<h2>Sign Up</h2>

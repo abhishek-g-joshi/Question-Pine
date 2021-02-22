@@ -1,36 +1,41 @@
 <%- include("partials/header.ejs") -%>
 
-<!-- <div class="container">
+<div class="container">
 <header class="jumbotron">
-    <h2>Questions</h2>
+  <h3 class="about-section"><b>Questions</b></h3>
       <form action="/questions/<%= user.userName %>" method="GET" class="form-inline">
         <div class="form-group">
-          <input type="text" name="search" placeholder="Search a Question..." class="form-control">
+          <input type="text" name="search" placeholder="Search a Question..." class="search-form-control">
           <input type="submit" value="search" class="btn btn-default btn-primary">
         </div>
       </form>
   </header>
-</div> -->
+</div>
 <div class="container">
   <div class="panel panel-default">
     <!-- Default panel contents -->
    
+    <% const flg=[questionTypes.length] %>
+    <% for(let i=0; i<questionTypes.length; i++){ %>
+          <% flg[i]=0; %>
+      <% } %>
     <% for(let i=0; i<questionTypes.length; i++){ %>
 
-      <div class="qtypes-section"><%=questionTypes[i]%></div>
-      <table class="table">
-        <thead>
-          <th>#</th>
-          <th>Questions</th>
-          <th>Done</th>
-        </thead>
-        <tbody>
-          
       <%  let cnt=1; %>
       <%for(let j=0; j<questionList.length; j++){%>
-
+        
         <%if(questionList[j].quesType === questionTypes[i]){%>
-
+          <%  if(!flg[i]){ %>
+          <div class="qtypes-section"><%=questionTypes[i]%></div>
+          <table class="table">
+            <thead>
+              <th>#</th>
+              <th>Questions</th>
+              <th>Done</th>
+            </thead>
+            <tbody>
+              <% flg[i]=1; %>
+            <%}%>
           <%let exist = 0;%>
 
           <%for(let k=0; k<solvedQuestions.length; k++){%>
