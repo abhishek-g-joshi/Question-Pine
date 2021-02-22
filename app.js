@@ -376,7 +376,6 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
             console.log(foundOne);
             const solvedQuestions = foundOne.solvedQuestions;
 
-
             res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
            
           }
