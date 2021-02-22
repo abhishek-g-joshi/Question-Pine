@@ -87,6 +87,9 @@
 .footer-text {
   padding: 20px;  
 }
+.search-form-control{
+  height: 34px;
+}
 
 .form-control {
   height: 45px;
