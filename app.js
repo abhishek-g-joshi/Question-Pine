@@ -336,8 +336,7 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
         // const userID = localStorage.getItem('id');
         const userID = req.params.id;
         const questionList = questions;
-        const userName = req.params.userName;
-        //const questionTypes = questions.quesType;    
+        const userName = req.params.userName;    
         console.log(userID);
   
         User.findOne({userName}, function(err, foundOne){
@@ -365,8 +364,7 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
         // const userID = localStorage.getItem('id');
         const userID = req.params.id;
         const questionList = questions;
-        const userName = req.params.userName;
-        //const questionTypes = req.params.quesType;     
+        const userName = req.params.userName;   
         console.log(userID);
 
         User.findOne({userName}, function(err, foundOne){
