@@ -421,7 +421,7 @@ app.get("/:id/", requireAuth, function(req, res){
   User.findOne({userName},(err,foundOne)=>{
     if(foundOne)
     {
-      res.render("profile.ejs");
+      res.render("profile.ejs",{userData: foundOne});
     }else{
       res.status(404).json(err)
       // console.log()
