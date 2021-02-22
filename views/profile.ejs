@@ -60,13 +60,15 @@
                                           <p class="m-b-10 f-w-600">Problems Solved</p>
                                           <h6 class="text-muted f-w-400"><%= user.solvedQuestions.length%></h6>
                                       </div>
-                                      <div class="col-sm-6">
-                                          <p class="m-b-10 f-w-600">Questions Solved</p>
-                                          <%for(let j=0; j<user.solvedQuestions.length; j++){%>
-                                           <h6 class="text-muted f-w-400"><%= user.solvedQuestions[j] %></h6>
-                                           <%}%>
-                                      </div>
                                   </div>
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Questions Solved</p>
+                                        <%for(let j=0; j<user.solvedQuestions.length; j++){%>
+                                         <h6 class="text-muted f-w-400"><%= user.solvedQuestions[j] %></h6>
+                                         <%}%>
+                                    </div>
+                                </div>
                                   <br/>
                                   <div class="row">
                                       <div class="col-sm-6">
