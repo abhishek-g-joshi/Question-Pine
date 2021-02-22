@@ -11,7 +11,7 @@ const Question = require("./models/Questions");
 const mongoose = require("mongoose");
 const flash = require("connect-flash");
 const cookieParser = require('cookie-parser');
-const { requireAuth, checkUser } = require("./middleware/authMiddleware");
+const { requireAuth, checkUser, checkErrors } = require("./middleware/authMiddleware");
 const dotenv = require('dotenv').config();
 
 const users = require("./routes/api/users");
@@ -53,6 +53,7 @@ app.use(cookieParser());
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
 const Users = require("./models/Users");
+const signin = require("./validation/signin");
 
 // mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -137,7 +138,9 @@ app.post("/signin",(req,res)=>{
 
   if(!isValid)
   {
-    return res.status(400).json(errors);
+    // return res.status(400).json(errors);
+    console.log(errors);
+    return res.redirect('/signin');
   }
 
   const email = req.body.email;
@@ -146,26 +149,30 @@ app.post("/signin",(req,res)=>{
   //find user by email
   User.findOne({email})
     .then(user =>{
-    if(!user)
-    {
-      errors.email = "User not found";
-      return res.status(400).json(errors);
-    }
-
-    //check password
-   bcrypt.compare(password,user.password)
-    .then(isMatch => {
-      if(isMatch){
-      const token = createToken(user._id);
-      res.cookie('jwt', token, { maxAge: 3600 * 1000 });
-      console.log({ user : user._id });
-      res.redirect("/homepage");
-    }else{
-      errors.password= 'password incorrect';
-      return res.status(400).json(errors);
-    }
-  });
-  });
+      if(!user)
+      {
+        // errors.email = "User not found";
+        // return res.status(400).json(errors)
+        // res.locals.errors = errors;
+        // res.render('signIn.ejs',errors);
+        return res.redirect('/signin');
+        // res.render
+      }else{
+          //check password
+          bcrypt.compare(password,user.password)
+          .then(isMatch => {
+            if(isMatch){
+            const token = createToken(user._id);
+            res.cookie('jwt', token, { maxAge: 3600 * 1000 });
+            console.log({ user : user._id });
+            res.redirect("/homepage");
+          }else{
+            errors.password= 'password incorrect';
+            return res.status(400).json(errors);
+          }
+        });
+      }
+    });
 })
 
 function phonenumber(contactno)
@@ -284,8 +291,12 @@ app.post("/questions/:userName", (req, res)=> {
 //check current user
 app.get("*",checkUser);
 
+// app.get("*",checkErrors);
+
+
 //singin route
 app.get("/signin",(req,res)=>{
+  // res.locals.errors = null;
   res.render("signIn.ejs");
 })
 
