@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require("../models/Users");
 const dotenv = require('dotenv').config();
-
+const validateSignUpInputs = require("../validation/signup");
+const validateSignInputs = require("../validation/signin");
 const secreteKey = process.env.SECRETE_KEY;
 
 const requireAuth = (req,res,next) => {
@@ -50,4 +51,17 @@ const checkUser = (req,res,next) => {
 
 }
 
-module.exports = { requireAuth, checkUser };
+// check errors
+const checkErrors = (req,res,next)=>{
+    const errors = validateSignInputs(req.body);
+    if(errors)
+    {
+        res.locals.errors = errors;
+        next();
+    }else{
+        res.locals.errors = null;
+        next();
+    }
+}
+
+module.exports = { requireAuth, checkUser, checkErrors };
