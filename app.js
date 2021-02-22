@@ -291,9 +291,11 @@ app.post("/questions/:userName", (req, res)=> {
 //check current user
 app.get("*",checkUser);
 
-app.get("*",checkErrors);
+// app.get("*",checkErrors);
+
+
 //singin route
-app.get("/signin",checkErrors,(req,res)=>{
+app.get("/signin",(req,res)=>{
   // res.locals.errors = null;
   res.render("signIn.ejs");
 })
@@ -309,7 +311,7 @@ app.use("/api/users",users);
 
 
 //Homepage route
-app.get("/homepage",checkErrors, function(req, res){
+app.get("/homepage", function(req, res){
   res.render("homepage.ejs");
 })
 
