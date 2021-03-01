@@ -53,6 +53,7 @@ app.use(cookieParser());
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
 const Users = require("./models/Users");
+const Questions = require("./models/Questions");
 
 // mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -415,6 +416,88 @@ app.get("/addQuestion", (req, res)=> {
   res.render("addQuestion.ejs");
 })
 
+// async function getsolvedQuestionObject(user){
+//     try{
+//       const foundOne = User.findOne({userName:user});
+//       const solvedQuestions = foundOne.solvedQuestions;
+//       var solvedQuestionObject = [];
+//       for(let i=0;i<solvedQuestions.length;i++)
+//       {
+//         var foundQuestionOne=await Question.findOne({quesName:solvedQuestions[i]});
+//         solvedQuestionObject.push(foundQuestionOne);
+//       }
+//     }
+//     catch(error){
+//       console.log(error);
+//     }
+// } 
+//------------profile route changes-------------
+// app.get("/:id/", requireAuth, function(req, res){
+//   const userName = req.params.id;
+  // var solvedQuestions=[];
+  // // const userOne = {};
+  // //const solvedQuestionObject= getsolvedQuestionObject(userName);
+  // User.findOne({userName},(err,foundOne)=>{
+  //   if(err)
+  //   {
+  //     console.log(err);
+  //   }
+  //   else
+  //   {
+  //     //userOne=foundOne;
+  //     solvedQuestions = foundOne.solvedQuestions;
+  //     //console.log(solvedQuestions);
+  //   }
+  // })
+  
+  //   // const solvedQuestions = userOne.solvedQuestions;
+  //   // console.log(solvedQuestions);
+  //   var solvedQuestionObject = [];
+  //   for(let i=0;i<solvedQuestions.length;i++)
+  //   {
+      
+  //     Question.findOne({quesName: solvedQuestions[i]},(err,foundQues)=>{
+  //       if(err)
+  //       {
+  //         console.log(err.message);
+  //       }
+  //       else
+  //       {
+  //         //var solvedQues  = {};
+  //         // solvedQues['quesName']= foundQues.quesName;
+  //         // solvedQues['quesLink']= foundQues.quesLink;
+  //         // solvedQues['quesType']= foundQues.quesType;
+
+  //         //console.log(solvedQues);
+  //         solvedQuestionObject.push({
+  //           quesName: foundQues.quesName,
+  //           quesLink: foundQues.quesLink,
+  //           quesType: foundQues.quesType
+  //         });
+  //       }
+  //       //console.log(solvedQues);
+          
+  //     })
+  //       solvedQuestionObject.push(foundQuestionOne);
+  //   }
+  // var solvedQuestionObject = new Array();
+  //   User.findOne({userName})
+  //     .then(foundOne=>{
+  //       const solvedQuestions = foundOne.solvedQuestions;
+  //       for(var i=0;i<solvedQuestions.length;i++)
+  //       {
+  //         Question.findOne({quesName:solvedQuestions[i]})
+  //           .then(foundQues=>{
+  //             solvedQuestionObject.push(foundQues)
+  //           });
+  //       }
+  //       console.log(solvedQuestionObject);
+  //     });
+  //  console.log(solvedQuestionObject);
+  //res.render("profile.ejs",{userData: foundOne,solvedQuestionObject: solvedQuestionObject});
+    
+// })
+
 //profile route
 app.get("/:id/", requireAuth, function(req, res){
   const userName = req.params.id;
@@ -434,7 +517,9 @@ app.get("/:userName/editprofile", requireAuth, function(req, res){
   res.render("editprofile.ejs");
 })
 
-
+app.get("/:userName/notifications", requireAuth, function(req, res){
+  res.render("notifications.ejs");
+})
 
 // *************************************************listening ****************************************************************
 const PORT = process.env.PORT || 3000;

@@ -31,7 +31,7 @@
             <thead>
               <th>#</th>
               <th>Questions</th>
-              <th>Done</th>
+              <th class="th-right">Done</th>
             </thead>
             <tbody>
               <% flg[i]=1; %>
@@ -55,8 +55,8 @@
               <form  action="/questions/<%= user.userName %>" method="post">
                 <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
                 <input type="hidden" name="solvedStatus" value="done">
-                <td>
-                  <button type="submit" name="button" class="btn btn-success">Solved</button>
+                <td class="th-right">
+                  <button type="submit" name="button" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Solved</button>
                 </td>
               </form>
             </tr>
@@ -70,7 +70,7 @@
               <form  action="/questions/<%= user.userName %>" method="post">
                 <input type="hidden" name="questionName" value="<%= questionList[j].quesName %>">
                 <input type="hidden" name="solvedStatus" value="notDone">
-                <td>
+                <td class="th-right">
                   <button type="submit" name="button" class="btn btn-primary">Mark as Done</button>
                 </td>
               </form>
@@ -85,7 +85,7 @@
       </table>
 
     <%}%>
-   
+  </div> 
 </div>
 
 <%- include("partials/footer.ejs") -%>
