@@ -46,7 +46,13 @@ var UserSchema = new mongoose.Schema({
         type:String,
         required:false
     },
-    solvedQuestions: [String]
+    solvedQuestions: [String],
+    reset_password_token: {
+        type: String
+    },
+    reset_password_expires: {
+        type: Date
+    },
 
 
 });
