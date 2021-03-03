@@ -33,19 +33,34 @@
         </ul>
         <form class="form-inline">
           <% if(user) { %>
-            <a href="/<%= user.userName %>">
-              <div class="avatar-prof">
-                <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="Avatar">
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a class="nav-link" href="/<%= user.userName %>/notifications">
+                  <span class="badge badge-pill badge-primary" style="float:right;margin-bottom:10px;">2</span>
+                    <span class="glyphicon glyphicon-bell"></span>
+                </a>
+              </li>
+              <li>
+              <div class="dropdown">
+                <button class="dropbtn"><div class="avatar-prof">
+                  <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="Avatar">
+                </div>
+                <p style="display:inline; font-size: large;"><strong><%= user.userName %></strong> </p>
+              </button>
+                <div class="dropdown-content">
+                  <a href="/<%= user.userName %>"><span class="glyphicon glyphicon-user"></span><strong> My Profile</strong></a>
+                  <a href="/signout"><span class="glyphicon glyphicon-off"></span><strong> Log Out</strong></a>
+                </div>
               </div>
-              &nbsp;
-              <p style="display:inline; font-size: large;"><strong><%= user.userName %></strong> </p>
-            </a>
-            <a href="/signout"><button  class="btn btn-info btn-lg" type="button">Sign Out</button></a>
+
+            <!-- </div> -->
+            </li>
+            </ul>
           <% } else { %>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;
-          <a href="/signup"><button class="btn btn-info btn-lg" type="button">Sign Up</button></a>
-          <a href="/signin"><button class="btn btn-info btn-lg" type="button">Sign In</button></a>
+            <ul class="nav navbar-nav navbar-right">
+          <a href="/signup"><button class="btn btn-info btn-lg" type="button"><span class="glyphicon glyphicon-user"></span> Sign Up</button></a>
+          <a href="/signin"><button class="btn btn-info btn-lg" type="button"><span class="glyphicon glyphicon-log-in"></span>  Sign In</button></a>
+            </ul>
           <% } %>
         </form>
     </div>
