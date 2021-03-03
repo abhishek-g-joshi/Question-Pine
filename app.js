@@ -27,6 +27,7 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI);
 oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
@@ -225,7 +226,7 @@ app.post("/forgot-password",(req,res)=>{
     },
     function(token, user, done) {
       var  context =  {
-        url: 'http://localhost:3000/reset-password/' + token,
+        url: CLIENT_URL+'/reset-password/' + token,
         name: user.userName
       };
       var data = {
@@ -286,7 +287,7 @@ app.post("/reset-password",(req,res,next)=>{
           to: user.email,
           subject: 'Password Reset Confirmation',
           html:`
-            <h3>Dear ${user.name},</h3>
+            <h3>Dear ${user.userName},</h3>
             <p>Password reset Successfully Done!</p>
             <br>
             <p>Cheers!</p>
