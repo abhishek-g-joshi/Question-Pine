@@ -65,10 +65,13 @@
                                     <div class="col-sm-6">
                                         <p class="m-b-10 f-w-600">Questions Solved</p>
                                         <%for(let j=0; j<userData.solvedQuestions.length; j++){%>
-                                         <h6 class="text-muted f-w-400"><%= userData.solvedQuestions[j] %></h6>
-                                         <%}%>
-                                    </div>
-                                </div>
+                                            <h6 class="text-muted f-w-400"><%= userData.solvedQuestions[j] %></h6>
+                                            <%}%>
+                                    </div> 
+                                  </div>
+
+
+
                                   <br/>
                                   <% if(userData.userName === user.userName){ %>
                                   <div class="row">

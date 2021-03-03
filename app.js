@@ -12,50 +12,63 @@ const mongoose = require("mongoose");
 const flash = require("connect-flash");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser, checkErrors } = require("./middleware/authMiddleware");
-const dotenv = require('dotenv').config();
-
+const { google } = require('googleapis');
 const users = require("./routes/api/users");
+const dotenv = require('dotenv').config();
+const crypto = require("crypto");
+var async = require('async');
+var path = require('path');
+const exphbs = require("express-handlebars");
+var  hbs = require('nodemailer-express-handlebars'),
+  email = process.env.MAILER_EMAIL_ID ,
+  nodemailer = require('nodemailer');
+
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI);
+oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
 
 const app = express();  
 
+
 const questionTypes = ["Array","String","Matrix","Linked List","Stack","Queue","Tree","Graph","Greedy","Backtracking","Recursion","Dynamic Programing","Bit Manipulation","Hash Table","Sort","Searching","Map","Segment Tree"];
 
-app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended: true}));
+
+app.engine('handlebars', exphbs());
+app.set('view engine', 'ejs','handlebars'); 
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static("public"));
 app.use(express.static("views"));
 app.use(cookieParser());
 
-//flash msgs
 
-// app.use(flash());
-// app.use(session({cookie: {maxAge: null}}))
-// app.use(cookieParser('abc'));
-// app.use(session({
-//   secret: 'abc',
-//   saveUninitialized: true,
-//   resave: true}));
-// app.use(flash());
-// app.use(passport.initialize());
-// app.use(passport.session());
 
-// app.use((req, res, next)=>{
-//   res.locals.message = req.session.message
-//   delete req.session.message
-//   next()
-// })
+const accessToken = oAuth2Client.getAccessToken();
 
-// app.use(function(req, res, next) {
-//   res.locals.messages = req.flash();
-//   next();
-// });
+let transporter = nodemailer.createTransport({
+	service: 'gmail',
+	auth: {
+		type: 'OAuth2',
+		user: email,
+		clientId: CLIENT_ID,
+		clientSecret: CLIENT_SECRET,
+		refreshToken: REFRESH_TOKEN,
+		accessToken: accessToken,
+	},
+}); 
+
+
 
 const validateSignUpInputs = require("./validation/signup");
 const validateSignInputs = require("./validation/signin");
 const Users = require("./models/Users");
 const signin = require("./validation/signin");
+const Questions = require("./models/Questions");
 
-// mongoose.connect("mongodb://localhost:27017/teamRudras", { user: process.env.MONGO_USER, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true});
 
 mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/", 
 { 
@@ -69,13 +82,11 @@ mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/",
 );
 
 
-
-
 const secreteKey = process.env.SECRETE_KEY;
 
-const createToken = (id) =>{
+const createToken = (id,expIn) =>{
   return jwt.sign({id},secreteKey,
-  {expiresIn: 3600});
+  {expiresIn: expIn});
 }
 
 
@@ -135,37 +146,47 @@ app.post("/signup",(req,res)=>{
 //POST : User signin route 
 app.post("/signin",(req,res)=>{
   const {errors, isValid} = validateSignInputs(req.body);
+  //  const auth =  checkErrors(req.body);
 
   if(!isValid)
   {
     // return res.status(400).json(errors);
     console.log(errors);
-    return res.redirect('/signin');
+    res.locals.errors = errors;
+    // return res.redirect('/signin');
+    res.render('signIn',{errors:errors})
   }
 
   const email = req.body.email;
   const password = req.body.password;
+  const rememberMe  = req.body.rememberMe;
+  console.log(rememberMe);
 
   //find user by email
   User.findOne({email})
     .then(user =>{
       if(!user)
       {
-        // errors.email = "User not found";
-        // return res.status(400).json(errors)
-        // res.locals.errors = errors;
-        // res.render('signIn.ejs',errors);
-        return res.redirect('/signin');
-        // res.render
+        errors.email = "User not found";
+        return res.status(400).json(errors)
       }else{
           //check password
           bcrypt.compare(password,user.password)
           .then(isMatch => {
             if(isMatch){
-            const token = createToken(user._id);
-            res.cookie('jwt', token, { maxAge: 3600 * 1000 });
+            if(rememberMe)
+            {
+              const expIn = 720*3600;
+              const token = createToken(user._id,expIn); 
+              res.cookie('jwt', token, { maxAge: expIn * 1000 });
+            }else{
+              const expIn = 3600;
+              const token = createToken(user._id,expIn); 
+              res.cookie('jwt', token, { maxAge: expIn * 1000 });
+            }
+
             console.log({ user : user._id });
-            res.redirect("/homepage");
+            res.redirect("/questions/" + user.userName );
           }else{
             errors.password= 'password incorrect';
             return res.status(400).json(errors);
@@ -174,6 +195,125 @@ app.post("/signin",(req,res)=>{
       }
     });
 })
+
+
+//forgot password post route
+app.post("/forgot-password",(req,res)=>{
+
+  async.waterfall([
+    function(done) {
+      User.findOne({
+        email: req.body.email
+      }).exec(function(err, user) {
+        if (user) {
+          done(err, user);
+        } else {
+          done('User not found.');
+        }
+      });
+    },
+    function(user, done) {
+      // create the random token
+      crypto.randomBytes(50, function(err, buffer) {
+        var token = buffer.toString('hex');
+        done(err, user, token);
+      });
+    },
+    function(user, token, done) {
+      User.findByIdAndUpdate({ _id: user._id }, { reset_password_token: token, reset_password_expires: Date.now() + 20*60*1000 }, { upsert: true, new: true }).exec(function(err, new_user) {
+        done(err, token, new_user);
+      });
+    },
+    function(token, user, done) {
+      var  context =  {
+        url: CLIENT_URL+'/reset-password/' + token,
+        name: user.userName
+      };
+      var data = {
+        from: 'Question Pine <' + email + '>',
+        to: user.email,
+        subject: 'Password help has arrived!',
+        html:`
+        <h3>Dear ${context.name},</h3>
+        <p>You requested for a password reset, kindly use this <a href="${context.url}">link</a> to reset your password</p>
+        <br>
+        <p>This link valid for only 20 minutes.</p>
+        <p>Cheers!</p>
+        `,
+        
+      };
+      // console.log({userData:data});
+      transporter.sendMail(data, function(err) {
+        if (!err) {
+          // console.log({userData:data});
+          return res.json({ message: 'Kindly check your email for further instructions' });
+        } else {
+          return done(err);
+        }
+      });
+    }
+  ], 
+  function(err) {
+    return res.status(422).json({ message: err });
+  });  
+});
+
+//reset password POST route
+app.post("/reset-password",(req,res,next)=>{
+
+  if (req.body.password === req.body.confirmPassword) {
+    const filter = {reset_password_token: req.body.token,
+      reset_password_expires: {
+        $gte: Date.now()
+      }
+    }
+  
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.password, salt);
+  
+    const update = {
+      reset_password_token : undefined,
+      reset_password_expires : undefined,
+      password : hash
+    }
+
+  User.findOneAndUpdate(filter,update,{new:true}
+    ).exec(function(err, user){
+    // console.log({user:user});
+    if (!err && user) {
+      
+        var data = {
+          from: 'Question Pine <' + email + '>',
+          to: user.email,
+          subject: 'Password Reset Confirmation',
+          html:`
+            <h3>Dear ${user.userName},</h3>
+            <p>Password reset Successfully Done!</p>
+            <br>
+            <p>Cheers!</p>
+            `
+        };
+        transporter.sendMail(data, function(err) {
+          if (!err) {
+            res.json({ message: 'Password reset' });
+            return res.redirect('/signin')
+          } else {
+            return done(err);
+          }
+        });  
+      
+      }else {
+        return res.status(400).send({
+          message: 'Password reset token is invalid or has expired.'
+        });
+      }
+    });
+  }else{
+    return res.status(422).send({
+      message: 'Passwords do not match'
+    });
+  }
+});
 
 function phonenumber(contactno)
 {
@@ -297,7 +437,8 @@ app.get("*",checkUser);
 //singin route
 app.get("/signin",(req,res)=>{
   // res.locals.errors = null;
-  res.render("signIn.ejs");
+  const errors = {}
+  res.render("signIn.ejs",{errors:errors});
 })
 
 //Signout routes
@@ -329,6 +470,16 @@ app.get("/signup",function(req,res){
   res.render("signUp.ejs");
 })
 
+//forgot password get route
+app.get("/forgot-password",(req,res)=>{
+  res.render("forgotPassword.ejs");
+})
+
+app.get("/reset-password/:token",(req,res)=>{
+ 
+  const token = req.params.token;
+  res.render("reset-password.ejs",{token:token});
+})
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -345,19 +496,17 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
         console.log(err);
       }else{
         // const userID = localStorage.getItem('id');
-        const userID = req.params.id;
+        // const userID = req.params.id;
         const questionList = questions;
         const userName = req.params.userName;    
-        console.log(userID);
+        // console.log({user_id: userID});
   
         User.findOne({userName}, function(err, foundOne){
           if(err){
             console.log(err);
           }else{
-            console.log(foundOne);
+            // console.log(foundOne);
             const solvedQuestions = foundOne.solvedQuestions;
-  
-  
             res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
         
           }
@@ -373,16 +522,16 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
         console.log(err);
       }else{
         // const userID = localStorage.getItem('id');
-        const userID = req.params.id;
+        // const userID = req.params.id;
         const questionList = questions;
         const userName = req.params.userName;   
-        console.log(userID);
+        // console.log(userID);
 
         User.findOne({userName}, function(err, foundOne){
           if(err){
             console.log(err);
           }else{
-            console.log(foundOne);
+            // console.log(foundOne);
             const solvedQuestions = foundOne.solvedQuestions;
 
             res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
@@ -426,8 +575,90 @@ app.get("/addQuestion", (req, res)=> {
   res.render("addQuestion.ejs");
 })
 
+// async function getsolvedQuestionObject(user){
+//     try{
+//       const foundOne = User.findOne({userName:user});
+//       const solvedQuestions = foundOne.solvedQuestions;
+//       var solvedQuestionObject = [];
+//       for(let i=0;i<solvedQuestions.length;i++)
+//       {
+//         var foundQuestionOne=await Question.findOne({quesName:solvedQuestions[i]});
+//         solvedQuestionObject.push(foundQuestionOne);
+//       }
+//     }
+//     catch(error){
+//       console.log(error);
+//     }
+// } 
+//------------profile route changes-------------
+// app.get("/:id/", requireAuth, function(req, res){
+//   const userName = req.params.id;
+  // var solvedQuestions=[];
+  // // const userOne = {};
+  // //const solvedQuestionObject= getsolvedQuestionObject(userName);
+  // User.findOne({userName},(err,foundOne)=>{
+  //   if(err)
+  //   {
+  //     console.log(err);
+  //   }
+  //   else
+  //   {
+  //     //userOne=foundOne;
+  //     solvedQuestions = foundOne.solvedQuestions;
+  //     //console.log(solvedQuestions);
+  //   }
+  // })
+  
+  //   // const solvedQuestions = userOne.solvedQuestions;
+  //   // console.log(solvedQuestions);
+  //   var solvedQuestionObject = [];
+  //   for(let i=0;i<solvedQuestions.length;i++)
+  //   {
+      
+  //     Question.findOne({quesName: solvedQuestions[i]},(err,foundQues)=>{
+  //       if(err)
+  //       {
+  //         console.log(err.message);
+  //       }
+  //       else
+  //       {
+  //         //var solvedQues  = {};
+  //         // solvedQues['quesName']= foundQues.quesName;
+  //         // solvedQues['quesLink']= foundQues.quesLink;
+  //         // solvedQues['quesType']= foundQues.quesType;
+
+  //         //console.log(solvedQues);
+  //         solvedQuestionObject.push({
+  //           quesName: foundQues.quesName,
+  //           quesLink: foundQues.quesLink,
+  //           quesType: foundQues.quesType
+  //         });
+  //       }
+  //       //console.log(solvedQues);
+          
+  //     })
+  //       solvedQuestionObject.push(foundQuestionOne);
+  //   }
+  // var solvedQuestionObject = new Array();
+  //   User.findOne({userName})
+  //     .then(foundOne=>{
+  //       const solvedQuestions = foundOne.solvedQuestions;
+  //       for(var i=0;i<solvedQuestions.length;i++)
+  //       {
+  //         Question.findOne({quesName:solvedQuestions[i]})
+  //           .then(foundQues=>{
+  //             solvedQuestionObject.push(foundQues)
+  //           });
+  //       }
+  //       console.log(solvedQuestionObject);
+  //     });
+  //  console.log(solvedQuestionObject);
+  //res.render("profile.ejs",{userData: foundOne,solvedQuestionObject: solvedQuestionObject});
+    
+// })
+
 //profile route
-app.get("/:id/", requireAuth, function(req, res){
+app.get("/:id", requireAuth, function(req, res){
   const userName = req.params.id;
   User.findOne({userName},(err,foundOne)=>{
     if(foundOne)
@@ -438,11 +669,15 @@ app.get("/:id/", requireAuth, function(req, res){
       // console.log()
     }
   })
-    
+
 })
 
 app.get("/:userName/editprofile", requireAuth, function(req, res){
   res.render("editprofile.ejs");
+})
+
+app.get("/:userName/notifications", requireAuth, function(req, res){
+  res.render("notifications.ejs");
 })
 
 
@@ -453,3 +688,30 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, function(){
   console.log("server listening on " + PORT);
 })
+
+
+
+
+
+
+
+
+
+
+var solvedQuestionObject = new Array();
+
+async function getsolvedQuestionObject(user){
+  try{
+    const foundOne = User.findOne({userName:user});
+    const solvedQuestions = foundOne.solvedQuestions;
+    // var solvedQuestionObject = [];
+    for(let i=0;i<solvedQuestions.length;i++)
+    {
+      var foundQuestionOne=await Question.findOne({quesName:solvedQuestions[i]});
+      solvedQuestionObject.push(foundQuestionOne);
+    }
+  }
+  catch(error){
+    console.log(error);
+  }
+}
