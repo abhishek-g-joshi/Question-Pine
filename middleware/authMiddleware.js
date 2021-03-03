@@ -16,7 +16,7 @@ const requireAuth = (req,res,next) => {
                 console.log(err.message);
                 res.redirect("/signin");
             } else{
-                console.log(decodedToken.id);
+                console.log({reqAuth: decodedToken.id});
                 next();
             }
         })
@@ -38,7 +38,7 @@ const checkUser = (req,res,next) => {
                 res.locals.user = null;
                 next();
             } else{
-                console.log(decodedToken);
+                console.log({checkuser: decodedToken});
                 let user = await User.findById(decodedToken.id);
                 res.locals.user = user;
                 next();
@@ -52,15 +52,16 @@ const checkUser = (req,res,next) => {
 }
 
 // check errors
-const checkErrors = (req,res,next)=>{
-    const errors = validateSignInputs(req.body);
+const checkErrors = (data) => {
+    const errors = validateSignInputs(data);
     if(errors)
     {
-        res.locals.errors = errors;
-        next();
+        console.log(errors);
+        // locals.errors = errors;
+        // next();
     }else{
-        res.locals.errors = null;
-        next();
+        // locals.errors = null;
+        // next();
     }
 }
 
