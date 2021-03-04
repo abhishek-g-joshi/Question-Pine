@@ -22,7 +22,7 @@
     <%  for(let j=0; j<solvedQuestions.length; j++){%>
     <%      let type = "";%>
     <%   for(let k=0; k<questionList.length; k++){%>
-    <%        if(questionList[k].quesName == solvedQuestions[j]){%>
+    <%        if(questionList[k].quesName === solvedQuestions[j]){%>
     <%            type = questionList[k].quesType;%>
     <%            break;%>
     <%        }%>
@@ -34,18 +34,28 @@
     <%  solvedQuestionCounts.push(cnt);%>
     <%}%>
 
+    <%let totalCount = [];%>
+
+    <%for(let i=0; i<questionTypes.length; i++){%>
+    <%  let tot=0;%>
+    <%  for(let j=0; j<questionList.length; j++){%>
+    <%    if(questionTypes[i] === questionList[j].quesType){%>
+    <%      tot++;%>
+    <%    }%>
+    <%  }%>
+    <%  totalCount.push(tot)%>
+    <%}%>
+
     <% const flg=[questionTypes.length] %>
     <% for(let i=0; i<questionTypes.length; i++){ %>
           <% flg[i]=0; %>
       <% } %>
     <% for(let i=0; i<questionTypes.length; i++){ %>
-
       <%  let cnt=1; %>
       <%for(let j=0; j<questionList.length; j++){%>
-
         <%if(questionList[j].quesType === questionTypes[i]){%>
           <%  if(!flg[i]){ %>
-          <div class="qtypes-section"><%=questionTypes[i]%> (<%=solvedQuestionCounts[i]%>)</div>
+          <div class="qtypes-section"><%=questionTypes[i]%> (<%=solvedQuestionCounts[i]%>/<%= totalCount[i] %>)</div>
           <table class="table">
             <thead>
               <th>#</th>
@@ -56,15 +66,12 @@
               <% flg[i]=1; %>
             <%}%>
           <%let exist = 0;%>
-
           <%for(let k=0; k<solvedQuestions.length; k++){%>
-
             <%if(questionList[j].quesName === solvedQuestions[k]){%>
               <%exist = 1;%>
               <%break;%>
             <%}%>
           <%}%>
-
           <%if(exist === 1){%>
             <tr>
               <td><%= cnt++ %></td>
@@ -79,7 +86,6 @@
                 </td>
               </form>
             </tr>
-
           <%}else{%>
             <tr>
               <td><%= cnt++ %></td>
@@ -93,16 +99,12 @@
                   <button type="submit" name="button" class="btn btn-primary">Mark as Done</button>
                 </td>
               </form>
-
             </tr>
           <%}%>
-
         <%}%>
       <%}%>
-
       </tbody>
       </table>
-
     <%}%>
   </div>
 </div>
