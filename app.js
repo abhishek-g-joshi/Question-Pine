@@ -69,7 +69,7 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/",
+mongoose.connect(process.env.MONGO_URI,
 {
   dbName : process.env.DB_NAME,
   user: process.env.MONGO_USER,
