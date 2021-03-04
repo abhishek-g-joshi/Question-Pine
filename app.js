@@ -13,7 +13,6 @@ const flash = require("connect-flash");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser, checkErrors } = require("./middleware/authMiddleware");
 const { google } = require('googleapis');
-const users = require("./routes/api/users");
 const dotenv = require('dotenv').config();
 const crypto = require("crypto");
 var async = require('async');
@@ -70,17 +69,18 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-// mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/",
-// {
-//   dbName : process.env.DB_NAME,
-//   user: process.env.MONGO_USER,
-//   pass: process.env.MONGO_PASSWORD,
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useFindAndModify: false
-// }
-// );
-mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/",
+{
+  dbName : process.env.DB_NAME,
+  user: process.env.MONGO_USER,
+  pass: process.env.MONGO_PASSWORD,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+}
+);
+
+// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -448,7 +448,7 @@ app.get("/signout",(req,res)=>{
   res.redirect("/homepage");
 })
 
-app.use("/api/users",users);
+// app.use("/api/users",users);
 
 
 
