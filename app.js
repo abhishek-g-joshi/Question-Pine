@@ -13,7 +13,6 @@ const flash = require("connect-flash");
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser, checkErrors } = require("./middleware/authMiddleware");
 const { google } = require('googleapis');
-const users = require("./routes/api/users");
 const dotenv = require('dotenv').config();
 const crypto = require("crypto");
 var async = require('async');
@@ -32,14 +31,14 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI);
 oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
 
-const app = express();  
+const app = express();
 
 
 const questionTypes = ["Array","String","Matrix","Linked List","Stack","Queue","Tree","Graph","Greedy","Backtracking","Recursion","Dynamic Programing","Bit Manipulation","Hash Table","Sort","Searching","Map","Segment Tree"];
 
 
 app.engine('handlebars', exphbs());
-app.set('view engine', 'ejs','handlebars'); 
+app.set('view engine', 'ejs','handlebars');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static("public"));
 app.use(express.static("views"));
@@ -59,7 +58,7 @@ let transporter = nodemailer.createTransport({
 		refreshToken: REFRESH_TOKEN,
 		accessToken: accessToken,
 	},
-}); 
+});
 
 
 
@@ -70,8 +69,8 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/", 
-{ 
+mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/",
+{
   dbName : process.env.DB_NAME,
   user: process.env.MONGO_USER,
   pass: process.env.MONGO_PASSWORD,
@@ -80,6 +79,8 @@ mongoose.connect("mongodb+srv://@cluster0.xhct6.mongodb.net/",
   useFindAndModify: false
 }
 );
+
+// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -123,7 +124,7 @@ app.post("/signup",(req,res)=>{
        contactno:"",
        bio:"Welcome to Q'Pine",
        //solvedCount: val
-       
+
       });
 
       const profileInfo = new Profile({})
@@ -143,7 +144,7 @@ app.post("/signup",(req,res)=>{
   });
 });
 
-//POST : User signin route 
+//POST : User signin route
 app.post("/signin",(req,res)=>{
   const {errors, isValid} = validateSignInputs(req.body);
   //  const auth =  checkErrors(req.body);
@@ -177,11 +178,11 @@ app.post("/signin",(req,res)=>{
             if(rememberMe)
             {
               const expIn = 720*3600;
-              const token = createToken(user._id,expIn); 
+              const token = createToken(user._id,expIn);
               res.cookie('jwt', token, { maxAge: expIn * 1000 });
             }else{
               const expIn = 3600;
-              const token = createToken(user._id,expIn); 
+              const token = createToken(user._id,expIn);
               res.cookie('jwt', token, { maxAge: expIn * 1000 });
             }
 
@@ -240,7 +241,7 @@ app.post("/forgot-password",(req,res)=>{
         <p>This link valid for only 20 minutes.</p>
         <p>Cheers!</p>
         `,
-        
+
       };
       // console.log({userData:data});
       transporter.sendMail(data, function(err) {
@@ -252,10 +253,10 @@ app.post("/forgot-password",(req,res)=>{
         }
       });
     }
-  ], 
+  ],
   function(err) {
     return res.status(422).json({ message: err });
-  });  
+  });
 });
 
 //reset password POST route
@@ -267,10 +268,10 @@ app.post("/reset-password",(req,res,next)=>{
         $gte: Date.now()
       }
     }
-  
+
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
-  
+
     const update = {
       reset_password_token : undefined,
       reset_password_expires : undefined,
@@ -281,7 +282,7 @@ app.post("/reset-password",(req,res,next)=>{
     ).exec(function(err, user){
     // console.log({user:user});
     if (!err && user) {
-      
+
         var data = {
           from: 'Question Pine <' + email + '>',
           to: user.email,
@@ -300,8 +301,8 @@ app.post("/reset-password",(req,res,next)=>{
           } else {
             return done(err);
           }
-        });  
-      
+        });
+
       }else {
         return res.status(400).send({
           message: 'Password reset token is invalid or has expired.'
@@ -338,7 +339,7 @@ app.post("/:userName/editprofile/:user_id",checkUser,(req,res)=>{
 
   const special_id = user_id;
   const contactno = req.body.contactno.toString();
- 
+
   User.findOneAndUpdate(
     {_id : user_id},
     {
@@ -447,7 +448,7 @@ app.get("/signout",(req,res)=>{
   res.redirect("/homepage");
 })
 
-app.use("/api/users",users);
+// app.use("/api/users",users);
 
 
 
@@ -476,7 +477,7 @@ app.get("/forgot-password",(req,res)=>{
 })
 
 app.get("/reset-password/:token",(req,res)=>{
- 
+
   const token = req.params.token;
   res.render("reset-password.ejs",{token:token});
 })
@@ -498,9 +499,9 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
         // const userID = localStorage.getItem('id');
         // const userID = req.params.id;
         const questionList = questions;
-        const userName = req.params.userName;    
+        const userName = req.params.userName;
         // console.log({user_id: userID});
-  
+
         User.findOne({userName}, function(err, foundOne){
           if(err){
             console.log(err);
@@ -508,10 +509,10 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
             // console.log(foundOne);
             const solvedQuestions = foundOne.solvedQuestions;
             res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
-        
+
           }
         })
-  
+
       }
     })
   }
@@ -524,7 +525,7 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
         // const userID = localStorage.getItem('id');
         // const userID = req.params.id;
         const questionList = questions;
-        const userName = req.params.userName;   
+        const userName = req.params.userName;
         // console.log(userID);
 
         User.findOne({userName}, function(err, foundOne){
@@ -535,7 +536,7 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
             const solvedQuestions = foundOne.solvedQuestions;
 
             res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
-           
+
           }
         })
 
@@ -589,7 +590,7 @@ app.get("/addQuestion", (req, res)=> {
 //     catch(error){
 //       console.log(error);
 //     }
-// } 
+// }
 //------------profile route changes-------------
 // app.get("/:id/", requireAuth, function(req, res){
 //   const userName = req.params.id;
@@ -608,13 +609,13 @@ app.get("/addQuestion", (req, res)=> {
   //     //console.log(solvedQuestions);
   //   }
   // })
-  
+
   //   // const solvedQuestions = userOne.solvedQuestions;
   //   // console.log(solvedQuestions);
   //   var solvedQuestionObject = [];
   //   for(let i=0;i<solvedQuestions.length;i++)
   //   {
-      
+
   //     Question.findOne({quesName: solvedQuestions[i]},(err,foundQues)=>{
   //       if(err)
   //       {
@@ -635,7 +636,7 @@ app.get("/addQuestion", (req, res)=> {
   //         });
   //       }
   //       //console.log(solvedQues);
-          
+
   //     })
   //       solvedQuestionObject.push(foundQuestionOne);
   //   }
@@ -654,7 +655,7 @@ app.get("/addQuestion", (req, res)=> {
   //     });
   //  console.log(solvedQuestionObject);
   //res.render("profile.ejs",{userData: foundOne,solvedQuestionObject: solvedQuestionObject});
-    
+
 // })
 
 //profile route
