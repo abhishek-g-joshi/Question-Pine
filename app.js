@@ -94,7 +94,9 @@ const createToken = (id,expIn) =>{
 
 
 // *****************************************************ALL THE POST REQUEST BELOW ************************************************
-
+app.post("/", (req,res)=>{
+  res.redirect("/homepage");
+})
 //POST : User signup route
 app.post("/signup",(req,res)=>{
 
@@ -428,7 +430,23 @@ app.post("/questions/:userName", (req, res)=> {
   })
 })
 
+app.post("/discussion/:userName/create", (req, res)=> {
+  const creator = req.params.userName;
+  const name = req.body.name;
+  const description = req.body.description;
 
+  const newDis = new Discussion({
+    discussionID: name+"_"+creator,
+    discussionName: name,
+    admin: creator,
+    currentMembers: [],
+    requestedMembers: [],
+    msgArray: []
+  })
+
+  newDis.save();
+  res.redirect("/discussion/"+creator);
+})
 
 
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
@@ -551,6 +569,7 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
 });
 
 app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
+  //console.log(req.params.userName);
   res.render("createDiscussionForm.ejs", {creatorUserName: req.params.userName});
 });
 

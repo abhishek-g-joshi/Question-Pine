@@ -1,6 +1,7 @@
 <%- include("partials/header.ejs") -%>
 
-<form class="" action="discussion/<%= creatorUserName%>/create" method="post">
+<form  action="/discussion/<%=creatorUserName%>/create" method="POST">
+
   <input type="text" name="name" value="">
   <input type="text" name="description" value="">
   <button type="submit" name="button">Create</button>

@@ -30,6 +30,12 @@ var DiscussionSchema = new mongoose.Schema({
          required: true
     },
 
+    admin:{
+        type : String,
+        required : true
+    },
+
+
     currentMembers:[String],
 
     requestedMembers:[String],
