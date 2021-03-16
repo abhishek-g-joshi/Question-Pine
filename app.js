@@ -550,8 +550,10 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
 });
 
 app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
-})
+  res.render("createDiscussionForm.ejs", {creatorUserName: req.params.userName});
+});
 
+//print only users discussion: not complete
 app.get("/discussion/:userName", requireAuth, (req, res)=>{
   res.render("discussions.ejs");
 });
