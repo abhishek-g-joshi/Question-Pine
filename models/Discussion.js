@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 //const messageSchematmp = require("./Message");
 
-var messageSchematmp = new mongoose.Schema({
+var messageSchema = new mongoose.Schema({
 
     userName :{
         type : String,
@@ -13,7 +13,7 @@ var messageSchematmp = new mongoose.Schema({
     },
     content :{
         type: String,
-        required: false
+        required: true
     }
 });
 
@@ -34,7 +34,7 @@ var DiscussionSchema = new mongoose.Schema({
 
     requestedMembers:[String],
 
-    msgArray: [messageSchematmp]
+    msgArray: [messageSchema]
 });
 
 module.exports = mongoose.model("Discussion", DiscussionSchema);
