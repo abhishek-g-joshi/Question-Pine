@@ -490,6 +490,7 @@ function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
+
 // Sends the list of Questions and also searches a question
 app.get("/questions/:userName", requireAuth, (req, res)=>{
 
