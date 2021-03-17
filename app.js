@@ -431,20 +431,29 @@ app.post("/questions/:userName", (req, res)=> {
 })
 
 app.post("/discussion/:userName/create", (req, res)=> {
+
+
   const creator = req.params.userName;
   const name = req.body.name;
   const description = req.body.description;
 
-  const newDis = new Discussion({
-    discussionID: name+"_"+creator,
-    discussionName: name,
-    admin: creator,
-    currentMembers: [],
-    requestedMembers: [],
-    msgArray: []
+  Discussion.findOne({discussionID: name+"_"+creator}, (err, findOne)=> {
+    if(findOne){
+      console.log("Already exist");
+    }else{
+      const newDis = new Discussion({
+        discussionID: name+"_"+creator,
+        discussionName: name,
+        admin: creator,
+        currentMembers: [creator],
+        requestedMembers: [],
+        msgArray: []
+      })
+
+      newDis.save();
+    }
   })
 
-  newDis.save();
   res.redirect("/discussion/"+creator);
 })
 
