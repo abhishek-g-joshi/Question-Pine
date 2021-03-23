@@ -187,7 +187,7 @@ app.post("/signin",(req,res)=>{
             }
 
             console.log({ user : user._id });
-            res.redirect("/questions/" + user.userName );
+            res.redirect("/homepage");
           }else{
             errors.password= 'password incorrect';
             return res.status(400).json(errors);
@@ -238,7 +238,7 @@ app.post("/forgot-password",(req,res)=>{
         <h3>Dear ${context.name},</h3>
         <p>You requested for a password reset, kindly use this <a href="${context.url}">link</a> to reset your password</p>
         <br>
-        <p>This link valid for only 20 minutes.</p>
+        <p>This link is valid for only 20 minutes.</p>
         <p>Cheers!</p>
         `,
 
