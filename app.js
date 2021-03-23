@@ -8,6 +8,8 @@ const session = require('express-session')
 const User = require("./models/Users");
 const Profile = require("./models/Profiles");
 const Question = require("./models/Questions");
+const Message = require("./models/Message");
+const Discussion = require("./models/Discussion");
 const mongoose = require("mongoose");
 const flash = require("connect-flash");
 const cookieParser = require('cookie-parser');
@@ -80,7 +82,7 @@ mongoose.connect(process.env.MONGO_URI,
 }
 );
 
-// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
+//mongoose.connect('mongodb://localhost:27017/teamRudras', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -92,7 +94,9 @@ const createToken = (id,expIn) =>{
 
 
 // *****************************************************ALL THE POST REQUEST BELOW ************************************************
-
+app.post("/", (req,res)=>{
+  res.redirect("/homepage");
+})
 //POST : User signup route
 app.post("/signup",(req,res)=>{
 
@@ -117,6 +121,7 @@ app.post("/signup",(req,res)=>{
        email : req.body.email,
        password : req.body.password,
        solvedQuestions: arr,
+
        college: "--",
        dob: "--",
        country: "--",
@@ -124,7 +129,8 @@ app.post("/signup",(req,res)=>{
        contactno:"",
        bio:"Welcome to Q'Pine",
        //solvedCount: val
-
+       reqDiscussions: arr,
+       activeDiscussions: arr
       });
 
       const profileInfo = new Profile({})
@@ -424,7 +430,32 @@ app.post("/questions/:userName", (req, res)=> {
   })
 })
 
+app.post("/discussion/:userName/create", (req, res)=> {
 
+
+  const creator = req.params.userName;
+  const name = req.body.name;
+  const description = req.body.description;
+
+  Discussion.findOne({discussionID: name+"_"+creator}, (err, findOne)=> {
+    if(findOne){
+      console.log("Already exist");
+    }else{
+      const newDis = new Discussion({
+        discussionID: name+"_"+creator,
+        discussionName: name,
+        admin: creator,
+        currentMembers: [creator],
+        requestedMembers: [],
+        msgArray: []
+      })
+
+      newDis.save();
+    }
+  })
+
+  res.redirect("/discussion/"+creator);
+})
 
 
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
@@ -486,6 +517,7 @@ function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
+
 // Sends the list of Questions and also searches a question
 app.get("/questions/:userName", requireAuth, (req, res)=>{
 
@@ -545,10 +577,14 @@ app.get("/questions/:userName", requireAuth, (req, res)=>{
   }
 });
 
+app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
+  //console.log(req.params.userName);
+  res.render("createDiscussionForm.ejs", {creatorUserName: req.params.userName});
+});
 
-
-app.get("/chatroom", requireAuth, (req, res)=>{
-  res.render("chatroom.ejs");
+//print only users discussion: not complete
+app.get("/discussion/:userName", requireAuth, (req, res)=>{
+  res.render("discussions.ejs");
 });
 
 app.get("/leaderboard", requireAuth, (req, res)=>{
@@ -575,6 +611,45 @@ app.get("/aboutus", (req, res)=>{
 app.get("/addQuestion", (req, res)=> {
   res.render("addQuestion.ejs");
 })
+
+
+//profile route
+app.get("/:id", requireAuth, function(req, res){
+  const userName = req.params.id;
+  User.findOne({userName},(err,foundOne)=>{
+    if(foundOne)
+    {
+      res.render("profile.ejs",{userData: foundOne});
+    }else{
+      res.status(404).json(err)
+      // console.log()
+    }
+  })
+
+})
+
+app.get("/:userName/editprofile", requireAuth, function(req, res){
+  res.render("editprofile.ejs");
+})
+
+app.get("/:userName/notifications", requireAuth, function(req, res){
+  res.render("notifications.ejs");
+})
+
+
+
+// *************************************************listening ****************************************************************
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, function(){
+  console.log("server listening on " + PORT);
+})
+
+
+
+
+
+/***************************************Rough Work for testing: DO NOT DELETE *********************************************/
 
 // async function getsolvedQuestionObject(user){
 //     try{
@@ -658,61 +733,37 @@ app.get("/addQuestion", (req, res)=> {
 
 // })
 
-//profile route
-app.get("/:id", requireAuth, function(req, res){
-  const userName = req.params.id;
-  User.findOne({userName},(err,foundOne)=>{
-    if(foundOne)
-    {
-      res.render("profile.ejs",{userData: foundOne});
-    }else{
-      res.status(404).json(err)
-      // console.log()
-    }
-  })
-
-})
-
-app.get("/:userName/editprofile", requireAuth, function(req, res){
-  res.render("editprofile.ejs");
-})
-
-app.get("/:userName/notifications", requireAuth, function(req, res){
-  res.render("notifications.ejs");
-})
-
-
-
-// *************************************************listening ****************************************************************
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, function(){
-  console.log("server listening on " + PORT);
-})
-
-
-
-
-
-
-
-
-
-
-var solvedQuestionObject = new Array();
-
-async function getsolvedQuestionObject(user){
-  try{
-    const foundOne = User.findOne({userName:user});
-    const solvedQuestions = foundOne.solvedQuestions;
-    // var solvedQuestionObject = [];
-    for(let i=0;i<solvedQuestions.length;i++)
-    {
-      var foundQuestionOne=await Question.findOne({quesName:solvedQuestions[i]});
-      solvedQuestionObject.push(foundQuestionOne);
-    }
-  }
-  catch(error){
-    console.log(error);
-  }
-}
+// var solvedQuestionObject = new Array();
+//
+// async function getsolvedQuestionObject(user){
+//   try{
+//     const foundOne = User.findOne({userName:user});
+//     const solvedQuestions = foundOne.solvedQuestions;
+//     // var solvedQuestionObject = [];
+//     for(let i=0;i<solvedQuestions.length;i++)
+//     {
+//       var foundQuestionOne=await Question.findOne({quesName:solvedQuestions[i]});
+//       solvedQuestionObject.push(foundQuestionOne);
+//     }
+//   }
+//   catch(error){
+//     console.log(error);
+//   }
+// }
+//
+//
+// const msg = new Message({
+//   userName:"x",
+//   Datetime: Date(),
+//   content: "Hi"
+// })
+//
+// const newDis = new Discussion({
+//   discussionID: "x",
+//   discussionName: "y",
+//   currentMembers: ["x", "y"],
+//   requestedMembers: ["z"],
+//   msgArray: [msg]
+// })
+//
+// newDis.save();

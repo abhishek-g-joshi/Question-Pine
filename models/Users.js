@@ -47,6 +47,11 @@ var UserSchema = new mongoose.Schema({
         required:false
     },
     solvedQuestions: [String],
+
+    activeDiscussions: [String],
+
+    reqDiscussions: [String],
+
     reset_password_token: {
         type: String
     },

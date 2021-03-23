@@ -1,0 +1,13 @@
+<%- include("partials/header.ejs") -%>
+
+<form  action="/discussion/<%=creatorUserName%>/create" method="POST">
+  <label for="">Discussion Name</label>
+  <input type="text" name="name" value="">
+
+  <label for="">Description</label>
+  <input type="text" name="description" value="">
+  
+  <button type="submit" name="button">Create</button>
+</form>
+
+<%- include("partials/footer.ejs") -%>
