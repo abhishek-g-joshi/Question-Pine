@@ -30,6 +30,17 @@
   text-align: right; 
 }
 
+.disgrow {
+  height: 55px;
+  width: 100%;
+  float: left;
+  position: relative;
+  text-align: left;
+  overflow: hidden;
+  margin-bottom: 30px;
+  border: 1px solid black
+  
+}
 
 /* Style The Dropdown Button */
 .dropbtn {

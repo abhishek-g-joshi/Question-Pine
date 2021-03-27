@@ -1,13 +1,22 @@
 <%- include("partials/header.ejs") -%>
 
-<form  action="/discussion/<%=creatorUserName%>/create" method="POST">
-  <label for="">Discussion Name</label>
-  <input type="text" name="name" value="">
+<div class="login-form">
+  <form action="/discussion/<%=creatorUserName%>/create" method="POST">
+  <div class="avatar">
+    <img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar">
+  </div>
+      <h2 class="text-center">Create your Discussion Group</h2>   
+      <div class="form-group">
+        <input type="text" name="name" value="" class="form-control" placeholder="Discussion Name" >
+      </div>
+      <div class="form-group">
+          <input type="text" name="description" value="" class="form-control" placeholder="Description" >
+      </div>      
+      <div class="form-group">
+          <button type="submit" name="button" class="btn btn-primary btn-lg btn-block">Create Group</button>
+      </div>
+  </form>
+</div>
 
-  <label for="">Description</label>
-  <input type="text" name="description" value="">
-  
-  <button type="submit" name="button">Create</button>
-</form>
 
 <%- include("partials/footer.ejs") -%>
