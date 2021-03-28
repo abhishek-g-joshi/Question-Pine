@@ -30,8 +30,8 @@ const REDIRECT_URI = process.env.REDIRECT_URI;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
-// const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI);
-// oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI);
+oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
 
 const app = express();
 
@@ -48,19 +48,19 @@ app.use(cookieParser());
 
 
 
-// const accessToken = oAuth2Client.getAccessToken();
+const accessToken = oAuth2Client.getAccessToken();
 
-// let transporter = nodemailer.createTransport({
-// 	service: 'gmail',
-// 	auth: {
-// 		type: 'OAuth2',
-// 		user: email,
-// 		clientId: CLIENT_ID,
-// 		clientSecret: CLIENT_SECRET,
-// 		refreshToken: REFRESH_TOKEN,
-// 		accessToken: accessToken,
-// 	},
-// });
+let transporter = nodemailer.createTransport({
+	service: 'gmail',
+	auth: {
+		type: 'OAuth2',
+		user: email,
+		clientId: CLIENT_ID,
+		clientSecret: CLIENT_SECRET,
+		refreshToken: REFRESH_TOKEN,
+		accessToken: accessToken,
+	},
+});
 
 
 
@@ -204,123 +204,123 @@ app.post("/signin",(req,res)=>{
 })
 
 
-//forgot password post route
-// app.post("/forgot-password",(req,res)=>{
+// forgot password post route
+app.post("/forgot-password",(req,res)=>{
 
-//   async.waterfall([
-//     function(done) {
-//       User.findOne({
-//         email: req.body.email
-//       }).exec(function(err, user) {
-//         if (user) {
-//           done(err, user);
-//         } else {
-//           done('User not found.');
-//         }
-//       });
-//     },
-//     function(user, done) {
-//       // create the random token
-//       crypto.randomBytes(50, function(err, buffer) {
-//         var token = buffer.toString('hex');
-//         done(err, user, token);
-//       });
-//     },
-//     function(user, token, done) {
-//       User.findByIdAndUpdate({ _id: user._id }, { reset_password_token: token, reset_password_expires: Date.now() + 20*60*1000 }, { upsert: true, new: true }).exec(function(err, new_user) {
-//         done(err, token, new_user);
-//       });
-//     },
-//     function(token, user, done) {
-//       var  context =  {
-//         url: CLIENT_URL+'/reset-password/' + token,
-//         name: user.userName
-//       };
-//       var data = {
-//         from: 'Question Pine <' + email + '>',
-//         to: user.email,
-//         subject: 'Password help has arrived!',
-//         html:`
-//         <h3>Dear ${context.name},</h3>
-//         <p>You requested for a password reset, kindly use this <a href="${context.url}">link</a> to reset your password</p>
-//         <br>
-//         <p>This link valid for only 20 minutes.</p>
-//         <p>Cheers!</p>
-//         `,
+  async.waterfall([
+    function(done) {
+      User.findOne({
+        email: req.body.email
+      }).exec(function(err, user) {
+        if (user) {
+          done(err, user);
+        } else {
+          done('User not found.');
+        }
+      });
+    },
+    function(user, done) {
+      // create the random token
+      crypto.randomBytes(50, function(err, buffer) {
+        var token = buffer.toString('hex');
+        done(err, user, token);
+      });
+    },
+    function(user, token, done) {
+      User.findByIdAndUpdate({ _id: user._id }, { reset_password_token: token, reset_password_expires: Date.now() + 20*60*1000 }, { upsert: true, new: true }).exec(function(err, new_user) {
+        done(err, token, new_user);
+      });
+    },
+    function(token, user, done) {
+      var  context =  {
+        url: CLIENT_URL+'/reset-password/' + token,
+        name: user.userName
+      };
+      var data = {
+        from: 'Question Pine <' + email + '>',
+        to: user.email,
+        subject: 'Password help has arrived!',
+        html:`
+        <h3>Dear ${context.name},</h3>
+        <p>You requested for a password reset, kindly use this <a href="${context.url}">link</a> to reset your password</p>
+        <br>
+        <p>This link valid for only 20 minutes.</p>
+        <p>Cheers!</p>
+        `,
 
-//       };
-//       // console.log({userData:data});
-//       transporter.sendMail(data, function(err) {
-//         if (!err) {
-//           // console.log({userData:data});
-//           return res.json({ message: 'Kindly check your email for further instructions' });
-//         } else {
-//           return done(err);
-//         }
-//       });
-//     }
-//   ],
-//   function(err) {
-//     return res.status(422).json({ message: err });
-//   });
-// });
+      };
+      // console.log({userData:data});
+      transporter.sendMail(data, function(err) {
+        if (!err) {
+          // console.log({userData:data});
+          return res.json({ message: 'Kindly check your email for further instructions' });
+        } else {
+          return done(err);
+        }
+      });
+    }
+  ],
+  function(err) {
+    return res.status(422).json({ message: err });
+  });
+});
 
-// //reset password POST route
-// app.post("/reset-password",(req,res,next)=>{
+//reset password POST route
+app.post("/reset-password",(req,res,next)=>{
 
-//   if (req.body.password === req.body.confirmPassword) {
-//     const filter = {reset_password_token: req.body.token,
-//       reset_password_expires: {
-//         $gte: Date.now()
-//       }
-//     }
+  if (req.body.password === req.body.confirmPassword) {
+    const filter = {reset_password_token: req.body.token,
+      reset_password_expires: {
+        $gte: Date.now()
+      }
+    }
 
-//     const salt = bcrypt.genSaltSync(10);
-//     const hash = bcrypt.hashSync(req.body.password, salt);
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.password, salt);
 
-//     const update = {
-//       reset_password_token : undefined,
-//       reset_password_expires : undefined,
-//       password : hash
-//     }
+    const update = {
+      reset_password_token : undefined,
+      reset_password_expires : undefined,
+      password : hash
+    }
 
-//   User.findOneAndUpdate(filter,update,{new:true}
-//     ).exec(function(err, user){
-//     // console.log({user:user});
-//     if (!err && user) {
+  User.findOneAndUpdate(filter,update,{new:true}
+    ).exec(function(err, user){
+    // console.log({user:user});
+    if (!err && user) {
 
-//         var data = {
-//           from: 'Question Pine <' + email + '>',
-//           to: user.email,
-//           subject: 'Password Reset Confirmation',
-//           html:`
-//             <h3>Dear ${user.userName},</h3>
-//             <p>Password reset Successfully Done!</p>
-//             <br>
-//             <p>Cheers!</p>
-//             `
-//         };
-//         transporter.sendMail(data, function(err) {
-//           if (!err) {
-//             res.json({ message: 'Password reset' });
-//             return res.redirect('/signin')
-//           } else {
-//             return done(err);
-//           }
-//         });
+        var data = {
+          from: 'Question Pine <' + email + '>',
+          to: user.email,
+          subject: 'Password Reset Confirmation',
+          html:`
+            <h3>Dear ${user.userName},</h3>
+            <p>Password reset Successfully Done!</p>
+            <br>
+            <p>Cheers!</p>
+            `
+        };
+        transporter.sendMail(data, function(err) {
+          if (!err) {
+            res.json({ message: 'Password reset' });
+            return res.redirect('/signin')
+          } else {
+            return done(err);
+          }
+        });
 
-//       }else {
-//         return res.status(400).send({
-//           message: 'Password reset token is invalid or has expired.'
-//         });
-//       }
-//     });
-//   }else{
-//     return res.status(422).send({
-//       message: 'Passwords do not match'
-//     });
-//   }
-// });
+      }else {
+        return res.status(400).send({
+          message: 'Password reset token is invalid or has expired.'
+        });
+      }
+    });
+  }else{
+    return res.status(422).send({
+      message: 'Passwords do not match'
+    });
+  }
+});
 
 function phonenumber(contactno)
 {
