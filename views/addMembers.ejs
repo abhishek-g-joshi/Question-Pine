@@ -1,0 +1,41 @@
+<%- include("partials/header.ejs") -%>
+<div class="container">
+    <header class="jumbotron">
+      <h3 class="about-section"><b>Add members to [particular group name]</b></h3>
+          <form action="/discussion/<%= user.userName %>/addmembers" method="GET" class="form-inline">
+            <div class="form-group">
+              <input type="text" name="search" placeholder="Search a User..." class="search-form-control">
+              <input type="submit" value="search" class="btn btn-default btn-primary">
+            </div>
+          </form>
+      </header>
+    </div>
+
+<div class="container">
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+      <table class="table">
+        <thead>
+          <th>Rank</th>
+          <th>Username</th>
+        </thead>
+        <tbody>
+
+          <%for(let i=0; i<users.length; i++){%>
+
+            <tr>
+              <td> <%= i+1 %> </td>
+              <td style="color: crimson;"><a href="/<%= users[i].userName %>"> <%=users[i].userName%></a></td>
+
+              <td><button type="button" class="btn btn-success">Add</button></td>
+            </tr>
+          <%}%>
+
+
+      </tbody>
+      </table>
+
+    </div>
+</div>
+
+<%- include("partials/footer.ejs") -%>
