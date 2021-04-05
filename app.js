@@ -430,9 +430,7 @@ app.post("/questions/:userName", (req, res)=> {
   })
 })
 
-app.post("/discussion/:userName/create", (req, res)=> {
-
-
+app.post("/discussion/:userName/create",requireAuth, (req, res)=> {
   const creator = req.params.userName;
   const name = req.body.name;
   const description = req.body.description;
@@ -452,11 +450,60 @@ app.post("/discussion/:userName/create", (req, res)=> {
 
       newDis.save();
     }
+  });
+  Users.findOne({userName:creator},(err,user)=>{
+    if(err){
+      console.log(err.message);
+    }else{
+      user.activeDiscussions.push(name);
+    }
+    user.save();
+    res.redirect("/discussion/"+creator);
+   
   })
-
-  res.redirect("/discussion/"+creator);
 })
 
+//POST route to addmember in discussion
+app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=>{
+  const discussionName = req.body.discussionName;
+  const admin = req.body.admin;
+  const discussionID = req.body.discussionID;
+  const newMember = req.body.newMember;
+  Discussion.findOne({discussionID},(err,foundDiscussion)=>{
+    if(err){
+      return res.status(400).json(err);
+    }
+    else{
+      //  foundDiscussion.requestedMembers.forEach(member => {
+      //    if(member === newMember){
+      //      console.log('already  requested');
+      //       res.redirect("/discussion/"+admin+"/"+discussionName+"/addmembers");
+      //       const error = 'already  requested';
+      //       // return res.status(400).json(error);
+      //    }
+      //    else{
+          
+      //    }
+      //  });
+      foundDiscussion.requestedMembers.push(newMember);
+          foundDiscussion.save(); 
+          User.findOne({userName:newMember},(err,foundUser)=>{
+            if(err){
+              console.log(err.message);
+            }
+            else{
+              // console.log({user:foundUser});
+              foundUser.reqDiscussions.push(discussionName);
+              foundUser.save();
+              res.redirect("/discussion/"+admin+"/"+discussionName+"/addmembers");
+            }
+          })
+    }
+  })
+  
+    // console.log("member added successfully")
+    // console.log(discussionID);
+})
 
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
 
@@ -583,14 +630,19 @@ app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
 });
 
 //print only users discussion: not complete
-app.get("/discussion/:userName", requireAuth, (req, res)=>{
-  
+app.get("/discussion/:userName", checkUser, (req, res)=>{
+  const userName = req.params.userName;
+
   res.render("discussions.ejs",{creatorUserName: req.params.userName});
 });
 
 // add members to a particular group 
 //[have to add the specific groupname in the url]
-app.get("/discussion/:username/addmembers", requireAuth, (req, res)=>{
+app.get("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=>{
+  const activeDiscussion = req.params.discussion;
+  const admin = req.params.userName;
+  const discussionID = activeDiscussion+'_'+admin;
+  // console.log(discussionID);
   if(req.query.search)
   {
     const regex = new RegExp(escapeRegex(req.query.search), 'gi');
@@ -598,7 +650,26 @@ app.get("/discussion/:username/addmembers", requireAuth, (req, res)=>{
       if(err){
         console.log(err);
       }else {
-        res.render("addMembers.ejs", {users: users});
+        User.find({}, (err, users)=> {
+          if(err){
+            console.log(err);
+          }else {
+            Discussion.findOne({discussionName:activeDiscussion},(err,discussion)=>{
+              if(err)
+              {
+                console.log('Not found discussion');
+              }
+              else{
+                const requestedList = discussion.requestedMembers;
+                const acceptedList = discussion.currentMembers;
+                console.log(requestedList);
+                 res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
+              }
+            
+            })
+            
+          }
+        })
       }
     })
   }
@@ -607,7 +678,20 @@ app.get("/discussion/:username/addmembers", requireAuth, (req, res)=>{
       if(err){
         console.log(err);
       }else {
-        res.render("addMembers.ejs", {users: users});
+        Discussion.findOne({discussionName:activeDiscussion},(err,discussion)=>{
+          if(err)
+          {
+            console.log('Not found discussion');
+          }
+          else{
+            const requestedList = discussion.requestedMembers;
+            const acceptedList = discussion.currentMembers;
+            console.log(requestedList);
+             res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
+          }
+        
+        })
+        
       }
     })
   }
