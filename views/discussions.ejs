@@ -10,7 +10,7 @@
           <input type="submit" value="search" class="btn btn-default btn-primary">
         </div>
       </form>
-      <form action="/discussion/<%=creatorUserName%>/create" method="GET">
+      <form action="/discussion/<%=user.userName%>/create" method="GET">
           <button type="submit" class="btn btn-primary" style="float: right;"><span class="glyphicon glyphicon-plus"></span> New Group</button>
       </form>
     </div>
@@ -18,39 +18,23 @@
 </div>
 <div class="container">
     <div class="panel panel-default">
-
+      <% for(let i=0;i<user.activeDiscussions.length;i++){ %>
         <div class="disgrow">
           <table class="table">
               <thead>
-                  <div class="group-notification">Group 1
-                          <button type="button" class="btn btn-danger">Open</button>
-                          <button type="button" class="btn btn-success">Add Members</button>
+                <form  action="/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" method="GET">
+                  <div class="group-notification">
+                    <%= user.activeDiscussions[i] %>
+                      <input type="hidden" 
+                      name="activeDiscussion" value="<%= user.activeDiscussions[i] %>"/>
+                      <button  type="button" class="btn btn-danger">Open</button>
+                          <button type="submit" class="btn btn-success">Add Members</button>    
                   </div>
-                </thead>
+                </form>
+              </thead>
           </table>
-      </div>
-
-        <div class="disgrow">
-          <table class="table">
-              <thead>
-                  <div class="group-notification">Group 2
-                    <button type="button" class="btn btn-danger">Open</button>
-                    <button type="button" class="btn btn-success">Add Members</button>
-                  </div>
-                </thead>
-          </table>
-      </div>
-
-        <div class="disgrow">
-          <table class="table">
-              <thead>
-                  <div class="group-notification">Group 3
-                    <button type="button" class="btn btn-danger">Open</button>
-                    <button type="button" class="btn btn-success">Add Members</button>
-                  </div>
-                </thead>
-          </table>
-      </div>  
+        </div>
+      <% } %>
     </div>
 </div>
 
