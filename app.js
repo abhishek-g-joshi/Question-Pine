@@ -449,12 +449,11 @@ app.post("/discussion/:userName/create", (req, res)=> {
         requestedMembers: [],
         msgArray: []
       })
-
       newDis.save();
     }
   })
 
-  res.redirect("/discussion/"+creator);
+  res.redirect("/discussion/"+creator+"/"+name+"_"+creator+"/add");
 })
 
 
@@ -598,11 +597,24 @@ app.get("/leaderboard", requireAuth, (req, res)=>{
       users.sort((a,b) => (a.solvedQuestions.length < b.solvedQuestions.length) ? 1 : ((b.solvedQuestions.length < a.solvedQuestions.length) ? -1 : 0))
 
       console.log(users);
-      res.render("leaderboard", {users: users});
+      res.render("leaderboard.ejs", {users: users});
     }
   })
 
 });
+
+//res.redirect("/discussion/"+creator+"/"+name+"_"+creator+"/add");
+
+app.get("/discussion/:admin/:disName/add", (req, res)=>{
+  User.find({}, (err, users)=>{
+    if(err){
+      console.log(err);
+    }else{
+      //res.render("addMembers.ejs", {users: users});
+      res.redirect("/homepage");
+    }
+  })
+})
 
 app.get("/aboutus", (req, res)=>{
   res.render("aboutus.ejs");
