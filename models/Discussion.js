@@ -35,6 +35,7 @@ var DiscussionSchema = new mongoose.Schema({
         required : true
     },
 
+    description: String,
 
     currentMembers:[String],
 

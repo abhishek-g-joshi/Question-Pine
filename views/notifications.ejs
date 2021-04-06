@@ -3,80 +3,27 @@
 <div class="container">
     <header class="jumbotron">
       <h3 class="about-section"><b>Notifications</b></h3>
-          
+
     </header>
 </div>
-<div class="container">
-    <div class="panel panel-default">
-        <% for(let i=0;i<requestedDiscussionArray.length;i++){ %>
-        <div class="grow">
-            <table class="table">
-               <form action="/<%= user.userName %>/notifications" method="POST">
-                    <thead>
+<div class="">
+  <%console.log(requestedDiscussionArray)%>
+  <%for(let i=0; i<requestedDiscussionArray.length; i++){%>
 
-                        <div class="group-notification"><%= requestedDiscussionArray[i].discussionID %>
-                            <input type="hidden" name="discussionID" value="<%=requestedDiscussionArray[i].discussionID %>">
-                            <button type="submit" class="btn btn-danger">Deny</button>
-                            <button type="submit" class="btn btn-success">Accept</button>
-                        </div>
-                    </thead>
-                </form>
-                <!-- <div class="group-description">
-                    <tbody>
-                        <tr>
-                            <td>Group Description</td>
-                        </tr>
-                        <tr>
-                            <td>Group Members</td>
-                        </tr>
-                    </tbody>
-                </div> -->
-                
-            </table>
-        </div>
-        <%}%>
-        <!-- <div class="grow">
-            <table class="table">
-                <thead>
-                    <div class="group-notification">Tycse
-                            <button type="button" class="btn btn-danger">Deny</button>
-                            <button type="button" class="btn btn-success">Accept</button>
-                    </div>
-                </thead>
-                <div class="group-description">
-                    <tbody>
-                        <tr>
-                            <td>Group Description</td>
-                        </tr>
-                        <tr>
-                            <td>Group Members</td>
-                        </tr>
-                    </tbody>
-                </div>
-            </table>
-        </div> -->
+    <form class="" action="index.html" method="post">
 
-        <!-- <div class="grow">
-            <table class="table">
-                <thead>
-                    <div class="group-notification">Tycse
-                            <button type="button" class="btn btn-danger">Deny</button>
-                            <button type="button" class="btn btn-success">Accept</button>
-                    </div>
-                </thead>
-                <div class="group-description">
-                    <tbody>
-                        <tr>
-                            <td>Group Description</td>
-                        </tr>
-                        <tr>
-                            <td>Group Members</td>
-                        </tr>
-                    </tbody>
-                </div>
-            </table>
-        </div> -->
-    </div>
+      <p><%=requestedDiscussionArray[i].discussionName%></p>
+      <p><%=requestedDiscussionArray[i].description%></p>
+  <%  const activeMembers = requestedDiscussionArray[i].currentMembers;%>
+  <%    for(let j=0; j<activeMembers.length; j++){%>
+
+          <p><%=activeMembers[j]%></p>
+  <%    }%>
+
+
+    </form>
+  <%}%>
+
 </div>
 
 

@@ -20,7 +20,6 @@ const populateModelSymbol = require('../symbols').populateModelSymbol;
 module.exports = function getSchemaTypes(schema, doc, path) {
   const pathschema = schema.path(path);
   const topLevelDoc = doc;
-
   if (pathschema) {
     return pathschema;
   }
@@ -33,7 +32,6 @@ module.exports = function getSchemaTypes(schema, doc, path) {
     while (p--) {
       trypath = parts.slice(0, p).join('.');
       foundschema = schema.path(trypath);
-
       if (foundschema == null) {
         continue;
       }
@@ -117,7 +115,6 @@ module.exports = function getSchemaTypes(schema, doc, path) {
               ret.$isUnderneathDocArray = ret.$isUnderneathDocArray ||
                 !foundschema.schema.$isSingleNested;
             }
-
             return ret;
           }
         } else if (p !== parts.length &&
@@ -153,7 +150,6 @@ module.exports = function getSchemaTypes(schema, doc, path) {
             ret.$isUnderneathDocArray = ret.$isUnderneathDocArray ||
               !model.schema.$isSingleNested;
           }
-
           return ret;
         }
       }
@@ -173,19 +169,16 @@ module.exports = function getSchemaTypes(schema, doc, path) {
             nestedPath.concat(parts.slice(0, p))
           );
 
-          if (ret) {
+          if (ret != null) {
             ret.$isUnderneathDocArray = ret.$isUnderneathDocArray ||
               !schema.$isSingleNested;
+            return ret;
           }
-
-          return ret;
         }
       }
-
       return foundschema;
     }
   }
-
   // look for arrays
   const parts = path.split('.');
   for (let i = 0; i < parts.length; ++i) {

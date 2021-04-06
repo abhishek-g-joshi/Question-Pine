@@ -72,18 +72,18 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-mongoose.connect(process.env.MONGO_URI,
-{
-  dbName : process.env.DB_NAME,
-  user: process.env.MONGO_USER,
-  pass: process.env.MONGO_PASSWORD,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false
-}
-);
+// mongoose.connect(process.env.MONGO_URI,
+// {
+//   dbName : process.env.DB_NAME,
+//   user: process.env.MONGO_USER,
+//   pass: process.env.MONGO_PASSWORD,
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useFindAndModify: false
+// }
+// );
 
-// mongoose.connect('mongodb://localhost:27017/teamRudras', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -444,6 +444,7 @@ app.post("/discussion/:userName/create",requireAuth, (req, res)=> {
         discussionID: name+"_"+creator,
         discussionName: name,
         admin: creator,
+        description: description,
         currentMembers: [creator],
         requestedMembers: [],
         msgArray: []
@@ -461,7 +462,7 @@ app.post("/discussion/:userName/create",requireAuth, (req, res)=> {
     }
     user.save();
     res.redirect("/discussion/"+creator);
-   
+
   })
 })
 
@@ -484,11 +485,11 @@ app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)
       //       // return res.status(400).json(error);
       //    }
       //    else{
-          
+
       //    }
       //  });
       foundDiscussion.requestedMembers.push(newMember);
-          foundDiscussion.save(); 
+          foundDiscussion.save();
           User.findOne({userName:newMember},(err,foundUser)=>{
             if(err){
               console.log(err.message);
@@ -502,7 +503,7 @@ app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)
           })
     }
   })
-  
+
     // console.log("member added successfully")
     // console.log(discussionID);
 })
@@ -519,7 +520,7 @@ app.post("/:userName/notifications",requireAuth,(req,res)=>{
       foundUser.reqDiscussions = arrayRemove(foundUser.reqDiscussions,discussionID);
       foundUser.activeDiscussions.push(discussionID);
       foundUser.save();
-      Discussion.findOne({discussionID:discussionID},(err,foundDiscussion)=>{
+      Discussion.find({},(err,foundDiscussions)=>{
         if(err){
           console.log(err.message);
         }else{
@@ -530,7 +531,7 @@ app.post("/:userName/notifications",requireAuth,(req,res)=>{
           res.redirect("/"+userName+"/notifications");
         }
       })
-      
+
     }
   })
 })
@@ -666,7 +667,7 @@ app.get("/discussion/:userName", checkUser, (req, res)=>{
   res.render("discussions.ejs",{creatorUserName: req.params.userName});
 });
 
-// add members to a particular group 
+// add members to a particular group
 //[have to add the specific groupname in the url]
 app.get("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=>{
   const activeDiscussion = req.params.discussion;
@@ -695,9 +696,9 @@ app.get("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=
                 console.log(requestedList);
                  res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
               }
-            
+
             })
-            
+
           }
         })
       }
@@ -719,9 +720,9 @@ app.get("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=
             console.log(requestedList);
              res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
           }
-        
+
         })
-        
+
       }
     })
   }
@@ -777,34 +778,35 @@ app.get("/:userName/editprofile", requireAuth, function(req, res){
 //notification GET route
 app.get("/:userName/notifications", requireAuth, function(req, res){
   const userName = req.params.userName;
-
   User.findOne({userName},(err,foundUser)=>{
     if(err){
       console.log(err.message);
-    }
-    // console.log({requestedDiscussionArray:requestedDiscussionArray})
-    const reqDiscussions = foundUser.reqDiscussions;
-    console.log(reqDiscussions);
-    //  requestedDiscussionArray = [];
-   // while(requestedDiscussionArray.length>=1){
-  //   requestedDiscussionArray.pop();
-  // }
-    for(let i=0;i<reqDiscussions.length;i++)
-    {
-      Discussion.findOne({discussionID:reqDiscussions[i]},(err,foundDiscussion)=>{
+    }else{
+      const reqDiscussions = foundUser.reqDiscussions;
+      Discussion.find({},(err,foundDiscussions)=>{
         if(err){
-          console.log(err.message);
+          console.log(err);
         }else{
-          requestedDiscussionArray.push(foundDiscussion);
+          const requestedDiscussionArray = [];
+          //console.log(reqDiscussions);
+          //console.log(foundDiscussions);
+
+          for(let i=0; i<reqDiscussions.length; i++){
+            for(let j=0; j<foundDiscussions.length; j++){
+              if(reqDiscussions[i] === foundDiscussions[j].discussionID){
+                requestedDiscussionArray.push(foundDiscussions[j]);
+              }
+            }
+          }
+          console.log(requestedDiscussionArray);
+
+          res.render("notifications.ejs", {requestedDiscussionArray: requestedDiscussionArray});
         }
       })
     }
-    console.log({requestedDiscussionArray:requestedDiscussionArray})
-
-    res.render("notifications.ejs",{requestedDiscussionArray});
   })
-  
 })
+
 
 
 
