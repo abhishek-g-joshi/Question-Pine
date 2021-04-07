@@ -10,18 +10,25 @@
   <%console.log(requestedDiscussionArray)%>
   <%for(let i=0; i<requestedDiscussionArray.length; i++){%>
 
-    <form class="" action="index.html" method="post">
+    <form action="/storys/5" method="post">
 
-      <p><%=requestedDiscussionArray[i].discussionName%></p>
+      <!-- form fields here -->
+
+      <p>Group Name : <%=requestedDiscussionArray[i].discussionName%></p>
       <p><%=requestedDiscussionArray[i].description%></p>
-  <%  const activeMembers = requestedDiscussionArray[i].currentMembers;%>
-  <%    for(let j=0; j<activeMembers.length; j++){%>
+      <p>Group members:</p>
+      <%const activeMembers = requestedDiscussionArray[i].currentMembers;%>
+      <%for(let j=0; j<activeMembers.length; j++){%>
 
           <p><%=activeMembers[j]%></p>
-  <%    }%>
+      <%}%>
 
+      <button type="submit" formaction="/discussion/<%=requestedDiscussionArray[i].discussionID%>/<%=user.userName%>/accept">Accept</button>
+      <button type="submit" formaction="/discussion/<%=requestedDiscussionArray[i].discussionID%>/<%=user.userName%>/accept">Reject</button>
 
     </form>
+
+
   <%}%>
 
 </div>
