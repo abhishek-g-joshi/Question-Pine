@@ -577,7 +577,6 @@ app.post("/discussion/:discussionID/:userName/reject", (req, res)=>{
       foundOne.requestedMembers = arrayRemove(foundOne.requestedMembers, userName);
       foundOne.save();
     }
-
   })
 
   User.findOne({userName: userName}, (err, foundOne)=>{
@@ -588,9 +587,8 @@ app.post("/discussion/:discussionID/:userName/reject", (req, res)=>{
       foundOne.save();
     }
   })
-
-
-}
+  res.redirect("/"+userName+"/notifications");
+})
 
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
 
@@ -863,29 +861,7 @@ app.get("/:userName/notifications", requireAuth, function(req, res){
   })
 })
 
-app.post("/discussion/:discussionID/:userName/reject", (req, res)=>{
-  const discussionID = req.params.discussionID;
-  const userName = req.params.userName;
 
-  Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
-    if(err){
-      console.log(err);
-    }else{
-      foundOne.requestedMembers = arrayRemove(foundOne.requestedMembers, userName);
-      foundOne.save();
-    }
-  })
-
-  User.findOne({userName: userName}, (err, foundOne)=>{
-    if(err){
-      console.log(err);
-    }else{
-      foundOne.reqDiscussions = arrayRemove(foundOne.reqDiscussions, discussionID);
-      foundOne.save();
-    }
-  })
-  res.redirect("/"+userName+"/notifications");
-})
 
 
 
