@@ -508,39 +508,11 @@ app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)
     // console.log(discussionID);
 })
 
-//POST route to accept or deny request of discussion
-app.post("/:userName/notifications",requireAuth,(req,res)=>{
-  const userName = req.params.userName;
-  const discussionID = req.body.discussionID;
-  User.findOne({userName},(err,foundUser)=>{
-    if(err){
-      console.log(err.message);
-    }else{
-      // console.log(foundUser);
-      foundUser.reqDiscussions = arrayRemove(foundUser.reqDiscussions,discussionID);
-      foundUser.activeDiscussions.push(discussionID);
-      foundUser.save();
-      Discussion.find({},(err,foundDiscussions)=>{
-        if(err){
-          console.log(err.message);
-        }else{
-          console.log(foundDiscussion);
-          foundDiscussion.requestedMembers = arrayRemove(foundDiscussion.requestedMembers,userName);
-          foundDiscussion.currentMembers.push(userName);
-          foundDiscussion.save();
-          res.redirect("/"+userName+"/notifications");
-        }
-      })
 
-    }
-  })
-})
 
 app.post("/discussion/:discussionID/:userName/accept", (req, res)=>{
   const discussionID = req.params.discussionID;
   const userName = req.params.userName;
-
-
 
   Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
     if(err){
