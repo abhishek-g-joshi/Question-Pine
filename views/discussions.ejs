@@ -25,10 +25,11 @@
                 <form  action="/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" method="GET">
                   <div class="group-notification">
                     <%= user.activeDiscussions[i] %>
-                      <input type="hidden" 
+                      <input type="hidden"
                       name="activeDiscussion" value="<%= user.activeDiscussions[i] %>"/>
-                      <button  type="button" class="btn btn-danger">Open</button>
-                          <button type="submit" class="btn btn-success">Add Members</button>    
+
+                          <button  type="submit" formaction= "/discussion/<%=user.userName%>/<%=user.activeDiscussions[i]%>/open" class="btn btn-danger">Open</button>
+                          <button type="submit" formaction= "/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" class="btn btn-success">Add Members</button>
                   </div>
                 </form>
               </thead>

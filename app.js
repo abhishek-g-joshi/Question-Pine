@@ -72,18 +72,18 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-mongoose.connect(process.env.MONGO_URI,
-{
-  dbName : process.env.DB_NAME,
-  user: process.env.MONGO_USER,
-  pass: process.env.MONGO_PASSWORD,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false
-}
-);
+// mongoose.connect(process.env.MONGO_URI,
+// {
+//   dbName : process.env.DB_NAME,
+//   user: process.env.MONGO_USER,
+//   pass: process.env.MONGO_PASSWORD,
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useFindAndModify: false
+// }
+// );
 
-// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -452,18 +452,20 @@ app.post("/discussion/:userName/create",requireAuth, (req, res)=> {
 
       newDis.save();
       // res.redirect("/discussion/"+creator);
-    }
-  });
-  Users.findOne({userName:creator},(err,user)=>{
-    if(err){
-      console.log(err.message);
-    }else{
-      user.activeDiscussions.push(name+"_"+creator);
-    }
-    user.save();
-    res.redirect("/discussion/"+creator);
+      Users.findOne({userName:creator},(err,user)=>{
+        if(err){
+          console.log(err.message);
+        }else{
+          user.activeDiscussions.push(name+"_"+creator);
+        }
+        user.save();
 
-  })
+
+      })
+    }
+    res.redirect("/discussion/"+creator);
+  });
+
 })
 
 //POST route to addmember in discussion
@@ -833,7 +835,36 @@ app.get("/:userName/notifications", requireAuth, function(req, res){
   })
 })
 
+app.get("/discussion/:userName/:discussionID/open", (req, res)=>{
+  const userName = req.params.userName;
+  const discussionId = req.params.discussionID;
 
+  User.findOne({userName: userName}, (err, foundOne)=>{
+    if(err){
+      console.log(err);
+    }else{
+      let has = false;
+      for(let i=0; i<foundOne.activeDiscussions.length; i++){
+        if(foundOne.activeDiscussions[i] === discussionId){
+          has = true;
+          break;
+        }
+      }
+
+      if(has){
+        Discussion.findOne({discussionID: discussionId}, (err, foundOne)=>{
+          if(err){
+            console.log(err);
+          }else{
+            res.render("openDiscussion.ejs", {discussionObject: foundOne});
+          }
+        })
+
+
+      }
+    }
+  })
+})
 
 
 
