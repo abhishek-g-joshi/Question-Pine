@@ -512,7 +512,7 @@ app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)
 
 
 
-app.post("/discussion/:discussionID/:userName/accept", (req, res)=>{
+app.post("/discussion/:discussionID/:userName/accept", (req, auth, res)=>{
   const discussionID = req.params.discussionID;
   const userName = req.params.userName;
 
@@ -586,6 +586,32 @@ app.post("/discussion/:userName/:discussionID/newMsg", (req, res)=>{
     res.redirect("/discussion/"+userName+"/"+discussionID+"/open");
   })
 
+})
+
+app.post("/discussion/:userName/:discussionID/leave", requireAuth, (req, res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+
+
+    User.findOne({userName: userName}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{
+        foundOne.activeDiscussions = arrayRemove(foundOne.activeDiscussions, discussionID);
+        foundOne.save();
+      }
+    })
+
+    Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{
+        foundOne.currentMembers = arrayRemove(foundOne.currentMembers, userName);
+        foundOne.save();
+      }
+    })
+  
+  res.redirect("/discussion/"+userName);
 })
 
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************

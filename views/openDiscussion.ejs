@@ -1,10 +1,10 @@
 <%- include("partials/header.ejs") -%>
 
 <div class="">
-  <form class="" action="-" method="get">
+  <form class="" action="/Discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/leave" method="post">
     <button type="submit" class="btn btn-danger">leave</button>
   </form>
-  <form class="" action="-" method="get">
+  <form class="" action="-" method="post">
     <button type="submit" class="btn btn-danger">remove</button>
   </form>
 
