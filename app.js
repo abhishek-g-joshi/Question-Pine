@@ -564,6 +564,30 @@ app.post("/discussion/:discussionID/:userName/reject", (req, res)=>{
   res.redirect("/"+userName+"/notifications");
 })
 
+
+app.post("/discussion/:userName/:discussionID/newMsg", (req, res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+  const content = req.body.content;
+
+  const msg = new Message({
+    userName: userName,
+    datetime: Date(),
+    content: content
+  })
+
+  Discussion.findOne({discussionID:discussionID}, (err, foundOne)=>{
+    if(err){
+      console.log(err);
+    }else{
+      foundOne.msgArray.push(msg);
+      foundOne.save();
+    }
+    res.redirect("/discussion/"+userName+"/"+discussionID+"/open");
+  })
+
+})
+
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
 
 //check current user
@@ -859,7 +883,6 @@ app.get("/discussion/:userName/:discussionID/open", (req, res)=>{
             res.render("openDiscussion.ejs", {discussionObject: foundOne});
           }
         })
-
 
       }
     }
