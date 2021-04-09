@@ -72,18 +72,18 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-// mongoose.connect(process.env.MONGO_URI,
-// {
-//   dbName : process.env.DB_NAME,
-//   user: process.env.MONGO_USER,
-//   pass: process.env.MONGO_PASSWORD,
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useFindAndModify: false
-// }
-// );
+mongoose.connect(process.env.MONGO_URI,
+{
+  dbName : process.env.DB_NAME,
+  user: process.env.MONGO_USER,
+  pass: process.env.MONGO_PASSWORD,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+}
+);
 
-mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -715,7 +715,7 @@ app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
 });
 
 //print only users discussion: not complete
-app.get("/discussion/:userName", checkUser, (req, res)=>{
+app.get("/discussion/:userName", requireAuth, (req, res)=>{
   const userName = req.params.userName;
 
   res.render("discussions.ejs",{creatorUserName: req.params.userName});
