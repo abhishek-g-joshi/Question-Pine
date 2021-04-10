@@ -57,10 +57,16 @@
                           <td>Group Description: <%=requestedDiscussionArray[i].description%></td>
                       </tr>
                       <tr>
-                          <td>Group Members :
-                            <%const activeMembers = requestedDiscussionArray[i].currentMembers;%>
+                        <td>Group Admin: <%=requestedDiscussionArray[i].admin%></td>
+                    </tr>
+                      <tr>
+                        <th>Group Members</th>
+                      </tr>
+                      <tr>
+                        <td>
+                        <%const activeMembers = requestedDiscussionArray[i].currentMembers;%>
                             <%for(let j=0; j<activeMembers.length; j++){%>
-                              <p><%=activeMembers[j]%></p>
+                              <%=j+1%>.<%=activeMembers[j]%>
                           <%}%>
                           </td>
                       </tr>
