@@ -2,7 +2,7 @@
 
 <div class="container">
     <header class="jumbotron">
-      <h3 class="about-section"><b>Discussion</b></h3>
+      <h3 class="about-section"><b>Discussion : <%=name%></b></h3>
       <div>
       <form action="/discussion" method="GET" class="form-inline">
         <div class="form-group">
@@ -10,7 +10,7 @@
           <input type="submit" value="search" class="btn btn-default btn-primary">
         </div>
       </form>
-      <form action="/discussion/<%=user.userName%>/<%=discussionID%>/removeall" method="GET">
+      <form action="/discussion/<%=user.userName%>/<%=discussionID%>/removeall" method="POST">
           <button type="submit" class="btn btn-danger" style="float: right;"><span class="glyphicon glyphicon-minus"></span> Remove All</button>
       </form>
     </div>
@@ -33,7 +33,7 @@
                   <td><%= activeMembers[i]%></td>
                   <td>  
                         <input type="hidden" name="removedUser" value="<%= activeMembers[i]%>"/>
-                        
+
                         <button type="submit" class="btn btn-danger">Remove</button>
                   </td>
                 </form>

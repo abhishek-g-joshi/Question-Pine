@@ -564,7 +564,7 @@ app.post("/discussion/:discussionID/:userName/reject", (req, res)=>{
       foundOne.save();
     }
   })
-  res.redirect("/"+userName+"/notifications");
+ return res.redirect("/"+userName+"/notifications");
 })
 
 
@@ -643,6 +643,42 @@ app.post("/discussion/:userName/:discussionID/remove",checkUser,(req,res)=>{
     res.redirect("/discussion/"+userName+"/"+discussionID+"/remove");
 })
 
+app.post("/discussion/:userName/:discussionID/removeall",checkUser,(req,res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+  const removedUser = req.body.removedUser;
+  const currentMembers = [];  
+    Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{  
+        for(let i=1;i<foundOne.currentMembers.length;i++){
+          // if(foundOne.currentMembers[i]===foundOne.admin){
+          //   continue;
+          // }else{
+            currentMembers.push(foundOne.currentMembers[i])
+            foundOne.currentMembers = arrayRemove(foundOne.currentMembers, foundOne.currentMembers[i]);
+            foundOne.save();
+            
+          }
+        }
+      
+      })
+      console.log({currentMembers:currentMembers});
+    for(let i=0;i<currentMembers.length;i++)
+    {
+      User.findOne({userName: currentMembers[i]}, async(err, foundOne)=>{
+        if(err){
+          console.log(err);
+        }else{
+          foundOne.activeDiscussions = arrayRemove(foundOne.activeDiscussions, discussionID);
+          foundOne.save();
+        }
+      })
+    }
+    console.log("removed all members");
+    res.redirect("/discussion/"+userName+"/"+discussionID+"/remove");
+})
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
 
 //check current user
@@ -953,7 +989,7 @@ app.get("/discussion/:userName/:discussionID/remove",checkUser,(req,res)=>{
       console.log(err.message);
     }else{
       const activeMembers = foundDiscussion.currentMembers;
-      res.render("removeMembers.ejs",{discussionID,activeMembers,admin:foundDiscussion.admin});
+      res.render("removeMembers.ejs",{discussionID,activeMembers,admin:foundDiscussion.admin,name:foundDiscussion.discussionName});
     }
   })
   
