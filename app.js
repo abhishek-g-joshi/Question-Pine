@@ -72,18 +72,18 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-// mongoose.connect(process.env.MONGO_URI,
-// {
-//   dbName : process.env.DB_NAME,
-//   user: process.env.MONGO_USER,
-//   pass: process.env.MONGO_PASSWORD,
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useFindAndModify: false
-// }
-// );
+mongoose.connect(process.env.MONGO_URI,
+{
+  dbName : process.env.DB_NAME,
+  user: process.env.MONGO_USER,
+  pass: process.env.MONGO_PASSWORD,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+}
+);
 
-mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -436,12 +436,14 @@ app.post("/discussion/:userName/create",requireAuth, (req, res)=> {
   const name = req.body.name;
   const description = req.body.description;
 
-  Discussion.findOne({discussionID: name+"_"+creator}, (err, findOne)=> {
+  Discussion.findOne({discussionID: name+" "+creator}, (err, findOne)=> {
     if(findOne){
       console.log("Already exist");
+      err = "Already exist"
+      return res.status(400).json(err);
     }else{
       const newDis = new Discussion({
-        discussionID: name+"_"+creator,
+        discussionID: name+" "+creator,
         discussionName: name,
         admin: creator,
         description: description,
@@ -456,7 +458,8 @@ app.post("/discussion/:userName/create",requireAuth, (req, res)=> {
         if(err){
           console.log(err.message);
         }else{
-          user.activeDiscussions.push(name+"_"+creator);
+          const discussionID = name+" "+creator;
+          user.activeDiscussions.push(discussionID);
         }
         user.save();
 
@@ -512,7 +515,7 @@ app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)
 
 
 
-app.post("/discussion/:discussionID/:userName/accept", (req, auth, res)=>{
+app.post("/discussion/:discussionID/:userName/accept", (req,res)=>{
   const discussionID = req.params.discussionID;
   const userName = req.params.userName;
 
@@ -612,6 +615,32 @@ app.post("/discussion/:userName/:discussionID/leave", requireAuth, (req, res)=>{
     })
   
   res.redirect("/discussion/"+userName);
+})
+
+app.post("/discussion/:userName/:discussionID/remove",checkUser,(req,res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+  const removedUser = req.body.removedUser;
+
+
+    User.findOne({userName: removedUser}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{
+        foundOne.activeDiscussions = arrayRemove(foundOne.activeDiscussions, discussionID);
+        foundOne.save();
+      }
+    })
+
+    Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{
+        foundOne.currentMembers = arrayRemove(foundOne.currentMembers, removedUser);
+        foundOne.save();
+      }
+    })
+    res.redirect("/discussion/"+userName+"/"+discussionID+"/remove");
 })
 
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
@@ -876,7 +905,8 @@ app.get("/:userName/notifications", requireAuth, function(req, res){
               }
             }
           }
-          console.log(requestedDiscussionArray);
+          // console.log(requestedDiscussionArray);
+     
 
           res.render("notifications.ejs", {requestedDiscussionArray: requestedDiscussionArray});
         }
@@ -915,7 +945,20 @@ app.get("/discussion/:userName/:discussionID/open", (req, res)=>{
   })
 })
 
+app.get("/discussion/:userName/:discussionID/remove",checkUser,(req,res)=>{
+  // const admin = req.body.admin;
+  const discussionID = req.params.discussionID;
+  Discussion.findOne({discussionID:discussionID},(err,foundDiscussion)=>{
+    if(err){
+      console.log(err.message);
+    }else{
+      const activeMembers = foundDiscussion.currentMembers;
+      res.render("removeMembers.ejs",{discussionID,activeMembers,admin:foundDiscussion.admin});
+    }
+  })
+  
 
+})
 
 // *************************************************listening ****************************************************************
 const PORT = process.env.PORT || 3000;
