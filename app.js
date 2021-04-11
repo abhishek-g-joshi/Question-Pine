@@ -194,7 +194,7 @@ app.post("/signin",(req,res)=>{
             }
 
             console.log({ user : user._id });
-            res.redirect("/questions/" + user.userName );
+            res.redirect("/homepage");
           }else{
             errors.password= 'password incorrect';
             return res.status(400).json(errors);
@@ -706,12 +706,19 @@ app.get("/signout",(req,res)=>{
 
 //Homepage route
 app.get("/homepage", function(req, res){
-  res.render("homepage.ejs");
+  User.find({},(err,users)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.render("homepage",{users:users});
+    }
+  })
 })
 
 //landing route
 app.get("/landing", function(req, res){
-  res.render("homepage.ejs");
+  res.render("homepage.ejs",{users:users});
 })
 
 //landing route
@@ -733,144 +740,6 @@ app.get("/reset-password/:token",(req,res)=>{
   const token = req.params.token;
   res.render("reset-password.ejs",{token:token});
 })
-
-function escapeRegex(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-};
-
-
-// Sends the list of Questions and also searches a question
-app.get("/questions/:userName", requireAuth, (req, res)=>{
-
-  if(req.query.search)
-  {
-    const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-    Question.find({quesName: regex}, function(err, questions){
-      if(err){
-        console.log(err);
-      }else{
-        // const userID = localStorage.getItem('id');
-        // const userID = req.params.id;
-        const questionList = questions;
-        const userName = req.params.userName;
-        // console.log({user_id: userID});
-
-        User.findOne({userName}, function(err, foundOne){
-          if(err){
-            console.log(err);
-          }else{
-            // console.log(foundOne);
-            const solvedQuestions = foundOne.solvedQuestions;
-            res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
-
-          }
-        })
-
-      }
-    })
-  }
-  else
-  {
-    Question.find({}, function(err, questions){
-      if(err){
-        console.log(err);
-      }else{
-        // const userID = localStorage.getItem('id');
-        // const userID = req.params.id;
-        const questionList = questions;
-        const userName = req.params.userName;
-        // console.log(userID);
-
-        User.findOne({userName}, function(err, foundOne){
-          if(err){
-            console.log(err);
-          }else{
-            // console.log(foundOne);
-            const solvedQuestions = foundOne.solvedQuestions;
-
-            res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
-
-          }
-        })
-
-      }
-    })
-  }
-});
-
-app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
-  //console.log(req.params.userName);
-  res.render("createDiscussionForm.ejs", {creatorUserName: req.params.userName});
-});
-
-//print only users discussion: not complete
-app.get("/discussion/:userName", requireAuth, (req, res)=>{
-  const userName = req.params.userName;
-
-  res.render("discussions.ejs",{creatorUserName: req.params.userName});
-});
-
-// add members to a particular group
-//[have to add the specific groupname in the url]
-app.get("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=>{
-  const activeDiscussion = req.params.discussion;
-  const admin = req.params.userName;
-  const discussionID = activeDiscussion;
-  // console.log(discussionID);
-  if(req.query.search)
-  {
-    const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-    User.find({userName: regex}, (err, users)=> {
-      if(err){
-        console.log(err);
-      }else {
-        User.find({}, (err, users)=> {
-          if(err){
-            console.log(err);
-          }else {
-            Discussion.findOne({discussionID:discussionID},(err,discussion)=>{
-              if(err)
-              {
-                console.log('Not found discussion');
-              }
-              else{
-                const requestedList = discussion.requestedMembers;
-                const acceptedList = discussion.currentMembers;
-                console.log(requestedList);
-                 res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
-              }
-
-            })
-
-          }
-        })
-      }
-    })
-  }
-  else{
-    User.find({}, (err, users)=> {
-      if(err){
-        console.log(err);
-      }else {
-        Discussion.findOne({discussionID:discussionID},(err,discussion)=>{
-          if(err)
-          {
-            console.log('Not found discussion');
-          }
-          else{
-            const requestedList = discussion.requestedMembers;
-            const acceptedList = discussion.currentMembers;
-            console.log(requestedList);
-             res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
-          }
-
-        })
-
-      }
-    })
-  }
-
-});
 
 
 app.get("/leaderboard", requireAuth, (req, res)=>{
@@ -950,6 +819,139 @@ app.get("/:userName/notifications", requireAuth, function(req, res){
     }
   })
 })
+
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
+
+// Sends the list of Questions and also searches a question
+app.get("/questions/:userName", requireAuth, (req, res)=>{
+
+  if(req.query.search)
+  {
+    const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+    Question.find({quesName: regex}, function(err, questions){
+      if(err){
+        console.log(err);
+      }else{
+        // const userID = localStorage.getItem('id');
+        // const userID = req.params.id;
+        const questionList = questions;
+        const userName = req.params.userName;
+        // console.log({user_id: userID});
+
+        User.findOne({userName}, function(err, foundOne){
+          if(err){
+            console.log(err);
+          }else{
+            // console.log(foundOne);
+            const solvedQuestions = foundOne.solvedQuestions;
+            res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
+
+          }
+        })
+
+      }
+    })
+  }
+  else
+  {
+    Question.find({}, function(err, questions){
+      if(err){
+        console.log(err);
+      }else{
+        // const userID = localStorage.getItem('id');
+        // const userID = req.params.id;
+        const questionList = questions;
+        const userName = req.params.userName;
+        // console.log(userID);
+
+        User.findOne({userName}, function(err, foundOne){
+          if(err){
+            console.log(err);
+          }else{
+            // console.log(foundOne);
+            const solvedQuestions = foundOne.solvedQuestions;
+
+            res.render("questions.ejs", {questionList: questionList, solvedQuestions: solvedQuestions, questionTypes: questionTypes});
+
+          }
+        })
+
+      }
+    })
+  }
+});
+
+app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
+  //console.log(req.params.userName);
+  res.render("createDiscussionForm.ejs", {creatorUserName: req.params.userName});
+});
+
+//print only users discussion
+app.get("/discussion/:userName", requireAuth, (req, res)=>{
+  const userName = req.params.userName;
+   
+  res.render("discussions.ejs",{creatorUserName: req.params.userName});
+});
+
+// add members to a particular group
+//[have to add the specific groupname in the url]
+app.get("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=>{
+  const activeDiscussion = req.params.discussion;
+  const admin = req.params.userName;
+  const discussionID = activeDiscussion;
+  // console.log(discussionID);
+  if(req.query.search)
+  {
+    const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+    User.find({userName: regex}, (err, users)=> {
+      if(err){
+        console.log(err);
+      }else {
+            Discussion.findOne({discussionID:discussionID},(err,discussion)=>{
+              if(err)
+              {
+                console.log('Not found discussion');
+              }
+              else{
+                const requestedList = discussion.requestedMembers;
+                const acceptedList = discussion.currentMembers;
+                console.log(requestedList);
+                 res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
+              }
+
+            })
+
+          }
+        })
+      }
+  else{
+    User.find({}, (err, users)=> {
+      if(err){
+        console.log(err);
+      }else {
+        Discussion.findOne({discussionID:discussionID},(err,discussion)=>{
+          if(err)
+          {
+            console.log('Not found discussion');
+          }
+          else{
+            const requestedList = discussion.requestedMembers;
+            const acceptedList = discussion.currentMembers;
+            console.log(requestedList);
+             res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
+          }
+
+        })
+
+      }
+    })
+  }
+
+});
+
 
 app.get("/discussion/:userName/:discussionID/open", (req, res)=>{
   const userName = req.params.userName;

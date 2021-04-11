@@ -154,6 +154,12 @@
   width: 100%;
   background-color: #1abc9c;
 }
+.grp-about-section {
+  padding: 3px;
+  text-align: center;
+  background-color: #1abc9c;
+  color: white;
+}
 
 /* -------notification styles */
 .about-section {

@@ -1,40 +1,102 @@
 <%- include("partials/header.ejs") -%>
+<div class="container py-5 px-4">
+  <!-- For demo purpose-->
+  <div class="delete-dis">
+    
+  </div>
+  <header class="jumbotron">
+    <%if(user.userName === discussionObject.admin){%>
+    <form action="/discussion/<%=user.userName%>" method="GET">
+      <button type="submit" class="btn btn-danger" style="float: right;"><span class="glyphicon glyphicon-trash"></span> Delete Discussion</button>
+    </form>
+    <%}%>
 
-<div class="">
-
+    <br>
+    <h3 class="grp-about-section"><b><%= discussionObject.discussionName %></b></h3>
+    <h4 class="grp-about-section">Admin: <%= discussionObject.admin %></h4>
+    <h4 class="grp-about-section"><%= discussionObject.description %></h4>
+  
   <%if(user.userName === discussionObject.admin){%>
-    <form class="" action="/Discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/leave" method="post">
-      <button type="submit" class="btn btn-danger" disabled>leave</button>
-    </form>
-    <form class="" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/remove" method="GET">
-      <button type="submit" class="btn btn-danger">remove</button>
-    </form>
-      
-  
-    <%}else{%>
-      <form class="" action="/Discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/leave" method="post">
-        <button type="submit" class="btn btn-danger">leave</button>
+    
+      <form class="" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/remove" method="GET">
+        <button type="submit" class="btn btn-danger"  style="float: right;"><span class="glyphicon glyphicon-trash"></span> Remove Members</button>
       </form>
-    <form class="" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/remove" method="GET">
-      <button type="submit" class="btn btn-danger" disabled>remove</button>
-    </form>
-    <%}%> 
+   
   
+    <%}%>
+    <form action="/discussion/<%=user.userName%>" method="GET">
+        <button type="submit" class="btn btn-primary" style="float: left;"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
+    </form>
+  </header>
+  <div class="row rounded-lg overflow-hidden shadow">
+    <!-- Users box-->
+    <div class="col-lg-3 px-0">
+      <div class="bg-white"> 
 
-  <p>discussion Name: <%= discussionObject.discussionName %></p>
-  <p>discussion admin: <%= discussionObject.admin %></p>
+        <div class="bg-gray px-4 py-2 bg-light">
+          <p class="h5 mb-0 py-1" style="color: white;"><b>Group Members</b></p>
+        </div>
+        
+        <div class="messages-box">
+          <div class="list-group rounded-0">
+        <%for(let i=0; i<discussionObject.currentMembers.length; i++){%>
+          
+              <a href="/<%=discussionObject.currentMembers[i]%>" class="list-group-item list-group-item-action text-white rounded-0">
+                <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
+                      <span><b><i><%=discussionObject.currentMembers[i] %></i></b></span> 
+                </div>
+              </a>
+        <%}%>
+        </div>
+      </div>
+            
+        
+      </div>
+    </div>
+    <!-- Chat Box-->
+    <div class="col-lg-9 px-0">
+      <div class="bg-gray px-4 py-2 bg-light">
+        <p class="h5 mb-0 py-1"></p>
+        <%if(user.userName !== discussionObject.admin){%>
+         
+          <span style="display: inline-block;">
+            <form class="" action="/Discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/leave" method="post">
+              <button type="submit" class="btn btn-danger" style="float: right;">Leave</button>
+            </form>
+          <%}%>
+      </div>
 
-  <h4>Messages below</h4>
 
-  <%for(let i=0; i<discussionObject.msgArray.length; i++){%>
-    <p>author: <%=discussionObject.msgArray[i].userName%>, msg: <%=discussionObject.msgArray[i].content%>, time: <%=discussionObject.msgArray[i].dateTime%></p>
-  <%}%>
+      <!-- Messages-->  
+      <div class="px-4 py-5 chat-box chat-box-msg bg-white">
+        <%for(let i=0; i<discussionObject.msgArray.length; i++){%>
+          <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
+            <span><b><i><%=discussionObject.msgArray[i].userName%></i></b></span> 
+            <div class="media-body">
+              <div>
+                <p class="text-small "><%=discussionObject.msgArray[i].content%></p>
+              </div>
+              <p class="small text-muted"><%=discussionObject.msgArray[i].datetime.toDateString()%></p>
+            </div>
+          </div>
+        <%}%>
 
-  <form class="" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/newMsg" method="post">
-    <input type="text" name="content" value="">
-    <button type="submit" name="button">></button>
-  </form>
+        
 
+      </div>
+
+      <!-- Typing area -->
+      <form action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/newMsg" method="post" class="bg-light">
+        <div class="input-group-chat">
+          <input type="text" name="content" value="" placeholder="Type a message" aria-describedby="button-addon2" class="form-control msg py-4 bg-light">
+          
+          <button id="button-addon2" type="submit" class="btn btn-link"> <span class="glyphicon glyphicon-send"></button>
+          
+        </div>
+      </form>
+
+    </div>
+  </div>
 </div>
 
 <%- include("partials/footer.ejs") -%>

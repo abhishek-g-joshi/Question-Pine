@@ -4,14 +4,8 @@
     <header class="jumbotron">
       <h3 class="about-section"><b>Discussion</b></h3>
       <div>
-      <form action="/discussion" method="GET" class="form-inline">
-        <div class="form-group">
-          <input type="text" name="search" placeholder="Search a Group..." class="search-form-control">
-          <input type="submit" value="search" class="btn btn-default btn-primary">
-        </div>
-      </form>
       <form action="/discussion/<%=user.userName%>/create" method="GET">
-          <button type="submit" class="btn btn-primary" style="float: right;"><span class="glyphicon glyphicon-plus"></span> New Group</button>
+          <button type="submit" class="btn btn-primary" style="float: right;"><span class="glyphicon glyphicon-plus"></span> New Discussion</button>
       </form>
     </div>
     </header>
@@ -30,7 +24,7 @@
               <thead>
                 <form  action="/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" method="GET">
                   <div class="group-notification">
-                    <%= user.activeDiscussions[i] %>
+                    <%= user.activeDiscussions[i] %>(Admin)
                     
                       <input type="hidden"
                       name="activeDiscussion" value="<%= user.activeDiscussions[i] %>"/>
@@ -38,9 +32,7 @@
                           <button  type="submit" formaction= "/discussion/<%=user.userName%>/<%=user.activeDiscussions[i]%>/open" class="btn btn-danger">Open</button>
                           
                           <%if(user.userName === admin){%>
-                            <button type="submit" formaction= "/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" class="btn btn-success">Add Members</button>
-                          <% }else{ %>
-                            <button type="submit" formaction= "/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" class="btn btn-success" disabled>Add Members</button>
+                            <button type="submit" formaction= "/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Members</button>
                           <% }%>
 
                   </div>

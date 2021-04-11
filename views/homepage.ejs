@@ -66,12 +66,17 @@ body, html {
     <div class="w3-quarter">
       <i class="fa fa-user-circle w3-margin-bottom w3-jumbo"></i>
       <p class="w3-large">Active Users</p>
-      <h2>100+</h2>
+      <h2><%= users.length %></h2>
     </div>
     <div class="w3-quarter">
       <i class="fa fa-book w3-margin-bottom w3-jumbo"></i>
       <p class="w3-large">Total submissions</p>
-      <h2>50+</h2>
+      
+      <% let sum=0; %>
+      <%for(let i=0; i<users.length; i++){%>
+        <% sum+=users[i].solvedQuestions.length; %>
+      <%}%>
+      <h2><%= sum %></h2>
       </div>
     <div class="w3-quarter">
       <a href="/aboutus">
