@@ -10,47 +10,45 @@
           <input type="submit" value="search" class="btn btn-default btn-primary">
         </div>
       </form>
-      <form action="/discussion/<%=creatorUserName%>/create" method="GET">
+      <form action="/discussion/<%=user.userName%>/create" method="GET">
           <button type="submit" class="btn btn-primary" style="float: right;"><span class="glyphicon glyphicon-plus"></span> New Group</button>
       </form>
     </div>
     </header>
 </div>
 <div class="container">
+  <% function test(words) {%>
+    <% var n = words.split(" ");%>
+    <% return n[n.length - 1];}%>
     <div class="panel panel-default">
-
+      <% for(let i=0;i<user.activeDiscussions.length;i++){ %>
+        <% let discussionID = user.activeDiscussions[i] %>
+        <% var admin = test(discussionID) %>
+        <!-- <%= admin%> -->
         <div class="disgrow">
           <table class="table">
               <thead>
-                  <div class="group-notification">Group 1
-                          <button type="button" class="btn btn-danger">Open</button>
-                          <button type="button" class="btn btn-success">Add Members</button>
-                  </div>
-                </thead>
-          </table>
-      </div>
+                <form  action="/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" method="GET">
+                  <div class="group-notification">
+                    <%= user.activeDiscussions[i] %>
+                    
+                      <input type="hidden"
+                      name="activeDiscussion" value="<%= user.activeDiscussions[i] %>"/>
 
-        <div class="disgrow">
-          <table class="table">
-              <thead>
-                  <div class="group-notification">Group 2
-                    <button type="button" class="btn btn-danger">Open</button>
-                    <button type="button" class="btn btn-success">Add Members</button>
-                  </div>
-                </thead>
-          </table>
-      </div>
+                          <button  type="submit" formaction= "/discussion/<%=user.userName%>/<%=user.activeDiscussions[i]%>/open" class="btn btn-danger">Open</button>
+                          
+                          <%if(user.userName === admin){%>
+                            <button type="submit" formaction= "/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" class="btn btn-success">Add Members</button>
+                          <% }else{ %>
+                            <button type="submit" formaction= "/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" class="btn btn-success" disabled>Add Members</button>
+                          <% }%>
 
-        <div class="disgrow">
-          <table class="table">
-              <thead>
-                  <div class="group-notification">Group 3
-                    <button type="button" class="btn btn-danger">Open</button>
-                    <button type="button" class="btn btn-success">Add Members</button>
                   </div>
-                </thead>
+                </form>
+              </thead>
           </table>
-      </div>  
+        </div>
+      <% } %>
     </div>
 </div>
 

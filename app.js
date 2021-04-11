@@ -30,13 +30,14 @@ const REDIRECT_URI = process.env.REDIRECT_URI;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
-// const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI);
-// oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI);
+oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
 
 const app = express();
 
 
 const questionTypes = ["Array","String","Matrix","Linked List","Stack","Queue","Tree","Graph","Greedy","Backtracking","Recursion","Dynamic Programing","Bit Manipulation","Hash Table","Sort","Searching","Map","Segment Tree"];
+const requestedDiscussionArray = [];
 
 
 app.engine('handlebars', exphbs());
@@ -48,19 +49,19 @@ app.use(cookieParser());
 
 
 
-// const accessToken = oAuth2Client.getAccessToken();
+const accessToken = oAuth2Client.getAccessToken();
 
-// let transporter = nodemailer.createTransport({
-// 	service: 'gmail',
-// 	auth: {
-// 		type: 'OAuth2',
-// 		user: email,
-// 		clientId: CLIENT_ID,
-// 		clientSecret: CLIENT_SECRET,
-// 		refreshToken: REFRESH_TOKEN,
-// 		accessToken: accessToken,
-// 	},
-// });
+let transporter = nodemailer.createTransport({
+	service: 'gmail',
+	auth: {
+		type: 'OAuth2',
+		user: email,
+		clientId: CLIENT_ID,
+		clientSecret: CLIENT_SECRET,
+		refreshToken: REFRESH_TOKEN,
+		accessToken: accessToken,
+	},
+});
 
 
 
@@ -82,7 +83,7 @@ mongoose.connect(process.env.MONGO_URI,
 }
 );
 
-// mongoose.connect('mongodb://localhost:27017/teamRudras', {useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -204,123 +205,123 @@ app.post("/signin",(req,res)=>{
 })
 
 
-//forgot password post route
-// app.post("/forgot-password",(req,res)=>{
+// forgot password post route
+app.post("/forgot-password",(req,res)=>{
 
-//   async.waterfall([
-//     function(done) {
-//       User.findOne({
-//         email: req.body.email
-//       }).exec(function(err, user) {
-//         if (user) {
-//           done(err, user);
-//         } else {
-//           done('User not found.');
-//         }
-//       });
-//     },
-//     function(user, done) {
-//       // create the random token
-//       crypto.randomBytes(50, function(err, buffer) {
-//         var token = buffer.toString('hex');
-//         done(err, user, token);
-//       });
-//     },
-//     function(user, token, done) {
-//       User.findByIdAndUpdate({ _id: user._id }, { reset_password_token: token, reset_password_expires: Date.now() + 20*60*1000 }, { upsert: true, new: true }).exec(function(err, new_user) {
-//         done(err, token, new_user);
-//       });
-//     },
-//     function(token, user, done) {
-//       var  context =  {
-//         url: CLIENT_URL+'/reset-password/' + token,
-//         name: user.userName
-//       };
-//       var data = {
-//         from: 'Question Pine <' + email + '>',
-//         to: user.email,
-//         subject: 'Password help has arrived!',
-//         html:`
-//         <h3>Dear ${context.name},</h3>
-//         <p>You requested for a password reset, kindly use this <a href="${context.url}">link</a> to reset your password</p>
-//         <br>
-//         <p>This link valid for only 20 minutes.</p>
-//         <p>Cheers!</p>
-//         `,
+  async.waterfall([
+    function(done) {
+      User.findOne({
+        email: req.body.email
+      }).exec(function(err, user) {
+        if (user) {
+          done(err, user);
+        } else {
+          done('User not found.');
+        }
+      });
+    },
+    function(user, done) {
+      // create the random token
+      crypto.randomBytes(50, function(err, buffer) {
+        var token = buffer.toString('hex');
+        done(err, user, token);
+      });
+    },
+    function(user, token, done) {
+      User.findByIdAndUpdate({ _id: user._id }, { reset_password_token: token, reset_password_expires: Date.now() + 20*60*1000 }, { upsert: true, new: true }).exec(function(err, new_user) {
+        done(err, token, new_user);
+      });
+    },
+    function(token, user, done) {
+      var  context =  {
+        url: CLIENT_URL+'/reset-password/' + token,
+        name: user.userName
+      };
+      var data = {
+        from: 'Question Pine <' + email + '>',
+        to: user.email,
+        subject: 'Password help has arrived!',
+        html:`
+        <h3>Dear ${context.name},</h3>
+        <p>You requested for a password reset, kindly use this <a href="${context.url}">link</a> to reset your password</p>
+        <br>
+        <p>This link valid for only 20 minutes.</p>
+        <p>Cheers!</p>
+        `,
 
-//       };
-//       // console.log({userData:data});
-//       transporter.sendMail(data, function(err) {
-//         if (!err) {
-//           // console.log({userData:data});
-//           return res.json({ message: 'Kindly check your email for further instructions' });
-//         } else {
-//           return done(err);
-//         }
-//       });
-//     }
-//   ],
-//   function(err) {
-//     return res.status(422).json({ message: err });
-//   });
-// });
+      };
+      // console.log({userData:data});
+      transporter.sendMail(data, function(err) {
+        if (!err) {
+          // console.log({userData:data});
+          return res.json({ message: 'Kindly check your email for further instructions' });
+        } else {
+          return done(err);
+        }
+      });
+    }
+  ],
+  function(err) {
+    return res.status(422).json({ message: err });
+  });
+});
 
-// //reset password POST route
-// app.post("/reset-password",(req,res,next)=>{
+//reset password POST route
+app.post("/reset-password",(req,res,next)=>{
 
-//   if (req.body.password === req.body.confirmPassword) {
-//     const filter = {reset_password_token: req.body.token,
-//       reset_password_expires: {
-//         $gte: Date.now()
-//       }
-//     }
+  if (req.body.password === req.body.confirmPassword) {
+    const filter = {reset_password_token: req.body.token,
+      reset_password_expires: {
+        $gte: Date.now()
+      }
+    }
 
-//     const salt = bcrypt.genSaltSync(10);
-//     const hash = bcrypt.hashSync(req.body.password, salt);
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.password, salt);
 
-//     const update = {
-//       reset_password_token : undefined,
-//       reset_password_expires : undefined,
-//       password : hash
-//     }
+    const update = {
+      reset_password_token : undefined,
+      reset_password_expires : undefined,
+      password : hash
+    }
 
-//   User.findOneAndUpdate(filter,update,{new:true}
-//     ).exec(function(err, user){
-//     // console.log({user:user});
-//     if (!err && user) {
+  User.findOneAndUpdate(filter,update,{new:true}
+    ).exec(function(err, user){
+    // console.log({user:user});
+    if (!err && user) {
 
-//         var data = {
-//           from: 'Question Pine <' + email + '>',
-//           to: user.email,
-//           subject: 'Password Reset Confirmation',
-//           html:`
-//             <h3>Dear ${user.userName},</h3>
-//             <p>Password reset Successfully Done!</p>
-//             <br>
-//             <p>Cheers!</p>
-//             `
-//         };
-//         transporter.sendMail(data, function(err) {
-//           if (!err) {
-//             res.json({ message: 'Password reset' });
-//             return res.redirect('/signin')
-//           } else {
-//             return done(err);
-//           }
-//         });
+        var data = {
+          from: 'Question Pine <' + email + '>',
+          to: user.email,
+          subject: 'Password Reset Confirmation',
+          html:`
+            <h3>Dear ${user.userName},</h3>
+            <p>Password reset Successfully Done!</p>
+            <br>
+            <p>Cheers!</p>
+            `
+        };
+        transporter.sendMail(data, function(err) {
+          if (!err) {
+            res.json({ message: 'Password reset' });
+            return res.redirect('/signin')
+          } else {
+            return done(err);
+          }
+        });
 
-//       }else {
-//         return res.status(400).send({
-//           message: 'Password reset token is invalid or has expired.'
-//         });
-//       }
-//     });
-//   }else{
-//     return res.status(422).send({
-//       message: 'Passwords do not match'
-//     });
-//   }
-// });
+      }else {
+        return res.status(400).send({
+          message: 'Password reset token is invalid or has expired.'
+        });
+      }
+    });
+  }else{
+    return res.status(422).send({
+      message: 'Passwords do not match'
+    });
+  }
+});
 
 function phonenumber(contactno)
 {
@@ -430,34 +431,254 @@ app.post("/questions/:userName", (req, res)=> {
   })
 })
 
-app.post("/discussion/:userName/create", (req, res)=> {
-
-
+app.post("/discussion/:userName/create",requireAuth, (req, res)=> {
   const creator = req.params.userName;
   const name = req.body.name;
   const description = req.body.description;
 
-  Discussion.findOne({discussionID: name+"_"+creator}, (err, findOne)=> {
+  Discussion.findOne({discussionID: name+" "+creator}, (err, findOne)=> {
     if(findOne){
       console.log("Already exist");
+      err = "Already exist"
+      return res.status(400).json(err);
     }else{
       const newDis = new Discussion({
-        discussionID: name+"_"+creator,
+        discussionID: name+" "+creator,
         discussionName: name,
         admin: creator,
+        description: description,
         currentMembers: [creator],
         requestedMembers: [],
         msgArray: []
       })
 
       newDis.save();
+      // res.redirect("/discussion/"+creator);
+      Users.findOne({userName:creator},(err,user)=>{
+        if(err){
+          console.log(err.message);
+        }else{
+          const discussionID = name+" "+creator;
+          user.activeDiscussions.push(discussionID);
+        }
+        user.save();
+
+
+      })
+    }
+    res.redirect("/discussion/"+creator);
+  });
+
+})
+
+//POST route to addmember in discussion
+app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=>{
+  const discussionName = req.body.discussionName;
+  const admin = req.body.admin;
+  const discussionID = req.body.discussionID;
+  const newMember = req.body.newMember;
+  Discussion.findOne({discussionID},(err,foundDiscussion)=>{
+    if(err){
+      return res.status(400).json(err);
+    }
+    else{
+      //  foundDiscussion.requestedMembers.forEach(member => {
+      //    if(member === newMember){
+      //      console.log('already  requested');
+      //       res.redirect("/discussion/"+admin+"/"+discussionName+"/addmembers");
+      //       const error = 'already  requested';
+      //       // return res.status(400).json(error);
+      //    }
+      //    else{
+
+      //    }
+      //  });
+      foundDiscussion.requestedMembers.push(newMember);
+          foundDiscussion.save();
+          User.findOne({userName:newMember},(err,foundUser)=>{
+            if(err){
+              console.log(err.message);
+            }
+            else{
+              // console.log({user:foundUser});
+              foundUser.reqDiscussions.push(discussionID);
+              foundUser.save();
+              res.redirect("/discussion/"+admin+"/"+discussionName+"/addmembers");
+            }
+          })
     }
   })
 
-  res.redirect("/discussion/"+creator);
+    // console.log("member added successfully")
+    // console.log(discussionID);
 })
 
 
+
+app.post("/discussion/:discussionID/:userName/accept", (req,res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+
+  Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
+    if(err){
+      console.log(err);
+    }else{
+      foundOne.currentMembers.push(userName);
+      foundOne.requestedMembers = arrayRemove(foundOne.requestedMembers, userName);
+      foundOne.save();
+    }
+
+  })
+
+  User.findOne({userName: userName}, (err, foundOne)=>{
+    if(err){
+      console.log(err);
+    }else{
+      foundOne.activeDiscussions.push(discussionID);
+      foundOne.reqDiscussions = arrayRemove(foundOne.reqDiscussions, discussionID);
+      foundOne.save();
+    }
+  })
+
+  res.redirect("/"+userName+"/notifications");
+})
+
+app.post("/discussion/:discussionID/:userName/reject", (req, res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+
+  Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
+    if(err){
+      console.log(err);
+    }else{
+      foundOne.requestedMembers = arrayRemove(foundOne.requestedMembers, userName);
+      foundOne.save();
+    }
+  })
+
+  User.findOne({userName: userName}, (err, foundOne)=>{
+    if(err){
+      console.log(err);
+    }else{
+      foundOne.reqDiscussions = arrayRemove(foundOne.reqDiscussions, discussionID);
+      foundOne.save();
+    }
+  })
+ return res.redirect("/"+userName+"/notifications");
+})
+
+
+app.post("/discussion/:userName/:discussionID/newMsg", (req, res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+  const content = req.body.content;
+
+  const msg = new Message({
+    userName: userName,
+    datetime: Date(),
+    content: content
+  })
+
+  Discussion.findOne({discussionID:discussionID}, (err, foundOne)=>{
+    if(err){
+      console.log(err);
+    }else{
+      foundOne.msgArray.push(msg);
+      foundOne.save();
+    }
+    res.redirect("/discussion/"+userName+"/"+discussionID+"/open");
+  })
+
+})
+
+app.post("/discussion/:userName/:discussionID/leave", requireAuth, (req, res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+
+
+    User.findOne({userName: userName}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{
+        foundOne.activeDiscussions = arrayRemove(foundOne.activeDiscussions, discussionID);
+        foundOne.save();
+      }
+    })
+
+    Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{
+        foundOne.currentMembers = arrayRemove(foundOne.currentMembers, userName);
+        foundOne.save();
+      }
+    })
+  
+  res.redirect("/discussion/"+userName);
+})
+
+app.post("/discussion/:userName/:discussionID/remove",checkUser,(req,res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+  const removedUser = req.body.removedUser;
+
+
+    User.findOne({userName: removedUser}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{
+        foundOne.activeDiscussions = arrayRemove(foundOne.activeDiscussions, discussionID);
+        foundOne.save();
+      }
+    })
+
+    Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{
+        foundOne.currentMembers = arrayRemove(foundOne.currentMembers, removedUser);
+        foundOne.save();
+      }
+    })
+    res.redirect("/discussion/"+userName+"/"+discussionID+"/remove");
+})
+
+app.post("/discussion/:userName/:discussionID/removeall",checkUser,(req,res)=>{
+  const discussionID = req.params.discussionID;
+  const userName = req.params.userName;
+  const removedUser = req.body.removedUser;
+  const currentMembers = [];  
+    Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
+      if(err){
+        console.log(err);
+      }else{  
+        for(let i=1;i<foundOne.currentMembers.length;i++){
+          // if(foundOne.currentMembers[i]===foundOne.admin){
+          //   continue;
+          // }else{
+            currentMembers.push(foundOne.currentMembers[i])
+            foundOne.currentMembers = arrayRemove(foundOne.currentMembers, foundOne.currentMembers[i]);
+            foundOne.save();
+            
+          }
+        }
+      
+      })
+      console.log({currentMembers:currentMembers});
+    for(let i=0;i<currentMembers.length;i++)
+    {
+      User.findOne({userName: currentMembers[i]}, async(err, foundOne)=>{
+        if(err){
+          console.log(err);
+        }else{
+          foundOne.activeDiscussions = arrayRemove(foundOne.activeDiscussions, discussionID);
+          foundOne.save();
+        }
+      })
+    }
+    console.log("removed all members");
+    res.redirect("/discussion/"+userName+"/"+discussionID+"/remove");
+})
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
 
 //check current user
@@ -584,13 +805,18 @@ app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
 
 //print only users discussion: not complete
 app.get("/discussion/:userName", requireAuth, (req, res)=>{
-  
+  const userName = req.params.userName;
+
   res.render("discussions.ejs",{creatorUserName: req.params.userName});
 });
 
-// add members to a particular group 
+// add members to a particular group
 //[have to add the specific groupname in the url]
-app.get("/discussion/:username/addmembers", requireAuth, (req, res)=>{
+app.get("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)=>{
+  const activeDiscussion = req.params.discussion;
+  const admin = req.params.userName;
+  const discussionID = activeDiscussion;
+  // console.log(discussionID);
   if(req.query.search)
   {
     const regex = new RegExp(escapeRegex(req.query.search), 'gi');
@@ -598,7 +824,26 @@ app.get("/discussion/:username/addmembers", requireAuth, (req, res)=>{
       if(err){
         console.log(err);
       }else {
-        res.render("addMembers.ejs", {users: users});
+        User.find({}, (err, users)=> {
+          if(err){
+            console.log(err);
+          }else {
+            Discussion.findOne({discussionID:discussionID},(err,discussion)=>{
+              if(err)
+              {
+                console.log('Not found discussion');
+              }
+              else{
+                const requestedList = discussion.requestedMembers;
+                const acceptedList = discussion.currentMembers;
+                console.log(requestedList);
+                 res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
+              }
+
+            })
+
+          }
+        })
       }
     })
   }
@@ -607,7 +852,20 @@ app.get("/discussion/:username/addmembers", requireAuth, (req, res)=>{
       if(err){
         console.log(err);
       }else {
-        res.render("addMembers.ejs", {users: users});
+        Discussion.findOne({discussionID:discussionID},(err,discussion)=>{
+          if(err)
+          {
+            console.log('Not found discussion');
+          }
+          else{
+            const requestedList = discussion.requestedMembers;
+            const acceptedList = discussion.currentMembers;
+            console.log(requestedList);
+             res.render("addMembers.ejs", {users: users,admin:admin,activeDiscussion:activeDiscussion,requestedList,acceptedList});
+          }
+
+        })
+
       }
     })
   }
@@ -660,11 +918,83 @@ app.get("/:userName/editprofile", requireAuth, function(req, res){
   res.render("editprofile.ejs");
 })
 
+//notification GET route
 app.get("/:userName/notifications", requireAuth, function(req, res){
-  res.render("notifications.ejs");
+  const userName = req.params.userName;
+  User.findOne({userName},(err,foundUser)=>{
+    if(err){
+      console.log(err.message);
+    }else{
+      const reqDiscussions = foundUser.reqDiscussions;
+      Discussion.find({},(err,foundDiscussions)=>{
+        if(err){
+          console.log(err);
+        }else{
+          const requestedDiscussionArray = [];
+          //console.log(reqDiscussions);
+          //console.log(foundDiscussions);
+
+          for(let i=0; i<reqDiscussions.length; i++){
+            for(let j=0; j<foundDiscussions.length; j++){
+              if(reqDiscussions[i] === foundDiscussions[j].discussionID){
+                requestedDiscussionArray.push(foundDiscussions[j]);
+              }
+            }
+          }
+          // console.log(requestedDiscussionArray);
+     
+
+          res.render("notifications.ejs", {requestedDiscussionArray: requestedDiscussionArray});
+        }
+      })
+    }
+  })
 })
 
+app.get("/discussion/:userName/:discussionID/open", (req, res)=>{
+  const userName = req.params.userName;
+  const discussionId = req.params.discussionID;
 
+  User.findOne({userName: userName}, (err, foundOne)=>{
+    if(err){
+      console.log(err);
+    }else{
+      let has = false;
+      for(let i=0; i<foundOne.activeDiscussions.length; i++){
+        if(foundOne.activeDiscussions[i] === discussionId){
+          has = true;
+          break;
+        }
+      }
+
+      if(has){
+        Discussion.findOne({discussionID: discussionId}, (err, foundOne)=>{
+          if(err){
+            console.log(err);
+          }else{
+            res.render("openDiscussion.ejs", {discussionObject: foundOne});
+          }
+        })
+
+      }
+    }
+  })
+})
+
+app.get("/discussion/:userName/:discussionID/remove",checkUser,(req,res)=>{
+  // const admin = req.body.admin;
+  const discussionID = req.params.discussionID;
+  Discussion.findOne({discussionID:discussionID},(err,foundDiscussion)=>{
+    if(err){
+      console.log(err.message);
+    }else{
+      const activeMembers = foundDiscussion.currentMembers;
+      res.render("removeMembers.ejs",{discussionID,activeMembers,admin:foundDiscussion.admin,name:foundDiscussion.discussionName});
+    }
+  })
+  
+
+})
 
 // *************************************************listening ****************************************************************
 const PORT = process.env.PORT || 3000;
@@ -795,3 +1125,78 @@ app.listen(PORT, function(){
 // })
 //
 // newDis.save();
+
+
+// <div class="container">
+//     <div class="panel panel-default">
+//         <% for(let i=0;i<reqDiscussions.length;i++){ %>
+//         <%= reqDiscussions[i].discussionName %>
+//         <div class="grow">
+//             <table class="table">
+//                <form action="/<%= user.userName %>/notifications" method="POST">
+//                     <thead>
+//                         <div class="group-notification">
+//
+//                             <input type="hidden" name="discussionID" value="<%=reqDiscussions[i].discussionID %>">
+//                             <button type="submit" class="btn btn-danger">Deny</button>
+//                             <button type="submit" class="btn btn-success">Accept</button>
+//                         </div>
+//                     </thead>
+//                 </form>
+//                 <div class="group-description">
+//                     <tbody>
+//                         <tr>
+//                             <td>Group Description</td>
+//                         </tr>
+//                         <tr>
+//                             <td>Group Members</td>
+//                         </tr>
+//                     </tbody>
+//                 </div>
+//
+//             </table>
+//         </div>
+//         <%}%>
+//         <div class="grow">
+//             <table class="table">
+//                 <thead>
+//                     <div class="group-notification">Tycse
+//                             <button type="button" class="btn btn-danger">Deny</button>
+//                             <button type="button" class="btn btn-success">Accept</button>
+//                     </div>
+//                 </thead>
+//                 <div class="group-description">
+//                     <tbody>
+//                         <tr>
+//                             <td>Group Description</td>
+//                         </tr>
+//                         <tr>
+//                             <td>Group Members</td>
+//                         </tr>
+//                     </tbody>
+//                 </div>
+//             </table>
+//         </div>
+//
+//         <div class="grow">
+//             <table class="table">
+//                 <thead>
+//                     <div class="group-notification">Tycse
+//                             <button type="button" class="btn btn-danger">Deny</button>
+//                             <button type="button" class="btn btn-success">Accept</button>
+//                     </div>
+//                 </thead>
+//                 <div class="group-description">
+//                     <tbody>
+//                         <tr>
+//                             <td>Group Description</td>
+//                         </tr>
+//                         <tr>
+//                             <td>Group Members</td>
+//                         </tr>
+//                     </tbody>
+//                 </div>
+//             </table>
+//         </div>
+//     </div>
+// </div>

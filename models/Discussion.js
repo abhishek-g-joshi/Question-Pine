@@ -7,7 +7,7 @@ var messageSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    Datetime :{
+    datetime :{
         type: Date,
          required: true
     },
@@ -35,6 +35,7 @@ var DiscussionSchema = new mongoose.Schema({
         required : true
     },
 
+    description: String,
 
     currentMembers:[String],
 

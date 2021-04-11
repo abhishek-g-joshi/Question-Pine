@@ -2,7 +2,6 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta charset="utf-8">
   <title>Question Pine</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -29,9 +28,9 @@
           <% } %>
           <li id="contact"><a href="/leaderboard">LEADERBOARD</a></li>
           <% if(user) { %>
-              <li id="questions"><a href="/discussion/<%= user.userName %>" >Discussion</a></li>
+              <li id="questions"><a href="/discussion/<%= user.userName %>" >DISCUSSION</a></li>
           <% }else { %>
-             <li id="questions"><a href="/signin" >Discussion</a></li>
+             <li id="questions"><a href="/signin" >DISCUSSION</a></li>
           <% } %>
           <li id="about"><a href="/aboutus">ABOUT US</a></li>
         </ul>
@@ -40,7 +39,7 @@
             <ul class="nav navbar-nav navbar-right">
               <li>
                 <a class="nav-link" href="/<%= user.userName %>/notifications">
-                  <span class="badge badge-pill badge-primary" style="float:right;margin-bottom:10px;">2</span>
+                  <span class="badge badge-pill badge-primary" style="float:right;margin-bottom:10px;">3</span>
                     <span class="glyphicon glyphicon-bell"></span>
                 </a>
               </li>

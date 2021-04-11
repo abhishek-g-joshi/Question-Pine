@@ -3,76 +3,80 @@
 <div class="container">
     <header class="jumbotron">
       <h3 class="about-section"><b>Notifications</b></h3>
-          
+
     </header>
 </div>
+<!-- <div class="">
+  <%console.log(requestedDiscussionArray)%>
+  <%for(let i=0; i<requestedDiscussionArray.length; i++){%>
+
+    <form action="/storys/5" method="post">
+
+      <!-- form fields here -->
+<!--
+    <p>Group Name : <%=requestedDiscussionArray[i].discussionName%></p>
+      <p><%=requestedDiscussionArray[i].description%></p>
+      <p>Group members:</p>
+      <%const activeMembers = requestedDiscussionArray[i].currentMembers;%>
+      <%for(let j=0; j<activeMembers.length; j++){%>
+
+          <p><%=activeMembers[j]%></p>
+      <%}%>
+
+      <button type="submit" formaction="/discussion/<%=requestedDiscussionArray[i].discussionID%>/<%=user.userName%>/accept">Accept</button>
+      <button type="submit" formaction="/discussion/<%=requestedDiscussionArray[i].discussionID%>/<%=user.userName%>/reject">Reject</button>
+
+    </form>
+
+
+
+  <%}%>
+
+</div>  -->
+
+
+
+
+
 <div class="container">
-    <div class="panel panel-default">
-
-        <div class="grow">
-            <table class="table">
-                <thead>
-                    <div class="group-notification">Tycse
-                            <button type="button" class="btn btn-danger">Deny</button>
-                            <button type="button" class="btn btn-success">Accept</button>
-                    </div>
-                </thead>
-                <div class="group-description">
-                    <tbody>
-                        <tr>
-                            <td>Group Description</td>
-                        </tr>
-                        <tr>
-                            <td>Group Members</td>
-                        </tr>
-                    </tbody>
-                </div>
-            </table>
-        </div>
-
-        <div class="grow">
-            <table class="table">
-                <thead>
-                    <div class="group-notification">Tycse
-                            <button type="button" class="btn btn-danger">Deny</button>
-                            <button type="button" class="btn btn-success">Accept</button>
-                    </div>
-                </thead>
-                <div class="group-description">
-                    <tbody>
-                        <tr>
-                            <td>Group Description</td>
-                        </tr>
-                        <tr>
-                            <td>Group Members</td>
-                        </tr>
-                    </tbody>
-                </div>
-            </table>
-        </div>
-
-        <div class="grow">
-            <table class="table">
-                <thead>
-                    <div class="group-notification">Tycse
-                            <button type="button" class="btn btn-danger">Deny</button>
-                            <button type="button" class="btn btn-success">Accept</button>
-                    </div>
-                </thead>
-                <div class="group-description">
-                    <tbody>
-                        <tr>
-                            <td>Group Description</td>
-                        </tr>
-                        <tr>
-                            <td>Group Members</td>
-                        </tr>
-                    </tbody>
-                </div>
-            </table>
-        </div>
-    </div>
+  <div class="panel panel-default">
+    <%console.log(requestedDiscussionArray)%>
+    <%for(let i=0; i<requestedDiscussionArray.length; i++){%>
+      <div class="grow">
+        <form action="/storys/5" method="post">
+          <table class="table">
+              <thead>
+                  <div class="group-notification"><%=requestedDiscussionArray[i].discussionName%>
+                          <button type="submit" class="btn btn-danger" formaction="/discussion/<%=requestedDiscussionArray[i].discussionID%>/<%=user.userName%>/reject">Deny</button>
+                          <button type="submit" class="btn btn-success" formaction="/discussion/<%=requestedDiscussionArray[i].discussionID%>/<%=user.userName%>/accept">Accept</button>
+                  </div>
+              </thead>
+              <div class="group-description">
+                  <tbody>
+                      <tr>
+                          <td>Group Description: <%=requestedDiscussionArray[i].description%></td>
+                      </tr>
+                      <tr>
+                        <td>Group Admin: <%=requestedDiscussionArray[i].admin%></td>
+                    </tr>
+                      <tr>
+                        <th>Group Members</th>
+                      </tr>
+                      <tr>
+                        <td>
+                        <%const activeMembers = requestedDiscussionArray[i].currentMembers;%>
+                            <%for(let j=0; j<activeMembers.length; j++){%>
+                              <%=j+1%>.<%=activeMembers[j]%>
+                          <%}%>
+                          </td>
+                      </tr>
+                  </tbody>
+              </div>
+          </table>
+        </form>
+      </div>
+    <%}%>
+  </div>
 </div>
-
 
 <%- include("partials/footer.ejs") -%>

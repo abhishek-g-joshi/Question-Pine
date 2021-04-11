@@ -1,0 +1,40 @@
+<%- include("partials/header.ejs") -%>
+
+<div class="">
+
+  <%if(user.userName === discussionObject.admin){%>
+    <form class="" action="/Discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/leave" method="post">
+      <button type="submit" class="btn btn-danger" disabled>leave</button>
+    </form>
+    <form class="" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/remove" method="GET">
+      <button type="submit" class="btn btn-danger">remove</button>
+    </form>
+      
+  
+    <%}else{%>
+      <form class="" action="/Discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/leave" method="post">
+        <button type="submit" class="btn btn-danger">leave</button>
+      </form>
+    <form class="" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/remove" method="GET">
+      <button type="submit" class="btn btn-danger" disabled>remove</button>
+    </form>
+    <%}%> 
+  
+
+  <p>discussion Name: <%= discussionObject.discussionName %></p>
+  <p>discussion admin: <%= discussionObject.admin %></p>
+
+  <h4>Messages below</h4>
+
+  <%for(let i=0; i<discussionObject.msgArray.length; i++){%>
+    <p>author: <%=discussionObject.msgArray[i].userName%>, msg: <%=discussionObject.msgArray[i].content%>, time: <%=discussionObject.msgArray[i].dateTime%></p>
+  <%}%>
+
+  <form class="" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/newMsg" method="post">
+    <input type="text" name="content" value="">
+    <button type="submit" name="button">></button>
+  </form>
+
+</div>
+
+<%- include("partials/footer.ejs") -%>

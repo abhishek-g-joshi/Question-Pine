@@ -33,7 +33,7 @@
     "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.22.0",
     "mongodb": "^3.6.3",
-    "mongoose": "^5.11.13",
+    "mongoose": "^5.12.3",
     "node-localstorage": "^2.1.6",
     "nodemailer": "^6.5.0",
     "nodemailer-express-handlebars": "^4.0.0",
