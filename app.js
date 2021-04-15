@@ -662,7 +662,7 @@ app.post("/discussion/:userName/:discussionID/removeall",checkUser,(req,res)=>{
             
           }
         }
-      
+        
       })
       console.log({currentMembers:currentMembers});
     for(let i=0;i<currentMembers.length;i++)
@@ -679,6 +679,62 @@ app.post("/discussion/:userName/:discussionID/removeall",checkUser,(req,res)=>{
     console.log("removed all members");
     res.redirect("/discussion/"+userName+"/"+discussionID+"/remove");
 })
+
+//Delete discussion route
+app.post("/discussion/:userName/:discussionID/delete",checkUser,(req,res)=>{
+    const userName = req.params.userName;
+    const discussionID = req.params.discussionID;
+    const requestedMembers = [];
+    const activeMembers = [];
+
+    Discussion.findOneAndRemove({discussionID:discussionID},(err,foundOne)=>{
+      if(err){
+        console.log(err.message);
+        res.status(500).send();
+      }else{
+        for(let i=0;i<foundOne.requestedMembers.length;i++){
+          requestedMembers.push(foundOne.requestedMembers[i])
+        }
+        for(let i=0;i<foundOne.currentMembers.length;i++){
+          activeMembers.push(foundOne.currentMembers[i])
+        }
+        // requestedMembers = foundOne.requestedMembers;
+        // activeMembers = foundOne.currentMembers;
+      }
+    })
+
+    // for(let i=0;i<requestedMembers.length;i++){
+    //   User.findOne({userName:})
+    // }
+    User.find({},(err,users)=>{
+      if(err){
+        console.log(err.message);
+        res.status(404).send();
+      }else{
+        for(let i=0;i<requestedMembers.length;i++){
+          for(let j=0;j<users.length;j++){
+            if(users[j].userName === requestedMembers[i]){
+              users[j].reqDiscussions =  arrayRemove(users[j].reqDiscussions,discussionID)
+              users[j].save();
+            }
+          }
+          
+        }
+        for(let i=0;i<activeMembers.length;i++){
+          for(let j=0;j<users.length;j++){
+            if(users[j].userName === activeMembers[i]){
+              users[j].activeDiscussions =  arrayRemove(users[j].activeDiscussions,discussionID)
+              users[j].save();
+            }
+          }
+          
+        }
+      }
+    })
+    res.redirect("/discussion/"+userName);
+
+});
+
 // ***************************************ALL THE GET REQUEST ARE BELOW ****************************************************
 
 //check current user

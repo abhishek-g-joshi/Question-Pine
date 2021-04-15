@@ -1,3 +1,106 @@
+.button1 {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  /* width: 100%; */
+  opacity: 0.9;
+}
+
+
+button:hover {
+  opacity:1;
+}
+
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .deletebtn {
+  float:left;
+  width: 50%;
+  height: 10%;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+  background-color: #ccc;
+  color: black;
+  height: 50;
+}
+
+/* Add a color to the delete button */
+.deletebtn {
+  background-color: #f44336;
+  
+}
+
+/* Add padding and center-align text to the container */
+.container1 {
+  padding: 16px;
+  text-align: center;
+  height: auto;
+  
+}
+
+/* The Modal (background) */
+.modal1 {
+  display: none; /* Hidden by default */
+  position:relative; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  /* left: 30;
+  top: 30; */
+  width: 80%; /* Full width */
+  height: 80%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #fff;
+  padding-top: 50px;
+  margin-left: 10%;
+
+}
+
+/* Modal Content/Box */
+.modal1-content {
+  background-color: #1abc9c ;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+ 
+/* The Modal Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #181212;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn, .deletebtn {
+     width: 100%;
+  }
+}
 
 .container-fluid {
   padding-top: 70px;
@@ -234,7 +337,7 @@
 .form-control {
   height: 45px;
   box-shadow: none;
-  color: #248571;
+  color:  #1abc9c;
 }
 .form-control:focus {
   border-color: #1abc9c;
