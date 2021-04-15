@@ -740,7 +740,6 @@ app.post("/discussion/:userName/:discussionID/delete",checkUser,(req,res)=>{
 //check current user
 app.get("*",checkUser);
 
-// app.get("*",checkErrors);
 
 
 //singin route
@@ -1185,76 +1184,3 @@ app.listen(PORT, function(){
 // newDis.save();
 
 
-// <div class="container">
-//     <div class="panel panel-default">
-//         <% for(let i=0;i<reqDiscussions.length;i++){ %>
-//         <%= reqDiscussions[i].discussionName %>
-//         <div class="grow">
-//             <table class="table">
-//                <form action="/<%= user.userName %>/notifications" method="POST">
-//                     <thead>
-//                         <div class="group-notification">
-//
-//                             <input type="hidden" name="discussionID" value="<%=reqDiscussions[i].discussionID %>">
-//                             <button type="submit" class="btn btn-danger">Deny</button>
-//                             <button type="submit" class="btn btn-success">Accept</button>
-//                         </div>
-//                     </thead>
-//                 </form>
-//                 <div class="group-description">
-//                     <tbody>
-//                         <tr>
-//                             <td>Group Description</td>
-//                         </tr>
-//                         <tr>
-//                             <td>Group Members</td>
-//                         </tr>
-//                     </tbody>
-//                 </div>
-//
-//             </table>
-//         </div>
-//         <%}%>
-//         <div class="grow">
-//             <table class="table">
-//                 <thead>
-//                     <div class="group-notification">Tycse
-//                             <button type="button" class="btn btn-danger">Deny</button>
-//                             <button type="button" class="btn btn-success">Accept</button>
-//                     </div>
-//                 </thead>
-//                 <div class="group-description">
-//                     <tbody>
-//                         <tr>
-//                             <td>Group Description</td>
-//                         </tr>
-//                         <tr>
-//                             <td>Group Members</td>
-//                         </tr>
-//                     </tbody>
-//                 </div>
-//             </table>
-//         </div>
-//
-//         <div class="grow">
-//             <table class="table">
-//                 <thead>
-//                     <div class="group-notification">Tycse
-//                             <button type="button" class="btn btn-danger">Deny</button>
-//                             <button type="button" class="btn btn-success">Accept</button>
-//                     </div>
-//                 </thead>
-//                 <div class="group-description">
-//                     <tbody>
-//                         <tr>
-//                             <td>Group Description</td>
-//                         </tr>
-//                         <tr>
-//                             <td>Group Members</td>
-//                         </tr>
-//                     </tbody>
-//                 </div>
-//             </table>
-//         </div>
-//     </div>
-// </div>
