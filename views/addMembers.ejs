@@ -1,17 +1,19 @@
 <%- include("partials/header.ejs") -%>
 <div class="container">
     <header class="jumbotron">
-      <h3 class="about-section"><b>Add members to <%= activeDiscussion %> </b></h3>
-          <form action="/discussion/<%= user.userName %>/<%= activeDiscussion %>/addmembers" method="GET" class="form-inline">
-            <div class="form-group">
-              <input type="text" name="search" placeholder="Search a User..." class="search-form-control">
-              <input type="submit" value="search" class="btn btn-default btn-primary">
-            </div>
-          </form>
+      <h3 class="about-section"><b>Add members to <a href="/discussion/<%=user.userName%>/<%=activeDiscussion%>/open" ><i><%= activeDiscussion %> </i> </b></a></h3>
+      <br/>
+      <form action="/discussion/<%=user.userName%>" method="GET">
+        <button type="submit" class="btn btn-primary" style="float: left;"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
+      </form>
+      <form action="/discussion/<%= user.userName %>/<%= activeDiscussion %>/addmembers" method="GET" class="form-inline">
+        <div class="form-group" style="float: right;">
+          <input type="text" name="search" placeholder="Search a User..." class="search-form-control">
+          <input type="submit" value="search" class="btn btn-default btn-primary">
+        </div>
+      </form>    
           
-          <form action="/discussion/<%=user.userName%>" method="GET">
-            <button type="submit" class="btn btn-primary" style="float: right;"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
-        </form>
+         
       </header>
     </div>
 

@@ -24,7 +24,7 @@
               <thead>
                 <form  action="/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" method="GET">
                   <div class="group-notification">
-                    <%= user.activeDiscussions[i] %>(Admin)
+                    <%= user.activeDiscussions[i] %> <i><small>(Admin)</small></i>
                     
                       <input type="hidden"
                       name="activeDiscussion" value="<%= user.activeDiscussions[i] %>"/>
