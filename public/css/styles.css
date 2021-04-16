@@ -1,3 +1,106 @@
+.button1 {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  /* width: 100%; */
+  opacity: 0.9;
+}
+
+
+button:hover {
+  opacity:1;
+}
+
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .deletebtn {
+  float:left;
+  width: 50%;
+  height: 10%;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+  background-color: #ccc;
+  color: black;
+  height: 50;
+}
+
+/* Add a color to the delete button */
+.deletebtn {
+  background-color: #f44336;
+  
+}
+
+/* Add padding and center-align text to the container */
+.container1 {
+  padding: 16px;
+  text-align: center;
+  height: auto;
+  
+}
+
+/* The Modal (background) */
+.modal1 {
+  display: none; /* Hidden by default */
+  position:relative; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  /* left: 30;
+  top: 30; */
+  width: 80%; /* Full width */
+  height: 80%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #fff;
+  padding-top: 50px;
+  margin-left: 10%;
+
+}
+
+/* Modal Content/Box */
+.modal1-content {
+  background-color: #1abc9c ;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+ 
+/* The Modal Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #181212;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn, .deletebtn {
+     width: 100%;
+  }
+}
 
 .container-fluid {
   padding-top: 70px;
@@ -28,6 +131,43 @@
 }
 .th-right{
   text-align: right; 
+}
+
+.disgrow {
+  height: 55px;
+  width: 100%;
+  float: left;
+  position: relative;
+  text-align: left;
+  overflow: hidden;
+  margin-bottom: 30px;
+  border: 1px solid black
+  
+}
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+  background-color: #ccc;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
 }
 
 
@@ -113,9 +253,15 @@
 }
 
 .grow:hover {
-  height: 140px;
+  height:220px;
   width: 100%;
   background-color: #1abc9c;
+}
+.grp-about-section {
+  padding: 3px;
+  text-align: center;
+  background-color: #1abc9c;
+  color: white;
 }
 
 /* -------notification styles */
@@ -191,7 +337,7 @@
 .form-control {
   height: 45px;
   box-shadow: none;
-  color: #248571;
+  color:  #1abc9c;
 }
 .form-control:focus {
   border-color: #1abc9c;

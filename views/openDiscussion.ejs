@@ -1,0 +1,134 @@
+<%- include("partials/header.ejs") -%>
+<div class="container py-5 px-4">
+  <!-- For demo purpose-->
+  <div class="delete-dis">
+    
+  </div>
+  <header class="jumbotron">
+    <%if(user.userName === discussionObject.admin){%>
+    <!-- <form> -->
+      <button type="submit" class="btn btn-danger" style="float: right;" onclick="document.getElementById('id01').style.display='block'"><span class="glyphicon glyphicon-trash"></span> Delete Discussion</button>
+    <div id="id01" class="modal1">
+      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal" >×</span>
+      <form class="modal1-content" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/delete" method="POST">
+        <div class="container1">
+          <h2 style="font-family:Verdana, Geneva, Tahoma, sans-serif">Delete Discussion</h2>
+          <h3>Are you sure to delete discussion <i><strong><%=discussionObject.discussionName%></strong> </i>?</h3>
+        
+          <div class="clearfix">
+            <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+            <button type="submit" onclick="document.getElementById('id01').style.display='none'" class="deletebtn">Delete</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <script>
+    // Get the modal
+    var modal = document.getElementById('id01');
+    
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+    </script>
+
+    <%}%>
+
+    <br>
+    <h3 class="grp-about-section"><b><%= discussionObject.discussionName %></b></h3>
+    <h4 class="grp-about-section">Admin : <i><%= discussionObject.admin %></i></h4>
+    <h4 class="grp-about-section">Description :<i> <%= discussionObject.description %></i></h4>
+  
+  <%if(user.userName === discussionObject.admin){%>
+    
+      <form class="" action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/remove" method="GET">
+        <button type="submit" class="btn btn-danger"  style="float: right;"><span class="glyphicon glyphicon-trash"></span> Remove Members</button>
+      </form>
+   
+  
+    <%}%>
+    <form action="/discussion/<%=user.userName%>" method="GET">
+        <button type="submit" class="btn btn-primary" style="float: left;"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
+    </form>
+    <%if(user.userName !== discussionObject.admin){%>
+         
+      <!-- <span style="display: inline-block;"> -->
+        <form class="" action="/Discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/leave" method="post">
+          <button type="submit" class="btn btn-danger" style="float: right;">Leave</button>
+        </form>
+      <%}%>
+  </header>
+  <div class="row rounded-lg overflow-hidden shadow">
+    <!-- Users box-->
+    <div class="col-lg-3 px-0">
+      <div class="bg-white"> 
+
+        <div class="bg-gray px-4 py-2 bg-light">
+          <p class="h5 mb-0 py-1" style="color: white;"><b>Group Members</b></p>
+        </div>
+        
+        <div class="messages-box">
+          <div class="list-group rounded-0">
+        <%for(let i=0; i<discussionObject.currentMembers.length; i++){%>
+          
+              <a href="/<%=discussionObject.currentMembers[i]%>" class="list-group-item list-group-item-action text-white rounded-0">
+                <div class="media"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
+                  <% if(discussionObject.currentMembers[i]===discussionObject.admin){%>
+                    <span><b><i><%=discussionObject.currentMembers[i] %> <small>(admin)</small></i></b></span> 
+                  <% }else{%>
+                    <span><b><i><%=discussionObject.currentMembers[i] %></i></b></span> 
+                  <% }%> 
+                </div>
+              </a>
+              
+        <%}%>
+        </div>
+      </div>
+            
+        
+      </div>
+    </div>
+    <!-- Chat Box-->
+    <div class="col-lg-9 px-0">
+      <div class="bg-gray px-4 py-2 bg-light">
+        <p class="h5 mb-0 py-1"></p>
+        
+      </div>
+
+
+      <!-- Messages-->  
+      <div class="px-4 py-5 chat-box chat-box-msg bg-white">
+        <%for(let i=0; i<discussionObject.msgArray.length; i++){%>
+          <div class="media w-50 mb-3"><img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">
+            <span><b><i><%=discussionObject.msgArray[i].userName%></i></b></span> 
+            <div class="media-body">
+              <div>
+                <p class="text-small "><%=discussionObject.msgArray[i].content%></p>
+              </div>
+              <p class="small text-muted"><%=discussionObject.msgArray[i].datetime.toDateString()%></p>
+            </div>
+          </div>
+        <%}%>
+
+        
+
+      </div>
+
+      <!-- Typing area -->
+      <form action="/discussion/<%=user.userName%>/<%=discussionObject.discussionID%>/newMsg" method="post" class="bg-light">
+        <div class="input-group-chat">
+          <input type="text" name="content" value="" placeholder="Type a message" aria-describedby="button-addon2" class="form-control msg py-4 bg-light">
+          
+          <button id="button-addon2" type="submit" class="btn btn-link"> <span class="glyphicon glyphicon-send"></button>
+          
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<%- include("partials/footer.ejs") -%>

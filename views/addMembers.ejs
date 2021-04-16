@@ -1,0 +1,68 @@
+<%- include("partials/header.ejs") -%>
+<div class="container">
+    <header class="jumbotron">
+      <h3 class="about-section"><b>Add members to <a href="/discussion/<%=user.userName%>/<%=activeDiscussion%>/open" ><i><%= activeDiscussion %> </i> </b></a></h3>
+      <br/>
+      <form action="/discussion/<%=user.userName%>" method="GET">
+        <button type="submit" class="btn btn-primary" style="float: left;"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
+      </form>
+      <form action="/discussion/<%= user.userName %>/<%= activeDiscussion %>/addmembers" method="GET" class="form-inline">
+        <div class="form-group" style="float: right;">
+          <input type="text" name="search" placeholder="Search a User..." class="search-form-control">
+          <input type="submit" value="search" class="btn btn-default btn-primary">
+        </div>
+      </form>    
+          
+         
+      </header>
+    </div>
+
+<div class="container">
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+      <table class="table">
+        <thead>
+          <th>Rank</th>
+          <th>Username</th>
+        </thead>
+        <tbody>
+          <% for(let i=0; i<users.length; i++){%>
+            <tr>
+              <%let flg = 0 %>
+              <% for(let j=0; j<requestedList.length; j++){%>
+                <% if(requestedList[j] === users[i].userName){%>
+                  <% flg =1; break; %>
+                <%}%> 
+              <%}%>
+              <% for(let j=0; j<acceptedList.length; j++){%>
+                <% if(acceptedList[j] === users[i].userName){%>
+                  <% flg =2; break; %>
+                <%}%> 
+              <%}%>
+              <%if(flg === 1){%>
+                <td> <%= i+1 %> </td>
+                <td style="color: crimson;"><a href="/<%= users[i].userName %>"> <%=users[i].userName%></a></td>
+                <td><button  class="btn btn-primary" disabled>Already Invited</button></td>
+                <%} else if(flg === 2){%>
+                  <td> <%= i+1 %> </td>
+                  <td style="color: crimson;"><a href="/<%= users[i].userName %>"> <%=users[i].userName%></a></td>
+                  <td><button  class="btn btn-default" disabled>Already in Discussion</button></td>
+                  <%}else{%>
+                  <form action="/discussion/<%= user.userName %>/<%= activeDiscussion %>/addmembers" method="POST">
+                    <td> <%= i+1 %> </td>
+                    <td style="color: crimson;"><a href="/<%= users[i].userName %>"> <%=users[i].userName%></a></td>
+                    <input type="hidden" name="newMember" value="<%= users[i].userName %>"/>
+                    <input type="hidden" name="admin" value="<%= user.userName %>"/>
+                    <input type="hidden" name="discussionName" value="<%= activeDiscussion %>"/>
+                    <input type="hidden" name="discussionID" value="<%= activeDiscussion %>"/>
+                    <td><button type="submit" class="btn btn-success">Invite</button></td>
+                  </form>
+                <%}%>
+            </tr>
+          <%}%>
+      </tbody>
+      </table>
+    </div>
+</div>
+
+<%- include("partials/footer.ejs") -%>

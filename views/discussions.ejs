@@ -1,0 +1,48 @@
+<%- include("partials/header.ejs") -%>
+
+<div class="container">
+    <header class="jumbotron">
+      <h3 class="about-section"><b>Discussion</b></h3>
+      <div>
+      <form action="/discussion/<%=user.userName%>/create" method="GET">
+          <button type="submit" class="btn btn-primary" style="float: right;"><span class="glyphicon glyphicon-plus"></span> New Discussion</button>
+      </form>
+    </div>
+    </header>
+</div>
+<div class="container">
+  <% function test(words) {%>
+    <% var n = words.split(" ");%>
+    <% return n[n.length - 1];}%>
+    <div class="panel panel-default">
+      <% for(let i=0;i<user.activeDiscussions.length;i++){ %>
+        <% let discussionID = user.activeDiscussions[i] %>
+        <% var admin = test(discussionID) %>
+        <!-- <%= admin%> -->
+        <div class="disgrow">
+          <table class="table">
+              <thead>
+                <form  action="/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" method="GET">
+                  <div class="group-notification">
+                    <%= user.activeDiscussions[i] %> <i><small>(Admin)</small></i>
+                    
+                      <input type="hidden"
+                      name="activeDiscussion" value="<%= user.activeDiscussions[i] %>"/>
+
+                          <button  type="submit" formaction= "/discussion/<%=user.userName%>/<%=user.activeDiscussions[i]%>/open" class="btn btn-danger">Open</button>
+                          
+                          <%if(user.userName === admin){%>
+                            <button type="submit" formaction= "/discussion/<%= user.userName%>/<%= user.activeDiscussions[i] %>/addmembers" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Add Members</button>
+                          <% }%>
+
+                  </div>
+                </form>
+              </thead>
+          </table>
+        </div>
+      <% } %>
+    </div>
+</div>
+
+
+<%- include("partials/footer.ejs") -%>
