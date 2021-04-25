@@ -72,18 +72,18 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-mongoose.connect(process.env.MONGO_URI,
-{
-  dbName : process.env.DB_NAME,
-  user: process.env.MONGO_USER,
-  pass: process.env.MONGO_PASSWORD,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false
-}
-);
+// mongoose.connect(process.env.MONGO_URI,
+// {
+//   dbName : process.env.DB_NAME,
+//   user: process.env.MONGO_USER,
+//   pass: process.env.MONGO_PASSWORD,
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useFindAndModify: false
+// }
+// );
 
-// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -93,26 +93,14 @@ const createToken = (id,expIn) =>{
   {expiresIn: expIn});
 }
 
-function isValidUsername(const s){
+function isValidUsername(s){
   var userName = /^[a-zA-Z0-9_]+$/;
-  if(s.match(userName) && s.length !== 1){
+  if(s.match(userName) && s.length !== 0){
     return true;
   }
   return false;
 }
-function phonenumber(contactno)
-{
-  var phoneno = /^\d{10}$/;
-  if((contactno.match(phoneno)))
-    {
-      return true;
-    }
-      else
-        {
-        // alert("message");
-        return false;
-        }
-}
+
 
 // *****************************************************ALL THE POST REQUEST BELOW ************************************************
 app.post("/", (req,res)=>{
@@ -125,6 +113,7 @@ app.post("/signup",(req,res)=>{
   //check validation
   if(!isValid || !isValidUsername(req.body.userName))
   {
+    errors.email = "invalid username";
     return res.status(400).json(errors);
   }
 
@@ -132,7 +121,7 @@ app.post("/signup",(req,res)=>{
 
     if(user){
       console.log(user);
-      errors.email = "User already exits or invalid username";
+      errors.email = "User already exits or username already exists";
       return res.status(400).json(errors);
     }else{
       const arr = [];
