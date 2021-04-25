@@ -93,6 +93,26 @@ const createToken = (id,expIn) =>{
   {expiresIn: expIn});
 }
 
+function isValidUsername(const s){
+  var userName = /^[a-zA-Z0-9_]+$/;
+  if(s.match(userName) && s.length !== 1){
+    return true;
+  }
+  return false;
+}
+function phonenumber(contactno)
+{
+  var phoneno = /^\d{10}$/;
+  if((contactno.match(phoneno)))
+    {
+      return true;
+    }
+      else
+        {
+        // alert("message");
+        return false;
+        }
+}
 
 // *****************************************************ALL THE POST REQUEST BELOW ************************************************
 app.post("/", (req,res)=>{
@@ -103,15 +123,16 @@ app.post("/signup",(req,res)=>{
 
   const {errors, isValid} = validateSignUpInputs(req.body);
   //check validation
-  if(!isValid)
+  if(!isValid || !isValidUsername(req.body.userName))
   {
     return res.status(400).json(errors);
   }
 
   User.findOne({$or : [{ email: req.body.email }, { userName: req.body.userName }]}).then(user =>{
+
     if(user){
       console.log(user);
-      errors.email = "User already exits";
+      errors.email = "User already exits or invalid username";
       return res.status(400).json(errors);
     }else{
       const arr = [];
@@ -613,7 +634,7 @@ app.post("/discussion/:userName/:discussionID/leave", requireAuth, (req, res)=>{
         foundOne.save();
       }
     })
-  
+
   res.redirect("/discussion/"+userName);
 })
 
@@ -647,11 +668,11 @@ app.post("/discussion/:userName/:discussionID/removeall",checkUser,(req,res)=>{
   const discussionID = req.params.discussionID;
   const userName = req.params.userName;
   const removedUser = req.body.removedUser;
-  const currentMembers = [];  
+  const currentMembers = [];
     Discussion.findOne({discussionID: discussionID}, (err, foundOne)=>{
       if(err){
         console.log(err);
-      }else{  
+      }else{
         for(let i=1;i<foundOne.currentMembers.length;i++){
           // if(foundOne.currentMembers[i]===foundOne.admin){
           //   continue;
@@ -659,10 +680,10 @@ app.post("/discussion/:userName/:discussionID/removeall",checkUser,(req,res)=>{
             currentMembers.push(foundOne.currentMembers[i])
             foundOne.currentMembers = arrayRemove(foundOne.currentMembers, foundOne.currentMembers[i]);
             foundOne.save();
-            
+
           }
         }
-        
+
       })
       console.log({currentMembers:currentMembers});
     for(let i=0;i<currentMembers.length;i++)
@@ -718,7 +739,7 @@ app.post("/discussion/:userName/:discussionID/delete",checkUser,(req,res)=>{
               users[j].save();
             }
           }
-          
+
         }
         for(let i=0;i<activeMembers.length;i++){
           for(let j=0;j<users.length;j++){
@@ -727,7 +748,7 @@ app.post("/discussion/:userName/:discussionID/delete",checkUser,(req,res)=>{
               users[j].save();
             }
           }
-          
+
         }
       }
     })
@@ -866,7 +887,7 @@ app.get("/:userName/notifications", requireAuth, function(req, res){
             }
           }
           // console.log(requestedDiscussionArray);
-     
+
 
           res.render("notifications.ejs", {requestedDiscussionArray: requestedDiscussionArray});
         }
@@ -947,7 +968,7 @@ app.get("/discussion/:userName/create", requireAuth, (req, res)=>{
 //print only users discussion
 app.get("/discussion/:userName", requireAuth, (req, res)=>{
   const userName = req.params.userName;
-   
+
   res.render("discussions.ejs",{creatorUserName: req.params.userName});
 });
 
@@ -1049,7 +1070,7 @@ app.get("/discussion/:userName/:discussionID/remove",checkUser,(req,res)=>{
       res.render("removeMembers.ejs",{discussionID,activeMembers,admin:foundDiscussion.admin,name:foundDiscussion.discussionName});
     }
   })
-  
+
 
 })
 
@@ -1182,5 +1203,3 @@ app.listen(PORT, function(){
 // })
 //
 // newDis.save();
-
-
