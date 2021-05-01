@@ -36,7 +36,7 @@ oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
 const app = express();
 
 
-const questionTypes = ["Array","String","Matrix","Linked List","Stack","Queue","Tree","Graph","Greedy","Backtracking","Recursion","Dynamic Programing","Bit Manipulation","Hash Table","Sort","Searching","Map","Segment Tree"];
+const questionTypes = ["Array","Matrix","String", "Searching & Sorting","Linked List", "Binary Trees", "Binary Search Trees", "Greedy","Backtracking", "Stacks & Queues", "Heap", "Graph", "Trie", "Dynamic Programing","Bit Manipulation"];
 const requestedDiscussionArray = [];
 
 
@@ -1059,8 +1059,10 @@ app.get("/discussion/:userName/:discussionID/remove",checkUser,(req,res)=>{
       res.render("removeMembers.ejs",{discussionID,activeMembers,admin:foundDiscussion.admin,name:foundDiscussion.discussionName});
     }
   })
+})
 
-
+app.get("/*",checkUser,(req,res)=>{
+  res.render("error.ejs", {});
 })
 
 // *************************************************listening ****************************************************************
