@@ -36,7 +36,7 @@ oAuth2Client.setCredentials({refresh_token : REFRESH_TOKEN})
 const app = express();
 
 
-const questionTypes = ["Array","Matrix","String", "Searching & Sorting","Linked List", "Binary Trees", "Binary Search Trees", "Greedy","Backtracking", "Stacks & Queues", "Heap", "Graph", "Trie", "Dynamic Programing","Bit Manipulation"];
+const questionTypes = ["Array", "Matrix", "String", "Searching & Sorting", "Linked List", "Binary Trees", "Binary Search Trees", "Greedy","Backtracking", "Stacks & Queues", "Heap", "Graph", "Trie", "Dynamic Programing","Bit Manipulation"];
 const requestedDiscussionArray = [];
 
 
