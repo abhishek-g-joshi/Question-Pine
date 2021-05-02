@@ -388,22 +388,23 @@ app.post("/:userName/editprofile/:user_id",checkUser,(req,res)=>{
 });
 
 //POST : Add question route
-app.post("/addQuestion", (req, res)=> {
-  const newQuestion = new Question({
-    quesName: req.body.quesName,
-    quesLink: req.body.quesLink,
-    quesType: req.body.quesType,
-  })
 
-  newQuestion.save(function(err){
-    if(err){
-      console.log(err);
-    }else{
-      res.redirect("/addQuestion");
-    }
-  })
+// app.post("/addQuestion", (req, res)=> {
+//   const newQuestion = new Question({
+//     quesName: req.body.quesName,
+//     quesLink: req.body.quesLink,
+//     quesType: req.body.quesType,
+//   })
 
-});
+//   newQuestion.save(function(err){
+//     if(err){
+//       console.log(err);
+//     }else{
+//       res.redirect("/addQuestion");
+//     }
+//   })
+
+// });
 
 function arrayRemove(arr, value) {
     return arr.filter(function(ele){
@@ -492,17 +493,7 @@ app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)
       return res.status(400).json(err);
     }
     else{
-      //  foundDiscussion.requestedMembers.forEach(member => {
-      //    if(member === newMember){
-      //      console.log('already  requested');
-      //       res.redirect("/discussion/"+admin+"/"+discussionName+"/addmembers");
-      //       const error = 'already  requested';
-      //       // return res.status(400).json(error);
-      //    }
-      //    else{
-
-      //    }
-      //  });
+  
       foundDiscussion.requestedMembers.push(newMember);
           foundDiscussion.save();
           User.findOne({userName:newMember},(err,foundUser)=>{
@@ -837,9 +828,9 @@ app.get("/aboutus", (req, res)=>{
   res.render("aboutus.ejs");
 });
 
-app.get("/addQuestion", (req, res)=> {
-  res.render("addQuestion.ejs");
-})
+// app.get("/addQuestion", (req, res)=> {
+//   res.render("addQuestion.ejs");
+// })
 
 
 //profile route
@@ -1081,125 +1072,3 @@ app.listen(PORT, function(){
   console.log("server listening on " + PORT);
 })
 
-
-
-
-
-/***************************************Rough Work for testing: DO NOT DELETE *********************************************/
-
-// async function getsolvedQuestionObject(user){
-//     try{
-//       const foundOne = User.findOne({userName:user});
-//       const solvedQuestions = foundOne.solvedQuestions;
-//       var solvedQuestionObject = [];
-//       for(let i=0;i<solvedQuestions.length;i++)
-//       {
-//         var foundQuestionOne=await Question.findOne({quesName:solvedQuestions[i]});
-//         solvedQuestionObject.push(foundQuestionOne);
-//       }
-//     }
-//     catch(error){
-//       console.log(error);
-//     }
-// }
-//------------profile route changes-------------
-// app.get("/:id/", requireAuth, function(req, res){
-//   const userName = req.params.id;
-  // var solvedQuestions=[];
-  // // const userOne = {};
-  // //const solvedQuestionObject= getsolvedQuestionObject(userName);
-  // User.findOne({userName},(err,foundOne)=>{
-  //   if(err)
-  //   {
-  //     console.log(err);
-  //   }
-  //   else
-  //   {
-  //     //userOne=foundOne;
-  //     solvedQuestions = foundOne.solvedQuestions;
-  //     //console.log(solvedQuestions);
-  //   }
-  // })
-
-  //   // const solvedQuestions = userOne.solvedQuestions;
-  //   // console.log(solvedQuestions);
-  //   var solvedQuestionObject = [];
-  //   for(let i=0;i<solvedQuestions.length;i++)
-  //   {
-
-  //     Question.findOne({quesName: solvedQuestions[i]},(err,foundQues)=>{
-  //       if(err)
-  //       {
-  //         console.log(err.message);
-  //       }
-  //       else
-  //       {
-  //         //var solvedQues  = {};
-  //         // solvedQues['quesName']= foundQues.quesName;
-  //         // solvedQues['quesLink']= foundQues.quesLink;
-  //         // solvedQues['quesType']= foundQues.quesType;
-
-  //         //console.log(solvedQues);
-  //         solvedQuestionObject.push({
-  //           quesName: foundQues.quesName,
-  //           quesLink: foundQues.quesLink,
-  //           quesType: foundQues.quesType
-  //         });
-  //       }
-  //       //console.log(solvedQues);
-
-  //     })
-  //       solvedQuestionObject.push(foundQuestionOne);
-  //   }
-  // var solvedQuestionObject = new Array();
-  //   User.findOne({userName})
-  //     .then(foundOne=>{
-  //       const solvedQuestions = foundOne.solvedQuestions;
-  //       for(var i=0;i<solvedQuestions.length;i++)
-  //       {
-  //         Question.findOne({quesName:solvedQuestions[i]})
-  //           .then(foundQues=>{
-  //             solvedQuestionObject.push(foundQues)
-  //           });
-  //       }
-  //       console.log(solvedQuestionObject);
-  //     });
-  //  console.log(solvedQuestionObject);
-  //res.render("profile.ejs",{userData: foundOne,solvedQuestionObject: solvedQuestionObject});
-
-// })
-
-// var solvedQuestionObject = new Array();
-//
-// async function getsolvedQuestionObject(user){
-//   try{
-//     const foundOne = User.findOne({userName:user});
-//     const solvedQuestions = foundOne.solvedQuestions;
-//     // var solvedQuestionObject = [];
-//     for(let i=0;i<solvedQuestions.length;i++)
-//     {
-//       var foundQuestionOne=await Question.findOne({quesName:solvedQuestions[i]});
-//       solvedQuestionObject.push(foundQuestionOne);
-//     }
-//   }
-//   catch(error){
-//     console.log(error);
-//   }
-// }
-//
-//
-// const msg = new Message({
-//   userName:"x",
-//   Datetime: Date(),
-//   content: "Hi"
-// })
-//
-// const newDis = new Discussion({
-//   discussionID: "x",
-//   discussionName: "y",
-//   currentMembers: ["x", "y"],
-//   requestedMembers: ["z"],
-//   msgArray: [msg]
-// })
-//
-// newDis.save();
