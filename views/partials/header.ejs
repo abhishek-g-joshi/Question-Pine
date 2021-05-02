@@ -11,64 +11,86 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/chatroomstyles.css">
-  <!-- <button type="button" class="mobile-nav-toggle d-lg-none">
-    <i class="icofont-navigation-menu">
+  
 
-    </i></button> -->
   <nav class="navbar navbar-default">
-    <div class="container-md">
-      <div class="navbar-header">
-        <p class="navbar-brand"><a href="/homepage">QUESTION PINE</a></p>
-      </div>
-        <ul class="nav navbar-nav navbar-default bold-nav">
-          <!-- 6 -->
-          <% if(user) { %>
-              <li id="questions"><a href="/questions/<%= user.userName %>" >QUESTIONS</a></li>
-          <% }else { %>
-             <li id="questions"><a href="/signin" >QUESTIONS</a></li>
-          <% } %>
-          <li id="contact"><a href="/leaderboard">LEADERBOARD</a></li>
-          <% if(user) { %>
-              <li id="questions"><a href="/discussion/<%= user.userName %>" >DISCUSSION</a></li>
-          <% }else { %>
-             <li id="questions"><a href="/signin" >DISCUSSION</a></li>
-          <% } %>
-          <li id="about"><a href="/aboutus">ABOUT US</a></li>
-        </ul>
-        <form class="form-inline">
-          <% if(user) { %>
-            <ul class="nav navbar-nav navbar-right">
-              <li>
-                <a class="nav-link" href="/<%= user.userName %>/notifications">
-                  <span class="badge badge-pill badge-primary" style="float:right;margin-bottom:10px;"><%= user.reqDiscussions.length %></span>
-                    <span class="glyphicon glyphicon-bell"></span>
-                </a>
-              </li>
-              <li>
-              <div class="dropdown">
-                <button class="dropbtn"><div class="avatar-prof">
-                  <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="Avatar">
-                </div>
-                <p style="display:inline; font-size: large;"><strong><%= user.userName %></strong> </p>
-              </button>
-                <div class="dropdown-content">
-                  <a href="/<%= user.userName %>"><span class="glyphicon glyphicon-user"></span><strong> My Profile</strong></a>
-                  <a href="/signout"><span class="glyphicon glyphicon-off"></span><strong> Log Out</strong></a>
-                </div>
-              </div>
-
-            <!-- </div> -->
-            </li>
-            </ul>
-          <% } else { %>
-            <ul class="nav navbar-nav navbar-right">
-          <a href="/signup"><button class="btn btn-info btn-lg" type="button"><span class="glyphicon glyphicon-user"></span> Sign Up</button></a>
-          <a href="/signin"><button class="btn btn-info btn-lg" type="button"><span class="glyphicon glyphicon-log-in"></span>  Sign In</button></a>
-            </ul>
-          <% } %>
-        </form>
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/homepage">QUESTION PINE</a>
     </div>
+    <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar"> -->
+      <div class="container-md">
+        <ul class="nav navbar-nav navbar-default bold-nav">
+            <% if(user) { %>
+                <li class="nav-item" id="questions"><a class="nav-link" href="/questions/<%= user.userName %>" >QUESTIONS</a></li>
+            <% }else { %>
+              <li class="nav-item" id="questions"><a class="nav-link" href="/signin" >QUESTIONS</a></li>
+            <% } %>
+            <li class="nav-item" id="contact"><a class="nav-link" href="/leaderboard">LEADERBOARD</a></li>
+            <% if(user) { %>
+                <li  class="nav-item" id="questions"><a class="nav-link" href="/discussion/<%= user.userName %>" >DISCUSSION</a></li>
+            <% }else { %>
+              <li class="nav-item" id="questions"><a class="nav-link" href="/signin" >DISCUSSION</a></li>
+            <% } %>
+            <li class="nav-item" id="about"><a class="nav-link" href="/aboutus">ABOUT US</a></li>
+          </ul>
+          <form class="form-inline">
+            <% if(user) { %>
+              <ul class="nav navbar-nav navbar-right">
+                <li>
+                  <a class="nav-link" href="/<%= user.userName %>/notifications">
+                    <span class="badge badge-pill badge-primary" style="float:right;margin-bottom:10px;"><%= user.reqDiscussions.length %></span>
+                      <span class="glyphicon glyphicon-bell"></span>
+                  </a>
+                </li>
+                <li>
+                  <div class="dropdown">
+                    <button class="dropbtn">
+                      <div class="avatar-prof">
+                        <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="Avatar">
+                      </div>
+                      <p style="display:inline; font-size: large;"><strong><%= user.userName %></strong> </p>
+                    </button>
+                    <div class="dropdown-content">
+                      <a href="/<%= user.userName %>"><span class="glyphicon glyphicon-user"></span><strong> My Profile</strong></a>
+                      <a href="/signout"><span class="glyphicon glyphicon-off"></span><strong> Log Out</strong></a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            <% } else { %>
+              <ul class="nav navbar-nav navbar-right">
+                <a href="/signup"><button class="btn btn-info btn-lg" type="button"><span class="glyphicon glyphicon-user"></span> Sign Up</button></a>
+                <a href="/signin"><button class="btn btn-info btn-lg" type="button"><span class="glyphicon glyphicon-log-in"></span>  Sign In</button></a>
+              </ul>
+            <% } %>
+          </form>
+      </div>
+    <!-- </div> -->
   </nav>
 
-
   <body>
+    <button onclick="topFunction()" id="myBtn" title="Go to top"><span class="glyphicon glyphicon-menu-up"></span></button>
+<script>
+  //Get the button
+  var mybutton = document.getElementById("myBtn");
+  
+  // When the user scrolls down 20px from the top of the document, show the button
+  window.onscroll = function() {scrollFunction()};
+  
+  function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      mybutton.style.display = "block";
+    } else {
+      mybutton.style.display = "none";
+    }
+  }
+  
+  // When the user clicks on the button, scroll to the top of the document
+  function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
+  </script>
