@@ -133,10 +133,10 @@ app.post("/signup",(req,res)=>{
        password : req.body.password,
        solvedQuestions: arr,
 
-       college: "--",
-       dob: "--",
-       country: "--",
-       city: "--",
+       college: "",
+       dob: "",
+       country: "",
+       city: "",
        contactno:"",
        bio:"Welcome to Q'Pine",
        //solvedCount: val
