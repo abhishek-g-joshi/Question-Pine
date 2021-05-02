@@ -767,7 +767,16 @@ app.get("/signout",(req,res)=>{
 
 // app.use("/api/users",users);
 
-
+app.get("/", function(req, res){
+  User.find({},(err,users)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.render("homepage",{users:users});
+    }
+  })
+})
 
 //Homepage route
 app.get("/homepage", function(req, res){
