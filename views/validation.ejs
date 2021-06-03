@@ -1,0 +1,27 @@
+<%- include("partials/header.ejs") -%>
+
+<div class="login-form">
+    <form action="/signin" method="POST">
+		<div class="avatar">
+			<img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar">
+		</div>
+        <h2 class="text-center">Validation</h2>
+        <div class="form-group">
+        	<input type="email" class="form-control" name="email" placeholder="Email" >
+        </div>
+		<div class="form-group">
+            <input type="password" class="form-control" name="username" placeholder="Username" >
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Validate</button>
+        </div>
+		<div class="bottom-action clearfix">
+            <!-- <label class="float-left form-check-label"><input type="checkbox" name="rememberMe"> Remember me</label> -->
+            <a href="/forgot-password" class="float-right" name="forgotPassword">Forgot Password?</a>
+        </div>
+    </form>
+
+</div>
+
+<%- include("partials/footer.ejs") -%>

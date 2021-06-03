@@ -72,18 +72,18 @@ const signin = require("./validation/signin");
 const Questions = require("./models/Questions");
 
 
-mongoose.connect(process.env.MONGO_URI,
-{
-  dbName : process.env.DB_NAME,
-  user: process.env.MONGO_USER,
-  pass: process.env.MONGO_PASSWORD,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false
-}
-);
+// mongoose.connect(process.env.MONGO_URI,
+// {
+//   dbName : process.env.DB_NAME,
+//   user: process.env.MONGO_USER,
+//   pass: process.env.MONGO_PASSWORD,
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useFindAndModify: false
+// }
+// );
 
-// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 const secreteKey = process.env.SECRETE_KEY;
@@ -493,7 +493,7 @@ app.post("/discussion/:userName/:discussion/addmembers", requireAuth, (req, res)
       return res.status(400).json(err);
     }
     else{
-  
+
       foundDiscussion.requestedMembers.push(newMember);
           foundDiscussion.save();
           User.findOne({userName:newMember},(err,foundUser)=>{
@@ -792,7 +792,7 @@ app.get("/", function(req, res){
 })
 //signup route
 app.get("/signup",function(req,res){
-  res.render("signUp.ejs");
+  res.render("validation.ejs");
 })
 
 //forgot password get route
@@ -1071,4 +1071,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, function(){
   console.log("server listening on " + PORT);
 })
-
