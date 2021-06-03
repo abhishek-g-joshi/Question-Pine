@@ -1,4 +1,3 @@
-# Team-Rudras-
-TY Mini Project
+# Question Pine
+TY Mini Project by Team Rudra
 
-We are presenting Question Pine.
