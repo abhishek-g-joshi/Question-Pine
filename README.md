@@ -2,7 +2,7 @@
 **🚀 Checkout the website live at** : https://question-pine.herokuapp.com/
 ### Features
 - A full-stack web application for DSA preparation with intergrated leaderboard.<br/>
-- Developed a personal discussion group for solving doubts.<br/>
+- Developed a personalized discussion group for solving doubts.<br/>
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Getting Started
 follow the steps below:
