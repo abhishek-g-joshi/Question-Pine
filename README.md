@@ -3,7 +3,7 @@
 ### Features
 - A full-stack web application for DSA preparation with intergrated leaderboard.<br/>
 - Developed a personalized discussion group for solving doubts.<br/>
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## ⚙ Getting Started
 follow the steps below:
 ### ⏳ Installation
@@ -13,24 +13,25 @@ First make sure you have these dependencies met:
 
 1.Initialize the git and create empty repository:
 ```
-git init
+$ git init
 ```
 
 2.Then clone the code and install the dependencies:
 ```
-git clone https://github.com/abhishek-g-joshi/Question-Pine.git
-cd ./Question-Pine
-npm install
+$ git clone https://github.com/abhishek-g-joshi/Question-Pine.git
+$ cd ./Question-Pine
+$ npm install
 ```
 
 ### 💻 Running
 
 3.Building and starting the server for production:
 ```
-npm start
+$ npm start
 ```
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 🔒 License
 Copyright Notice and Statement: currently not offering any license. Permission only to view and download.
 
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
