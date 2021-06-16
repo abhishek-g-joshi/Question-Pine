@@ -4,7 +4,7 @@
 - A full-stack web application for DSA preparation with intergrated leaderboard.<br/>
 - Developed a personalized discussion group for solving doubts.<br/>
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## Getting Started
+## ⚙ Getting Started
 follow the steps below:
 ### ⏳ Installation
 First make sure you have these dependencies met:  
@@ -29,4 +29,8 @@ npm install
 ```
 npm start
 ```
+## 🔒 License
+Copyright Notice and Statement: currently not offering any license. Permission only to view and download.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
